@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Blocca tutto agli utenti non autenticati.
+    // Il controllo dei ruoli (admin/consulente/azienda) avviene nel codice React.
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

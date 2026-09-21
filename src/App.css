@@ -1,0 +1,114 @@
+/* Forza tema chiaro su tutti gli input — evita problemi con dark mode del telefono */
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  background-color: #eef1f7;
+  color: #1a2540;
+}
+
+input, select, textarea, button {
+  color-scheme: light;
+  color: #1a2540;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9aa7bf;
+}
+
+/* Fix pulsanti con sfondo bianco che perdono il testo in dark mode */
+button {
+  color: inherit;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.App {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Responsive per tablet */
+@media (max-width: 1200px) {
+  .App {
+    padding: 16px;
+  }
+}
+
+/* Responsive per mobile */
+@media (max-width: 768px) {
+  .App {
+    padding: 12px;
+  }
+  
+  /* Nasconde testi lunghi su mobile */
+  .hide-on-mobile {
+    display: none !important;
+  }
+  
+  /* Stack verticale su mobile */
+  .mobile-stack {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  /* Bottoni più grandi su mobile */
+  button {
+    min-height: 44px !important;
+  }
+  
+  /* Font più piccoli */
+  h1 {
+    font-size: 24px !important;
+  }
+  
+  h2 {
+    font-size: 20px !important;
+  }
+  
+  h3 {
+    font-size: 18px !important;
+  }
+}
+
+/* Mobile piccolo */
+@media (max-width: 480px) {
+  .App {
+    padding: 8px;
+  }
+  
+  h1 {
+    font-size: 20px !important;
+  }
+}
+
+/* Utility classes */
+.responsive-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+/* Tabelle responsive */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,150 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #16223b;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #2c3e66;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #1f2e4d;
+}
+
+body {
+  margin: 0;
+  /* display: flex;
+  place-items: center; */
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #2c3e66;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #1a2540;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #4a68a0;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+/* Stile base eventi */
+.fc-event {
+  background-color: #ffffff !important;
+  border: 1px solid #dfe5ef !important;
+  border-left-width: 6px !important;
+  border-radius: 8px !important;
+  padding: 2px 4px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* PROGRAMMATO */
+.evento-programmato {
+  border-left-color: #4a68a0 !important;
+}
+
+/* CONFERMATO */
+.evento-confermato {
+  border-left-color: #10b981 !important;
+}
+
+/* COMPLETATO */
+.evento-completato {
+  border-left-color: #2c3e66 !important;
+  opacity: 0.75;
+}
+
+/* DISDETTO */
+.evento-disdetto {
+  border-left-color: #ef4444 !important;
+  /* border-style: dashed !important; */
+  opacity: 0.85;
+}
+/* Testo sempre visibile in timeGrid (settimana/giorno) */
+.fc .fc-timegrid-event .fc-event-main {
+  color: #1a2540 !important;
+}
+
+.fc .fc-timegrid-event .fc-event-title,
+.fc .fc-timegrid-event .fc-event-time {
+  color: #2c3e66 !important;
+  font-weight: 600;
+}
+
+/* Se qualche regola mette testo bianco, questa lo sovrascrive */
+.fc .fc-timegrid-event .fc-event-main * {
+  color: #2c3e66 !important;
+}
+
+/* Migliora layout (evita "vuoto" per overflow/line-height) */
+.fc .fc-timegrid-event {
+  overflow: hidden;
+}
+
+.fc .fc-timegrid-event .fc-event-main-frame {
+  padding: 4px 6px !important;
+}
+
+/* Mantieni il tuo stile (bordo sinistro) anche in timeGrid */
+.fc .fc-timegrid-event.fc-event {
+  background-color: #ffffff !important;
+  border: 1px solid #dfe5ef !important;
+  border-left-width: 6px !important;
+  border-radius: 8px !important;
+}
+
+/* Mini-modale drop */
+.drop-backdrop {
+  animation: dropFadeIn 140ms ease-out forwards;
+}
+.drop-modal {
+  transform-origin: 50% 20%;
+  animation: dropPopIn 160ms ease-out forwards;
+}
+
+@keyframes dropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes dropPopIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

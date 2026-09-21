@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3a5288"/>
+      <stop offset="100%" stop-color="#16223b"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dde3f0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sfondo arrotondato -->
+  <rect width="512" height="512" rx="90" fill="url(#bg)"/>
+
+  <!-- Scudo -->
+  <path d="M 256 68 L 418 128 L 418 295 C 418 382 256 452 256 452 C 256 452 94 382 94 295 L 94 128 Z"
+        fill="url(#shield)" opacity="0.97"/>
+
+  <!-- Testo NS -->
+  <text x="256" y="292"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="148"
+        font-weight="900"
+        fill="#16223b"
+        text-anchor="middle"
+        dominant-baseline="middle">NS</text>
+</svg>
