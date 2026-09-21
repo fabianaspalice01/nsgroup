@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import SignatureCanvas from 'react-signature-canvas';
 import jsPDF from 'jspdf';
 import { PDFDocument } from 'pdf-lib';
+import { caricaLogoPdf, LOGO_RATIO } from '../utils/logoPdf';
 
 const SERVIZI_PREDEFINITI = [
     'DVR (documentazione di valutazione dei rischi)',
@@ -454,7 +455,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
     };
 
     const generaPDF = async (firme) => {
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
         const ml = 10, mr = 10, pw = 210;
         const cw = pw - ml - mr; // 190mm
         let y = 10;
@@ -473,12 +474,20 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
         const localitaCliente = [capCliente, comuneCliente, provinciaCliente ? `(${provinciaCliente})` : ''].filter(Boolean).join(' ');
 
         // ---- HEADER ----
-        pdf.setFontSize(13);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('NSGroup', ml, y + 7);
+        const logo = await caricaLogoPdf();
+        const logoH = 14;
+        let subX = ml;
+        if (logo) {
+            pdf.addImage(logo, 'PNG', ml, y, logoH * LOGO_RATIO, logoH);
+            subX = ml + logoH * LOGO_RATIO + 4;
+        } else {
+            pdf.setFontSize(13);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('NS Consulting', ml, y + 7);
+        }
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'normal');
-        pdf.text('Sicurezza sul lavoro  -  D.Lgs 81/08', ml, y + 13);
+        pdf.text('Sicurezza sul lavoro  -  D.Lgs 81/08', subX, logo ? y + 8 : y + 13);
 
         // Checkbox preventivo
         const cx = 130;

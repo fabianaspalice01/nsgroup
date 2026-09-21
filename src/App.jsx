@@ -792,7 +792,7 @@ function App() {
   if (loading) {
     return (
       <div className="App">
-        <h1>🛡️ NSGroup</h1>
+        <img src="/logo-nsconsulting.png" alt="NS Consulting" style={{ height: 72, width: 'auto', display: 'block' }} />
         <p>Caricamento in corso...</p>
       </div>
     );
@@ -865,7 +865,7 @@ function App() {
             </div>
             {/* Riga 2 mobile: logo app */}
             <div style={{ textAlign: 'center', marginBottom: 10 }}>
-              <strong style={{ fontSize: 24 }}>NSGroup</strong>
+              <img src="/logo-nsconsulting.png" alt="NS Consulting" style={{ height: 56, width: 'auto', maxWidth: '100%' }} />
 {/*               <p style={{ margin: '4px 0 0', fontSize: 13, color: '#5f6f8c' }}>Gestione Sicurezza sul Lavoro</p>
  */}            </div>
           </div>
@@ -879,7 +879,7 @@ function App() {
             gap: 15
           }}>
             <div>
-              <strong style={{ fontSize: 28, display: 'block', textAlign: 'center' }}>NSGroup</strong>
+              <img src="/logo-nsconsulting.png" alt="NS Consulting" style={{ height: 72, width: 'auto', display: 'block' }} />
              {/*  <p style={{ margin: '4px 0 0' }}>Gestione Sicurezza sul Lavoro</p> */}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>

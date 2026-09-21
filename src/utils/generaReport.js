@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { caricaLogoPdf, LOGO_RATIO } from './logoPdf';
 
 const VIOLA = [44, 62, 102];
 const GRIGIO = [69, 83, 111];
@@ -15,7 +16,8 @@ const fmt = (dataStr) => {
 const fmtEuro = (val) =>
   `€ ${(val || 0).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-export function generaReportMensile({ aziende, appuntamenti, preventivi, anno, mese, giorniPreavviso }) {
+export async function generaReportMensile({ aziende, appuntamenti, preventivi, anno, mese, giorniPreavviso }) {
+  const logo = await caricaLogoPdf();
   const inizioMese = new Date(anno, mese - 1, 1);
   const fineMese = new Date(anno, mese, 0, 23, 59, 59);
   const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
@@ -61,22 +63,30 @@ export function generaReportMensile({ aziende, appuntamenti, preventivi, anno, m
   const valorePrev = prevMese.reduce((s, p) => s + (p.totale || 0), 0);
 
   // ── Crea PDF ────────────────────────────────────────────────────────────────
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
   const W = doc.internal.pageSize.getWidth();
   let y = 0;
 
-  // Header
-  doc.setFillColor(...VIOLA);
-  doc.rect(0, 0, W, 28, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(18);
+  // Header: logo su fondo bianco a sinistra, titolo a destra, fascia navy sotto
+  const logoH = 16;
+  if (logo) {
+    doc.addImage(logo, 'PNG', 14, 5, logoH * LOGO_RATIO, logoH);
+  } else {
+    doc.setTextColor(...VIOLA);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('NS Consulting', 14, 15);
+  }
+  doc.setTextColor(...VIOLA);
+  doc.setFontSize(15);
   doc.setFont('helvetica', 'bold');
-  doc.text('NSGroup', 14, 12);
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Report mensile — ${nomeMese.charAt(0).toUpperCase() + nomeMese.slice(1)}`, 14, 22);
+  doc.text(`Report mensile — ${nomeMese.charAt(0).toUpperCase() + nomeMese.slice(1)}`, W - 14, 13, { align: 'right' });
+  doc.setTextColor(...GRIGIO);
   doc.setFontSize(9);
-  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`, W - 14, 22, { align: 'right' });
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`, W - 14, 19, { align: 'right' });
+  doc.setFillColor(...VIOLA);
+  doc.rect(0, 25, W, 2.5, 'F');
 
   y = 36;
 
@@ -199,11 +209,18 @@ export function generaReportMensile({ aziende, appuntamenti, preventivi, anno, m
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
     doc.setFillColor(...VIOLA);
-    doc.rect(0, 290, W, 7, 'F');
-    doc.setTextColor(255, 255, 255);
+    doc.rect(0, 289, W, 0.6, 'F');
+    const footLogoH = 6;
+    let footTextX = 14;
+    if (logo) {
+      doc.addImage(logo, 'PNG', 14, 290.5, footLogoH * LOGO_RATIO, footLogoH);
+      footTextX = 14 + footLogoH * LOGO_RATIO + 3;
+    }
+    doc.setTextColor(...GRIGIO);
     doc.setFontSize(7);
-    doc.text('NSGroup — Gestione Sicurezza sul Lavoro', 14, 295);
-    doc.text(`Pagina ${i} di ${totalPages}`, W - 14, 295, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.text('Gestione Sicurezza sul Lavoro', footTextX, 294.5);
+    doc.text(`Pagina ${i} di ${totalPages}`, W - 14, 294.5, { align: 'right' });
   }
 
   const nomeFile = `report-${anno}-${String(mese).padStart(2, '0')}.pdf`;
