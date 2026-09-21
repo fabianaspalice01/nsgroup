@@ -40,6 +40,7 @@ import ModalePagamento from './components/ModalePagamento';
 import { inviaNotificaPushAdmin } from './utils/inviaNotificaAdmin';
 import PaginaAziendeAssegnate from './components/PaginaAziendeAssegnate';
 import PaginaListino from './components/PaginaListino';
+import PaginaFatture from './components/fatture/PaginaFatture';
 
 const TIPI_CONTROLLO = [
   'Visita di sicurezza',
@@ -936,6 +937,7 @@ function App() {
               { id: 'utenti', label: '👥 Utenti' },
               { id: 'preventivi', label: '📄 Preventivi' },
               { id: 'listino', label: '💰 Listino' },
+              ...(userData.ruolo === 'admin' ? [{ id: 'fatture', label: '🧾 Fatture' }] : []),
               { id: 'impostazioni', label: '⚙️ Impostazioni' },
             ].map(({ id, label }) => (
               <button
@@ -1059,6 +1061,11 @@ function App() {
 
             {vistaCorrente === 'listino' && (
               <PaginaListino />
+            )}
+
+            {/* Fatture e contabilità: solo amministratore */}
+            {vistaCorrente === 'fatture' && userData.ruolo === 'admin' && (
+              <PaginaFatture aziende={aziendAttive} />
             )}
 
             {vistaCorrente === 'impostazioni' && (
