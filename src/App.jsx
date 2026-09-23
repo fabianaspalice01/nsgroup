@@ -8,7 +8,7 @@ import Agenda from './components/Agenda';
 import Login from './components/Login';
 import GestioneUtenti from './components/GestioneUtenti';
 import ConfirmModal from './components/ConfirmModal';
-import { db, storage, firebaseConfig } from './firebase';
+import { db, storage } from './firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {
   doc,
@@ -23,15 +23,11 @@ import {
   query,
   where
 } from 'firebase/firestore';
-import { initializeApp, deleteApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import toast, { Toaster } from 'react-hot-toast';
 import PannelloNotifiche from './components/PannelloNotifiche';
 import PaginaPlanning from './components/PaginaPlanning';
-import { useAuth } from './hooks/useAuth';
 import { useAziende } from './hooks/useAziende';
 import { useAppuntamenti } from './hooks/useAppuntamenti';
-import { useNotifiche } from './hooks/useNotifiche';
 import RicercaGlobale from './components/RicercaGlobale';
 import Impostazioni from './components/Impostazioni';
 import ModalePreventivo from './components/ModalePreventivo';
@@ -53,11 +49,10 @@ const TIPI_CONTROLLO = [
   'Controllo pronto soccorso',
 ];
 
-function App() {
-  const { user, userData, loading, login, logout } = useAuth();
+function App({ session, onChangeCompany }) {
+  const { user, userData, loading, login, logout } = session;
   const { aziende } = useAziende(userData);
   const { appuntamenti } = useAppuntamenti(userData);
-  useNotifiche(userData);
 
   const [aziendaSelezionataId, setAziendaSelezionataId] = useState(null);
   const [navKey, setNavKey] = useState(0);
@@ -518,42 +513,10 @@ function App() {
         pagamenti: []
       };
 
-      const docRef = await addDoc(collection(db, 'aziende'), aziendaCompleta);
+      await addDoc(collection(db, 'aziende'), aziendaCompleta);
       // onSnapshot aggiorna aziende automaticamente
 
-      if (emailAccesso && passwordAccesso) {
-        if (passwordAccesso.length < 6) {
-          toast.success("Azienda creata! La password deve essere di almeno 6 caratteri. Crea l'utente dalla sezione Utenti.");
-          setMostraModaleAzienda(false);
-          return;
-        }
-
-        // App Firebase secondaria: evita che la creazione dell'utente faccia il logout dell'admin
-        const secondaryApp = initializeApp(firebaseConfig, `user-${Date.now()}`);
-        const secondaryAuth = getAuth(secondaryApp);
-        try {
-          await createUserWithEmailAndPassword(secondaryAuth, emailAccesso, passwordAccesso);
-          await addDoc(collection(db, 'users'), {
-            email: emailAccesso,
-            nome: nuovaAzienda.nome,
-            ruolo: 'azienda',
-            aziendaId: docRef.id,
-            attivo: true
-          });
-          toast.success('Azienda e utente creati con successo!');
-        } catch (userError) {
-          console.error('Errore creazione utente:', userError);
-          if (userError.code === 'auth/email-already-in-use') {
-            toast.success("Azienda creata! L'email è già registrata. Usa un'altra email dalla sezione Utenti.");
-          } else {
-            toast.success("Azienda creata! Errore nella creazione dell'utente. Crealo dalla sezione Utenti.");
-          }
-        } finally {
-          await deleteApp(secondaryApp);
-        }
-      } else {
-        toast.success('Azienda aggiunta con successo!');
-      }
+      toast.success('Azienda aggiunta con successo!');
 
       await notificaOperatore('nuova_azienda', `${userData.nome} ha aggiunto l'azienda ${nuovaAzienda.nome}`);
       setMostraModaleAzienda(false);
@@ -793,7 +756,7 @@ function App() {
   if (loading) {
     return (
       <div className="App">
-        <img src="/logo-nsconsulting.png" alt="NS Consulting" style={{ height: 72, width: 'auto', display: 'block' }} />
+        <h1>🛡️ NSGroup</h1>
         <p>Caricamento in corso...</p>
       </div>
     );
@@ -812,7 +775,7 @@ function App() {
         toastOptions={{
           duration: 3000,
           style: {
-            background: '#101a2e',
+            background: '#0f172a',
             color: '#fff',
             borderRadius: '10px',
             fontSize: '14px'
@@ -842,8 +805,8 @@ function App() {
               )}
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1a2540' }}>{userData.nome}</div>
-                  <div style={{ fontSize: 11, color: '#5f6f8c', textTransform: 'capitalize' }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1e293b' }}>{userData.nome}</div>
+                  <div style={{ fontSize: 11, color: '#64748b', textTransform: 'capitalize' }}>
                     {userData.ruolo === 'admin' ? 'Amministratore' : userData.ruolo === 'operatore' ? 'Operatore' : userData.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
                   </div>
                 </div>
@@ -866,8 +829,8 @@ function App() {
             </div>
             {/* Riga 2 mobile: logo app */}
             <div style={{ textAlign: 'center', marginBottom: 10 }}>
-              <img src="/logo-nsconsulting.png" alt="NS Consulting" style={{ height: 56, width: 'auto', maxWidth: '100%' }} />
-{/*               <p style={{ margin: '4px 0 0', fontSize: 13, color: '#5f6f8c' }}>Gestione Sicurezza sul Lavoro</p>
+              <img src="/logo-nsconsulting.jpeg" alt="NSConsulting" style={{ display: 'block', width: '100%', maxWidth: 280, height: 'auto', margin: '0 auto', mixBlendMode: 'multiply' }} />
+{/*               <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b' }}>Gestione Sicurezza sul Lavoro</p>
  */}            </div>
           </div>
         ) : (
@@ -880,7 +843,7 @@ function App() {
             gap: 15
           }}>
             <div>
-              <img src="/logo-nsconsulting.png" alt="NS Consulting" style={{ height: 72, width: 'auto', display: 'block' }} />
+              <img src="/logo-nsconsulting.jpeg" alt="NSConsulting" style={{ display: 'block', width: 300, maxWidth: '100%', height: 'auto', mixBlendMode: 'multiply' }} />
              {/*  <p style={{ margin: '4px 0 0' }}>Gestione Sicurezza sul Lavoro</p> */}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -896,8 +859,8 @@ function App() {
               {isAdmin && (
                 <PannelloNotifiche aziende={aziende} onNavigaAzienda={handleNavigaAzienda} />
               )}
-              <div style={{ fontSize: 13, color: '#5f6f8c', textAlign: 'right' }}>
-                <div style={{ fontWeight: 600, color: '#1a2540' }}>{userData.nome}</div>
+              <div style={{ fontSize: 13, color: '#64748b', textAlign: 'right' }}>
+                <div style={{ fontWeight: 600, color: '#1e293b' }}>{userData.nome}</div>
                 <div style={{ textTransform: 'capitalize' }}>
                   {userData.ruolo === 'admin' ? 'Amministratore' : userData.ruolo === 'operatore' ? 'Operatore' : userData.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
                 </div>
@@ -921,6 +884,10 @@ function App() {
           </div>
         )}
 
+        {userData.ruolo === 'admin' && onChangeCompany && (
+          <button type="button" onClick={onChangeCompany} style={{ background: 'white', border: '1px solid #cbd5e1', marginBottom: 16 }}>Cambia azienda</button>
+        )}
+
         {/* Navigazione - Admin e Operatore */}
         {isAdmin && !aziendaSelezionata && (
           <div style={{
@@ -936,8 +903,8 @@ function App() {
               { id: 'mie_aziende', label: '🏢 Mie Aziende' },
               { id: 'utenti', label: '👥 Utenti' },
               { id: 'preventivi', label: '📄 Preventivi' },
-              { id: 'listino', label: '💰 Listino' },
               ...(userData.ruolo === 'admin' ? [{ id: 'fatture', label: '🧾 Fatture' }] : []),
+              { id: 'listino', label: '💰 Listino' },
               { id: 'impostazioni', label: '⚙️ Impostazioni' },
             ].map(({ id, label }) => (
               <button
@@ -945,10 +912,10 @@ function App() {
                 onClick={() => setVistaCorrente(id)}
                 style={{
                   padding: '8px 20px',
-                  border: vistaCorrente === id ? 'none' : '1.5px solid #dfe5ef',
+                  border: vistaCorrente === id ? 'none' : '1.5px solid #e2e8f0',
                   borderRadius: 8,
-                  background: vistaCorrente === id ? '#2c3e66' : '#fff',
-                  color: vistaCorrente === id ? '#fff' : '#45536f',
+                  background: vistaCorrente === id ? '#6366f1' : '#fff',
+                  color: vistaCorrente === id ? '#fff' : '#475569',
                   cursor: 'pointer',
                   fontSize: 14,
                   fontWeight: 600
@@ -1028,6 +995,10 @@ function App() {
               <GestioneUtenti aziende={aziende} utenteCorrente={userData} />
             )}
 
+            {userData.ruolo === 'admin' && vistaCorrente === 'fatture' && (
+              <PaginaFatture aziende={aziende} />
+            )}
+
             {vistaCorrente === 'preventivi' && (
               <PaginaPreventivi
                 preventivi={preventivi}
@@ -1061,11 +1032,6 @@ function App() {
 
             {vistaCorrente === 'listino' && (
               <PaginaListino />
-            )}
-
-            {/* Fatture e contabilità: solo amministratore */}
-            {vistaCorrente === 'fatture' && userData.ruolo === 'admin' && (
-              <PaginaFatture aziende={aziendAttive} />
             )}
 
             {vistaCorrente === 'impostazioni' && (
@@ -1115,8 +1081,8 @@ function App() {
                     cursor: 'pointer',
                     fontWeight: 600,
                     fontSize: 14,
-                    background: vistaCorrente === v.id ? '#2c3e66' : '#eef1f7',
-                    color: vistaCorrente === v.id ? 'white' : '#5f6f8c',
+                    background: vistaCorrente === v.id ? '#6366f1' : '#f1f5f9',
+                    color: vistaCorrente === v.id ? 'white' : '#64748b',
                   }}
                 >
                   {v.label}
@@ -1227,20 +1193,20 @@ function App() {
                 style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 560, maxHeight: isMobile ? '92vh' : '85vh', display: 'flex', flexDirection: 'column' }}>
 
                 {/* Header */}
-                <div style={{ padding: isMobile ? '14px 16px' : '16px 20px', borderBottom: '1px solid #dfe5ef', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                <div style={{ padding: isMobile ? '14px 16px' : '16px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                   <div style={{ minWidth: 0, paddingRight: 8 }}>
                     <h3 style={{ margin: 0, fontSize: isMobile ? 15 : 17, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📋 {p.nomeCliente}</h3>
-                    <div style={{ fontSize: 12, color: '#5f6f8c', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
+                    <div style={{ fontSize: 12, color: '#64748b', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
                   </div>
                   <button onClick={() => setPreventivoDettaglio(null)}
-                    style={{ border: 'none', background: '#eef1f7', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#5f6f8c', flexShrink: 0 }}>✕</button>
+                    style={{ border: 'none', background: '#f1f5f9', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#64748b', flexShrink: 0 }}>✕</button>
                 </div>
 
                 {/* Body */}
                 <div style={{ overflowY: 'auto', padding: isMobile ? 14 : 20, flex: 1 }}>
 
                   {/* Info generali */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16, padding: 12, background: '#f6f8fc', borderRadius: 8, border: '1px solid #dfe5ef' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16, padding: 12, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                     {[
                       ['Data', p.data ? new Date(p.data + 'T12:00:00').toLocaleDateString('it-IT') : '—'],
                       ['Consulente', p.consulente || '—'],
@@ -1248,8 +1214,8 @@ function App() {
                       ['Creato il', p.dataCreazione ? new Date(p.dataCreazione).toLocaleDateString('it-IT') : '—'],
                     ].map(([label, value]) => (
                       <div key={label}>
-                        <div style={{ fontSize: 11, color: '#9aa7bf', marginBottom: 2 }}>{label}</div>
-                        <div style={{ fontSize: isMobile ? 13 : 14, fontWeight: 600, color: '#1a2540' }}>{value}</div>
+                        <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>{label}</div>
+                        <div style={{ fontSize: isMobile ? 13 : 14, fontWeight: 600, color: '#1e293b' }}>{value}</div>
                       </div>
                     ))}
                   </div>
@@ -1257,7 +1223,7 @@ function App() {
                   {/* Servizi */}
                   {serviziAttivi.length > 0 && (
                     <div style={{ marginBottom: 16 }}>
-                      <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#45536f', textTransform: 'uppercase', letterSpacing: '0.05em' }}>📋 Servizi</h4>
+                      <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>📋 Servizi</h4>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {serviziAttivi.map(s => {
                           const qty = parseFloat(s.quantita) || 0;
@@ -1265,23 +1231,23 @@ function App() {
                           const tot = s.omaggio ? 0 : qty * pu;
                           const hasDip = (s.dipendenti || []).some(d => d.nome?.trim());
                           return (
-                            <div key={s.id} style={{ background: hasDip ? '#eef1f8' : '#f6f8fc', border: `1px solid ${hasDip ? '#c3cde3' : '#dfe5ef'}`, borderRadius: 8, padding: '10px 12px' }}>
+                            <div key={s.id} style={{ background: hasDip ? '#f0f9ff' : '#f8fafc', border: `1px solid ${hasDip ? '#bae6fd' : '#e2e8f0'}`, borderRadius: 8, padding: '10px 12px' }}>
                               {/* Riga descrizione + totale */}
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: hasDip || isMobile ? 6 : 0 }}>
-                                <span style={{ fontSize: 13, color: hasDip ? '#2c3e66' : '#1a2540', fontWeight: 600, flex: 1 }}>{s.descrizione}</span>
+                                <span style={{ fontSize: 13, color: hasDip ? '#0369a1' : '#1e293b', fontWeight: 600, flex: 1 }}>{s.descrizione}</span>
                                 <span style={{ fontSize: 14, color: '#059669', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
                                   {s.omaggio ? 'OMAGGIO' : `€ ${tot.toFixed(2)}`}
                                 </span>
                               </div>
                               {/* Riga qtà + prezzo unit */}
-                              <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#5f6f8c' }}>
+                              <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#64748b' }}>
                                 <span>× {s.quantita}</span>
                                 <span>{s.omaggio ? 'Gratuito' : `€ ${pu.toFixed(2)} / cad.`}</span>
                               </div>
                               {hasDip && (
-                                <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 2, paddingLeft: 4, borderTop: '1px dashed #c3cde3', paddingTop: 6 }}>
+                                <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 2, paddingLeft: 4, borderTop: '1px dashed #bae6fd', paddingTop: 6 }}>
                                   {(s.dipendenti || []).filter(d => d.nome?.trim()).map((dip, i) => (
-                                    <div key={i} style={{ fontSize: 12, color: '#2c3e66' }}>👤 {dip.nome}</div>
+                                    <div key={i} style={{ fontSize: 12, color: '#0369a1' }}>👤 {dip.nome}</div>
                                   ))}
                                 </div>
                               )}
@@ -1289,8 +1255,8 @@ function App() {
                           );
                         })}
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginTop: 10, paddingTop: 10, borderTop: '2px solid #dfe5ef' }}>
-                        <span style={{ fontSize: 13, color: '#45536f', fontWeight: 600 }}>Totale:</span>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginTop: 10, paddingTop: 10, borderTop: '2px solid #e2e8f0' }}>
+                        <span style={{ fontSize: 13, color: '#475569', fontWeight: 600 }}>Totale:</span>
                         <span style={{ fontSize: 17, color: '#059669', fontWeight: 800 }}>€ {p.totale?.toFixed(2) || '0.00'}</span>
                       </div>
                     </div>
@@ -1306,36 +1272,36 @@ function App() {
                   {/* Pagamenti */}
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                      <h4 style={{ margin: 0, fontSize: 13, color: '#45536f', textTransform: 'uppercase', letterSpacing: '0.05em' }}>💳 Pagamenti ricevuti</h4>
+                      <h4 style={{ margin: 0, fontSize: 13, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>💳 Pagamenti ricevuti</h4>
                       <button onClick={() => { setPreventivoDettaglio(null); setPreventivoPerPagamento(p); }}
                         style={{ padding: '5px 12px', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                         + Aggiungi
                       </button>
                     </div>
                     {pagamenti.length === 0 ? (
-                      <p style={{ color: '#9aa7bf', fontSize: 13, textAlign: 'center', padding: '12px 0' }}>Nessun pagamento registrato</p>
+                      <p style={{ color: '#94a3b8', fontSize: 13, textAlign: 'center', padding: '12px 0' }}>Nessun pagamento registrato</p>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {pagamenti.map((pg, i) => (
                           <div key={pg.id || i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8 }}>
                             <div>
                               <div style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>€ {parseFloat(pg.importo).toFixed(2)}</div>
-                              <div style={{ fontSize: 12, color: '#5f6f8c', marginTop: 2 }}>
+                              <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
                                 {pg.data ? new Date(pg.data + 'T12:00:00').toLocaleDateString('it-IT') : '—'}
                                 {pg.metodoPagamento ? ` · ${pg.metodoPagamento}` : ''}
                                 {pg.numeroFattura ? ` · ${pg.numeroFattura}` : ''}
                               </div>
-                              {pg.descrizione && <div style={{ fontSize: 12, color: '#9aa7bf', marginTop: 1 }}>{pg.descrizione}</div>}
+                              {pg.descrizione && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 1 }}>{pg.descrizione}</div>}
                             </div>
                             {pg.pdfUrl && (
                               <a href={pg.pdfUrl} target="_blank" rel="noreferrer"
-                                style={{ fontSize: 12, color: '#2c3e66', fontWeight: 600, textDecoration: 'none', flexShrink: 0 }}>📄 Doc</a>
+                                style={{ fontSize: 12, color: '#6366f1', fontWeight: 600, textDecoration: 'none', flexShrink: 0 }}>📄 Doc</a>
                             )}
                           </div>
                         ))}
                       </div>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, paddingTop: 10, borderTop: '2px solid #dfe5ef' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, paddingTop: 10, borderTop: '2px solid #e2e8f0' }}>
                       <div style={{ fontSize: 13, color: '#059669', fontWeight: 700 }}>Pagato: € {pagato.toFixed(2)}</div>
                       <div style={{ fontSize: 13, color: residuo > 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>
                         {residuo > 0 ? `Residuo: € ${residuo.toFixed(2)}` : '✔ Saldato'}
@@ -1344,9 +1310,9 @@ function App() {
                   </div>
                 </div>
 
-                <div style={{ padding: isMobile ? '12px 16px' : '12px 20px', borderTop: '1px solid #dfe5ef', flexShrink: 0 }}>
+                <div style={{ padding: isMobile ? '12px 16px' : '12px 20px', borderTop: '1px solid #e2e8f0', flexShrink: 0 }}>
                   <button onClick={() => setPreventivoDettaglio(null)}
-                    style={{ width: isMobile ? '100%' : 'auto', float: isMobile ? 'none' : 'right', padding: '11px 20px', border: '1px solid #dfe5ef', borderRadius: 10, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                    style={{ width: isMobile ? '100%' : 'auto', float: isMobile ? 'none' : 'right', padding: '11px 20px', border: '1px solid #e2e8f0', borderRadius: 10, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                     Chiudi
                   </button>
                 </div>
@@ -1359,7 +1325,7 @@ function App() {
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 20 }}>
             <div style={{ background: 'white', borderRadius: 12, padding: 24, width: '100%', maxWidth: 420 }}>
               <h3 style={{ margin: '0 0 8px', fontSize: 16 }}>✏️ Motivazione modifica</h3>
-              <p style={{ margin: '0 0 14px', fontSize: 13, color: '#5f6f8c' }}>
+              <p style={{ margin: '0 0 14px', fontSize: 13, color: '#64748b' }}>
                 Stai modificando il preventivo di <strong>{preventivoPerModifica?.nomeCliente}</strong>.<br />
                 Inserisci la motivazione della modifica.
               </p>
@@ -1369,12 +1335,12 @@ function App() {
                 rows={3}
                 placeholder="Es. Aggiornamento prezzi, correzione servizi richiesti..."
                 autoFocus
-                style={{ width: '100%', padding: 10, border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: 10, border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}
               />
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 16 }}>
                 <button
                   onClick={() => { setMostraPromptMotivazione(false); setPreventivoPerModifica(null); setMotivazioneTemp(''); }}
-                  style={{ padding: '9px 18px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
+                  style={{ padding: '9px 18px', border: '1px solid #e2e8f0', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
                 >
                   Annulla
                 </button>
@@ -1386,7 +1352,7 @@ function App() {
                     setMostraModalePreventivo(true);
                     setMostraPromptMotivazione(false);
                   }}
-                  style={{ padding: '9px 18px', border: 'none', borderRadius: 8, background: '#2c3e66', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                  style={{ padding: '9px 18px', border: 'none', borderRadius: 8, background: '#6366f1', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
                 >
                   Continua →
                 </button>

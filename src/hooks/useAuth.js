@@ -20,6 +20,15 @@ export function useAuth() {
             const userDoc = snap.docs[0];
             const data = { id: userDoc.id, ...userDoc.data() };
 
+            if (!['admin', 'operatore', 'consulente'].includes(data.ruolo)) {
+              setUser(null);
+              setUserData(null);
+              toast.error('Accesso riservato al personale interno.');
+              await signOut(auth);
+              setLoading(false);
+              return;
+            }
+
             if (!data.attivo) {
               toast.error("Il tuo account è stato disattivato. Contatta l'amministratore.");
               await signOut(auth);

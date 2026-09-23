@@ -29,7 +29,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     const unsubscribe = onSnapshot(
       collection(db, 'users'),
       (snapshot) => {
-        setUtenti(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+        setUtenti(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })).filter(u => ['admin', 'operatore', 'consulente'].includes(u.ruolo)));
         setLoading(false);
       },
       (error) => {
@@ -60,8 +60,8 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
 
   const salvaRuolo = async () => {
     if (!utentePerRuolo) return;
-    if (nuovoRuolo === 'azienda' && !nuovoAziendaId) {
-      toast.error('Seleziona un\'azienda');
+    if (!['admin', 'operatore', 'consulente'].includes(nuovoRuolo)) {
+      toast.error('Seleziona un ruolo del personale interno');
       return;
     }
     try {
@@ -443,7 +443,6 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                 {utenteCorrente?.ruolo === 'admin' && <option value="admin">Admin</option>}
                 <option value="consulente">Consulente</option>
                 <option value="operatore">Operatore</option>
-                <option value="azienda">Azienda</option>
               </select>
             </div>
 
@@ -599,7 +598,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
     email: '',
     password: '',
     nome: '',
-    ruolo: 'azienda',
+    ruolo: 'consulente',
     aziendaId: ''
   });
   const [loading, setLoading] = useState(false);
@@ -624,8 +623,8 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
       return;
     }
 
-    if (form.ruolo === 'azienda' && !form.aziendaId) {
-      setError('Seleziona un\'azienda per questo utente');
+    if (!['admin', 'operatore', 'consulente'].includes(form.ruolo)) {
+      setError('Seleziona un ruolo del personale interno');
       return;
     }
 
@@ -702,7 +701,6 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             }}
           >
             {puoCreareAdmin && <option value="admin">Admin</option>}
-            <option value="azienda">Azienda</option>
             <option value="consulente">Consulente</option>
             <option value="operatore">Operatore</option>
           </select>
