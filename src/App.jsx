@@ -36,7 +36,7 @@ import ModalePagamento from './components/ModalePagamento';
 import { inviaNotificaPushAdmin } from './utils/inviaNotificaAdmin';
 import PaginaAziendeAssegnate from './components/PaginaAziendeAssegnate';
 import PaginaListino from './components/PaginaListino';
-import PaginaFatture from './components/fatture/PaginaFatture';
+import CrmContabilita from './components/crm/CrmContabilita';
 
 const TIPI_CONTROLLO = [
   'Visita di sicurezza',
@@ -903,7 +903,7 @@ function App({ session, onChangeCompany }) {
               { id: 'mie_aziende', label: '🏢 Mie Aziende' },
               { id: 'utenti', label: '👥 Utenti' },
               { id: 'preventivi', label: '📄 Preventivi' },
-              ...(userData.ruolo === 'admin' ? [{ id: 'fatture', label: '🧾 Fatture' }] : []),
+              ...(userData.ruolo === 'admin' ? [{ id: 'contabilita', label: '📒 Contabilità' }] : []),
               { id: 'listino', label: '💰 Listino' },
               { id: 'impostazioni', label: '⚙️ Impostazioni' },
             ].map(({ id, label }) => (
@@ -995,8 +995,13 @@ function App({ session, onChangeCompany }) {
               <GestioneUtenti aziende={aziende} utenteCorrente={userData} />
             )}
 
-            {userData.ruolo === 'admin' && vistaCorrente === 'fatture' && (
-              <PaginaFatture aziende={aziende} />
+            {userData.ruolo === 'admin' && vistaCorrente === 'contabilita' && (
+              <CrmContabilita
+                azienda="consulting"
+                nomeAzienda="NS Consulting"
+                utente={userData.nome}
+                style={{ display: 'block', width: '100%', height: 'calc(100vh - 160px)', minHeight: 560, border: '1px solid #e2e8f0', borderRadius: 12, background: '#fff' }}
+              />
             )}
 
             {vistaCorrente === 'preventivi' && (

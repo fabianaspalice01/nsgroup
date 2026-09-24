@@ -2,7 +2,7 @@
 <html lang="it">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contabilità NS Safety</title>
+<title>Contabilità</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
@@ -443,7 +443,7 @@ dialog.largo{width:min(760px,calc(100vw - 32px))}
   <nav class="side" aria-label="Sezioni">
     <div class="brand">
       <div class="mark">NS</div>
-      <div class="bt"><b>Contabilità</b><span>NS Safety</span></div>
+      <div class="bt"><b>Contabilità</b><span id="brand-azienda">NS Safety</span></div>
     </div>
     <div class="navlab">Quadro</div>
     <button class="nav" data-v="dashboard"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Riepilogo</button>
@@ -787,6 +787,7 @@ async function boot(){
   if(DB){
     LOCALE=false;
     UTENTE=DB.utente||"";
+    if(DB.azienda){ document.getElementById("brand-azienda").textContent=DB.azienda; document.title="Contabilità "+DB.azienda; }
     TEAM.stato="on"; TEAM.ultimo=Date.now(); aggiornaTeam();
     for(const c of COLS){
       DB.collection(c).onSnapshot(snap=>{

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import App from './App';
 import Login from './components/Login';
-import CrmSafety from './components/safety/CrmSafety';
+import CrmContabilita from './components/crm/CrmContabilita';
 import { useAuth } from './hooks/useAuth';
 import { useNotifiche } from './hooks/useNotifiche';
 import './GroupApp.css';
@@ -50,7 +50,7 @@ function CompanySession({ session }) {
             <button type="button" onClick={logout} disabled={leaving}>{leaving ? 'Uscita...' : 'Esci'}</button>
           </div>
         </header>
-        <CrmSafety utente={session.userData.nome} />
+        <CrmContabilita className="crm-frame" azienda="safety" nomeAzienda="NS Safety" utente={session.userData.nome} />
       </div>
     );
   }
