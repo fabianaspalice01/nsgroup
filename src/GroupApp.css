@@ -17,6 +17,11 @@
 .group-empty img { display: block; width: 560px; max-width: 100%; height: auto; margin: 0 auto 28px; }
 .group-empty h1 { margin-bottom: 12px; }
 .group-empty p { color: #687482; }
+.group-crm { display: flex; flex-direction: column; height: 100vh; height: 100dvh; background: #fff; }
+.group-crm-bar { display: flex; align-items: center; gap: 16px; padding: 8px 16px; border-bottom: 1px solid #e0e4e9; background: #fff; }
+.group-crm-bar img { display: block; height: 36px; width: auto; }
+.group-crm-bar .group-account { margin-left: auto; }
+.crm-frame { flex: 1; width: 100%; min-height: 0; border: 0; display: block; }
 .group-loading { padding: 40px 24px; text-align: center; }
 @media (max-width: 760px) {
   .group-header { padding: 16px; gap: 12px; }
@@ -25,4 +30,6 @@
   .group-companies { grid-template-columns: 1fr; gap: 16px; }
   .group-company-image { height: 144px; aspect-ratio: auto; }
   .group-empty { padding: 32px 0; }
+  .group-crm-bar { gap: 10px; padding: 8px 12px; }
+  .group-crm-bar img { display: none; }
 }

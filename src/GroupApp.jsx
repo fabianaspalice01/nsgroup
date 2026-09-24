@@ -2,9 +2,13 @@ import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import App from './App';
 import Login from './components/Login';
+import CrmSafety from './components/safety/CrmSafety';
 import { useAuth } from './hooks/useAuth';
 import { useNotifiche } from './hooks/useNotifiche';
 import './GroupApp.css';
+
+// Aziende con un'area già pronta; le altre mostrano "In preparazione"
+const pronte = ['consulting', 'safety'];
 
 const companies = [
   { id: 'consulting', name: 'NSConsulting', logo: '/logo-nsconsulting.jpeg' },
@@ -32,6 +36,23 @@ function CompanySession({ session }) {
 
   if (company?.id === 'consulting') {
     return <App session={session} onChangeCompany={() => setCompany(null)} />;
+  }
+
+  if (company?.id === 'safety') {
+    return (
+      <div className="group-crm">
+        <Toaster position="bottom-right" />
+        <header className="group-crm-bar">
+          <button type="button" className="group-back" onClick={() => setCompany(null)}>Cambia azienda</button>
+          <img src={company.logo} alt={company.name} />
+          <div className="group-account">
+            <span>{session.userData.nome}</span>
+            <button type="button" onClick={logout} disabled={leaving}>{leaving ? 'Uscita...' : 'Esci'}</button>
+          </div>
+        </header>
+        <CrmSafety utente={session.userData.nome} />
+      </div>
+    );
   }
 
   return (
@@ -62,7 +83,7 @@ function CompanySession({ session }) {
                 <button className="group-company" type="button" key={item.id} onClick={() => setCompany(item)} aria-label={`Accedi a ${item.name}`}>
                   <div className="group-company-image"><img src={item.logo} alt="" /></div>
                   <span className="group-company-name">{item.name}</span>
-                  {item.id !== 'consulting' && <span className="group-company-status">In preparazione</span>}
+                  {!pronte.includes(item.id) && <span className="group-company-status">In preparazione</span>}
                 </button>
               ))}
             </div>
