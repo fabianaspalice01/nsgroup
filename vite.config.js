@@ -17,7 +17,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg', 'icon-*.png'],
+      includeAssets: ['icon-*.png'],
       manifest: {
         name: 'NSGroup',
         short_name: 'NSGroup',
