@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp, deleteApp } from 'firebase/app';
 import { db, firebaseConfig } from '../firebase';
 import toast from "react-hot-toast";
+
+// Le regole di Firebase riconoscono gli amministratori dalla raccolta admins (una voce per email):
+// solo loro possono leggere la contabilità (crm_*). Va tenuta allineata a ruolo e stato degli utenti.
+async function allineaAdmin(email, nome, admin) {
+  if (!email) return;
+  const rif = doc(db, 'admins', email.trim().toLowerCase());
+  if (admin) await setDoc(rif, { email: email.trim().toLowerCase(), nome: nome || '' });
+  else await deleteDoc(rif);
+}
 
 function GestioneUtenti({ aziende, utenteCorrente }) {
   const [utenti, setUtenti] = useState([]);
@@ -44,6 +53,8 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     try {
       const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, { attivo: !attivoCorrente });
+      const u = utenti.find(x => x.id === userId);
+      if (u?.ruolo === 'admin') await allineaAdmin(u.email, u.nome, !attivoCorrente);
       setUtenti(utenti.map(u => u.id === userId ? { ...u, attivo: !attivoCorrente } : u));
       toast.success(`Utente ${!attivoCorrente ? 'attivato' : 'disattivato'} con successo!`);
     } catch (error) {
@@ -69,6 +80,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
         ruolo: nuovoRuolo,
         aziendaId: nuovoRuolo === 'azienda' ? nuovoAziendaId : '',
       });
+      await allineaAdmin(utentePerRuolo.email, utentePerRuolo.nome, nuovoRuolo === 'admin' && utentePerRuolo.attivo !== false);
       toast.success('Ruolo aggiornato');
       setUtentePerRuolo(null);
     } catch (err) {
@@ -164,6 +176,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     if (!utentePerElimina) return;
     try {
       await deleteDoc(doc(db, 'users', utentePerElimina.id));
+      if (utentePerElimina.ruolo === 'admin') await allineaAdmin(utentePerElimina.email, utentePerElimina.nome, false);
       toast.success(`Utente "${utentePerElimina.nome}" eliminato`);
       setUtentePerElimina(null);
     } catch (err) {
@@ -643,6 +656,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
         aziendaId: form.ruolo === 'azienda' ? form.aziendaId : '',
         attivo: true
       });
+      if (form.ruolo === 'admin') await allineaAdmin(form.email, form.nome, true);
 
       toast.success('Utente creato con successo!');
       onSave();

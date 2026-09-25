@@ -1,8 +1,26 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
+    // Amministratore = email presente nella raccolta admins di Firestore.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.email.lower()));
+    }
+
+    // File alla radice del bucket.
+    match /{file} {
       allow read, write: if request.auth != null;
+    }
+
+    // Tutto il resto: basta essere autenticati, esclusi gli allegati della contabilità.
+    match /{cartella}/{rest=**} {
+      allow read, write: if request.auth != null && !cartella.matches('crm_.*');
+    }
+
+    // Allegati della contabilità (crm_<azienda>/allegati/...): solo amministratori.
+    match /{cartella}/{rest=**} {
+      allow read, write: if cartella.matches('crm_.*') && isAdmin();
     }
   }
 }

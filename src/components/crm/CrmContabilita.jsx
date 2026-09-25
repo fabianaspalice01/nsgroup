@@ -11,6 +11,9 @@ import { db, storage } from '../../firebase';
 // Firestore rifiuta i campi undefined: il giro in JSON li toglie
 const pulisci = (dati) => JSON.parse(JSON.stringify(dati));
 
+// Logo mostrato in cima alla barra laterale del CRM
+const LOGHI = { safety: '/logo-nssafety.jpeg', consulting: '/logo-nsconsulting.jpeg' };
+
 function creaArchivio(azienda, nomeAzienda, utente) {
   const prefisso = `crm_${azienda}_`;
   const collAllegati = `${prefisso}allegati`;
@@ -19,6 +22,7 @@ function creaArchivio(azienda, nomeAzienda, utente) {
   const archivio = {
     utente,
     azienda: nomeAzienda,
+    logo: LOGHI[azienda] || null,
     collection: (nome) => ({
       onSnapshot: (ok, errore) => {
         const stop = onSnapshot(collection(db, prefisso + nome), ok, errore);

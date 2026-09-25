@@ -1,10 +1,30 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Blocca tutto agli utenti non autenticati.
+    // Amministratore = email presente nella raccolta admins (tenuta allineata da Gestione utenti).
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower()));
+    }
+
+    // Tutto il resto: basta essere autenticati.
     // Il controllo dei ruoli (admin/consulente/azienda) avviene nel codice React.
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+    // Esclusi la contabilità (crm_*) e l'elenco admins, che hanno regole proprie qui sotto.
+    match /{coll}/{rest=**} {
+      allow read, write: if request.auth != null && !coll.matches('crm_.*') && coll != 'admins';
+    }
+
+    // Contabilità (CRM): solo amministratori.
+    match /{coll}/{rest=**} {
+      allow read, write: if coll.matches('crm_.*') && isAdmin();
+    }
+
+    // Elenco amministratori: ognuno vede la propria voce, solo un amministratore lo modifica.
+    match /admins/{email} {
+      allow read: if request.auth != null
+        && (request.auth.token.email.lower() == email || isAdmin());
+      allow write: if isAdmin();
     }
   }
 }
