@@ -2,7 +2,11 @@ import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { collection, doc, onSnapshot, setDoc, deleteDoc, updateDoc, getDocs, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../../firebase';
+import { httpsCallable } from 'firebase/functions';
+import { db, storage, functions } from '../../firebase';
+
+// Aziende la cui contabilità è collegata alle sezioni dell'app (functions/contabilita.js)
+const COLLEGATE = ['consulting'];
 
 // Il CRM contabilità è una pagina HTML autonoma (public/crm-contabilita.html) caricata in un iframe.
 // Qui gli prepariamo l'archivio dell'azienda: le collezioni Firestore crm_<azienda>_* e gli allegati su Storage.
@@ -23,6 +27,10 @@ function creaArchivio(azienda, nomeAzienda, utente) {
     utente,
     azienda: nomeAzienda,
     logo: LOGHI[azienda] || null,
+    // allinea aziende, preventivi e pagamenti dell'app con questa contabilità
+    sincronizza: COLLEGATE.includes(azienda)
+      ? async () => (await httpsCallable(functions, 'sincronizzaContabilita', { timeout: 540000 })()).data
+      : null,
     collection: (nome) => ({
       onSnapshot: (ok, errore) => {
         const stop = onSnapshot(collection(db, prefisso + nome), ok, errore);

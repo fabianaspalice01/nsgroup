@@ -296,3 +296,6 @@ exports.notificaAttivitaConsulente = onDocumentCreated('notifiche_admin/{docId}'
   const ok = results.filter(Boolean).length;
   console.log(`Push attività: ${ok}/${promises.length} riuscite — ${data.messaggio}`);
 });
+
+// ── CONTABILITÀ NS CONSULTING: collegamento con aziende e preventivi ─────────
+Object.assign(exports, require('./contabilita'));

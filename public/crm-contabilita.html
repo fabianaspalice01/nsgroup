@@ -453,9 +453,11 @@ dialog.largo{width:min(760px,calc(100vw - 32px))}
     <div class="navlab">Quadro</div>
     <button class="nav" data-v="dashboard"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Riepilogo</button>
     <button class="nav" data-v="insoluti"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 3.5v.1"/></svg>Insoluti<span class="cnt" data-c="insoluti"></span></button>
-    <button class="nav" data-v="contratti"><svg viewBox="0 0 24 24"><path d="M7 4h10v16H7z"/><path d="M10 9h4M10 13h4M10 17h2"/></svg>Contratti<span class="cnt" data-c="visite"></span></button>
+    <button class="nav" data-v="contratti"><svg viewBox="0 0 24 24"><path d="M7 4h10v16H7z"/><path d="M10 9h4M10 13h4M10 17h2"/></svg>Contratti</button>
     <div class="navlab">Registri</div>
     <button class="nav" data-v="clienti"><svg viewBox="0 0 24 24"><path d="M4 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1"/><circle cx="10" cy="7" r="3.2"/><path d="M17 8h4M17 12h4"/></svg>Anagrafica<span class="cnt" data-c="clienti"></span></button>
+    <button class="nav" data-v="visite"><svg viewBox="0 0 24 24"><path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5z"/></svg>Visite mediche<span class="cnt" data-c="visite"></span></button>
+    <button class="nav" data-v="preventivi" id="nav-preventivi" hidden><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12l2 2 4-4"/></svg>Preventivi<span class="cnt" data-c="preventivi"></span></button>
     <button class="nav" data-v="fornitori"><svg viewBox="0 0 24 24"><path d="M3 9h18l-1.5 11h-15z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>Spese - Fornitori<span class="cnt" data-c="fornitori"></span></button>
     <button class="nav" data-v="ddt"><svg viewBox="0 0 24 24"><path d="M2 8h11v8H2z"/><path d="M13 11h4l3 3v2h-7z"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>Trasporti / DDT<span class="cnt" data-c="ddt"></span></button>
     <button class="nav" data-v="fatture"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 9h5M9 13h7M9 17h4"/></svg>Fatture<span class="cnt" data-c="fatture"></span></button>
@@ -634,6 +636,32 @@ dialog.largo{width:min(760px,calc(100vw - 32px))}
   </footer>
 </form></dialog>
 
+<dialog id="dlg-visita"><form id="f-visita" method="dialog">
+  <h3 id="t-visita">Nuova visita medica</h3>
+  <div class="body">
+    <input type="hidden" id="vi-id">
+    <div class="field"><label for="vi-cl">Cliente *</label><select id="vi-cl" required></select></div>
+    <div class="field"><label for="vi-data">Data *</label><input id="vi-data" type="date" required></div>
+    <div class="field wide"><label for="vi-dip">Dipendenti visitati</label>
+      <textarea id="vi-dip" placeholder="Uno per riga, es. Mario Rossi"></textarea>
+      <span class="hint">Uno per riga. Se non hai i nomi lascia vuoto e indica solo il numero di visite.</span></div>
+    <div class="field"><label for="vi-n">Numero di visite *</label><input id="vi-n" inputmode="numeric"></div>
+    <div class="field"><label for="vi-pre">Prelievi</label><input id="vi-pre" inputmode="numeric"></div>
+    <div class="field"><label for="vi-tipo">Condizione</label><select id="vi-tipo">
+      <option value="pagamento">A pagamento</option><option value="inclusa">Inclusa nel canone</option></select>
+      <span class="hint" id="vi-hint"></span></div>
+    <div class="field"><label for="vi-imp">Importo € (imponibile)</label><input id="vi-imp" inputmode="decimal" placeholder="0,00"></div>
+    <div class="field wide"><label for="vi-fa">Fattura collegata</label><select id="vi-fa"></select>
+      <span class="hint">Lascia «nessuna» se la visita è ancora da fatturare: potrai crearla dal registro con «Crea fattura».</span></div>
+    <div class="field wide"><label for="vi-note">Note</label><textarea id="vi-note"></textarea></div>
+  </div>
+  <footer>
+    <button type="button" class="btn dan" id="vi-del" hidden>Elimina</button>
+    <button type="button" class="btn" data-close>Annulla</button>
+    <button type="submit" class="btn pri">Salva visita</button>
+  </footer>
+</form></dialog>
+
 <datalist id="ist-list"></datalist>
 <dialog id="dlg-mov"><form id="f-mov" method="dialog">
   <h3 id="t-mov">Nuovo movimento</h3>
@@ -770,9 +798,9 @@ const saldoIst = i => arr("movimenti").filter(m=>String(m.istituto||"").trim()==
   .reduce((s,m)=>s+(m.tipo==="entrata"?nm(m.importo):-nm(m.importo)),0);
 
 /* ══════════════ archivio ══════════════ */
-const COLS = ["clienti","fornitori","fatture","movimenti","visite","registri","ddt"];
+const COLS = ["clienti","fornitori","fatture","movimenti","visite","registri","ddt","preventivi"];
 const S = {clienti:new Map(),fornitori:new Map(),fatture:new Map(),movimenti:new Map(),
-          visite:new Map(),registri:new Map(),ddt:new Map()};
+          visite:new Map(),registri:new Map(),ddt:new Map(),preventivi:new Map()};
 const MOLT={mensile:12,trimestrale:4,semestrale:2,annuale:1};
 const PERLAB={mensile:"Mensile",trimestrale:"Trimestrale",semestrale:"Semestrale",annuale:"Annuale"};
 function canoneAnnuo(c){
@@ -805,7 +833,32 @@ const ddtDi = (tipo,id) => arr("ddt").filter(x=>x.controparteTipo===tipo && x.co
 const DDTLAB = {ricevuto:"Ricevuto",emesso:"Emesso"};
 const visiteDi = id => arr("visite").filter(v=>v.clienteId===id)
   .sort((a,b)=>String(b.data).localeCompare(String(a.data)));
-const nDip = v => Array.isArray(v.dipendenti)?v.dipendenti.length:nm(v.nVisite);
+const nDip = v => nm(v.nVisite) || (Array.isArray(v.dipendenti)?v.dipendenti.length:0);
+/* visite mediche: a pagamento (da fatturare finché non c'è una fattura collegata) o incluse nel canone */
+const tipoVisita = v => v.tipo || (condVisite(cli(v.clienteId))==="incluse" ? "inclusa" : "pagamento");
+const fattVisita = v => v.fatturaId ? S.fatture.get(v.fatturaId)||null : null;
+function statoVisita(v){
+  if(tipoVisita(v)==="inclusa") return "inclusa";
+  if(fattVisita(v) || String(v.pagamento||"").trim()) return "fatturata";
+  return v.preventivoId && S.preventivi.has(v.preventivoId) ? "preventivo" : "dafatt";
+}
+const impVisita = v => tipoVisita(v)==="inclusa" ? 0
+  : (v.importo!=null && v.importo!=="" ? nm(v.importo) : nm(cli(v.clienteId)?.visitaCosto)*nDip(v));
+/* preventivi: arrivano dalla sezione Preventivi dell'app e lì si modificano */
+const PSTATO = {da_fare:"Da fare",in_corso:"In corso",completato:"Completato"};
+const movDiPrev = pid => arr("movimenti").filter(m=>m.preventivoId===pid && m.tipo==="entrata");
+const incassatoPrev = pid => movDiPrev(pid).reduce((s,m)=>s+nm(m.importo),0);
+const fattPrev = p => p.fatturaId ? S.fatture.get(p.fatturaId)||null : null;
+const nomePrev = p => cli(p.clienteId)?.ragioneSociale || p.nomeCliente || "—";
+const VISST = {dafatt:"Da fatturare",fatturata:"Fatturata",inclusa:"Inclusa nel canone",preventivo:"Nel preventivo"};
+const VISPILL = {dafatt:"aperta",fatturata:"pagata",inclusa:"",preventivo:""};
+const pillVisita = v => { const s=statoVisita(v), f=fattVisita(v);
+  return (VISPILL[s]?`<span class="pill ${VISPILL[s]}">${VISST[s]}</span>`:`<span class="tag">${VISST[s]}</span>`)
+    + (f?`<span class="sub2">fatt. ${esc(f.numero)}</span>`:(s==="fatturata"&&v.pagamento?`<span class="sub2">${esc(v.pagamento)}</span>`
+      :(s==="preventivo"?`<span class="sub2">prev. del ${fdate(S.preventivi.get(v.preventivoId).data)}</span>`:""))); };
+const nomiDip = (v,k) => { const l=Array.isArray(v.dipendenti)?v.dipendenti.filter(Boolean):[];
+  if(!l.length) return pl(nDip(v),"dipendente","dipendenti");
+  return l.slice(0,k).map(esc).join("<br>")+(l.length>k?`<br><span style="color:var(--ink-3)">e altri ${l.length-k}</span>`:""); };
 let AVVIATO=false;
 let DB=null, DL=null, LOCALE=true, PRONTO=false, SOLA_LETTURA=false, PERSIST=true;
 const KEY="ns-safety-solo-anagrafica";
@@ -856,7 +909,7 @@ function salvaLocale(){
   if(DB) return;
   try{ localStorage.setItem(KEY,JSON.stringify({versione:1,clienti:arr("clienti"),fatture:arr("fatture"),
     movimenti:arr("movimenti"),visite:arr("visite"),registri:arr("registri"),
-    fornitori:arr("fornitori"),ddt:arr("ddt")})); PERSIST=true; }
+    fornitori:arr("fornitori"),ddt:arr("ddt"),preventivi:arr("preventivi")})); PERSIST=true; }
   catch(e){ PERSIST=false; }
 }
 /* canoni e valore annuo azzerati il 23/09/2026: si fa una sola volta, poi i canoni si possono reinserire */
@@ -938,7 +991,8 @@ function boxSel(col,id){
   return `<input type="checkbox" class="selbox" data-sel="${selKey(col,id)}" ${SEL.has(selKey(col,id))?"checked":""} aria-label="Seleziona riga">`;
 }
 const SELLAB = {fatture:["fattura selezionata","fatture selezionate"],
-                movimenti:["movimento selezionato","movimenti selezionati"]};
+                movimenti:["movimento selezionato","movimenti selezionati"],
+                visite:["visita selezionata","visite selezionate"]};
 const testoSel = (col,k) => `${k} ${(SELLAB[col]||["elemento selezionato","elementi selezionati"])[k===1?0:1]}`;
 function barraSel(col){
   const k=selAttivi(col).length;
@@ -947,6 +1001,7 @@ function barraSel(col){
     <span class="sp"></span>
     <button class="btn sm" data-act="sel-none" data-col="${col}">Annulla selezione</button>
     ${["fatture","movimenti"].includes(col)?`<button class="btn sm" data-act="sposta-sel" data-col="${col}">Sposta a un contatto</button>`:""}
+    ${col==="visite"?`<button class="btn sm pri" data-act="fattura-vis">Crea fattura</button>`:""}
     <button class="btn sm del" data-act="del-sel" data-col="${col}">Elimina selezionati</button></div>`;
 }
 function aggiornaBarraSel(col){
@@ -989,6 +1044,8 @@ function avvisiCollegati(col,ids){
     const nv=arr("movimenti").filter(m=>ids.includes(m.clienteId)).length;
     if(nf) a.push(`${nf} fatture collegate non vengono eliminate.`);
     if(nv) a.push(`${nv} movimenti collegati non vengono eliminati.`);
+    const na=ids.filter(id=>cli(id)?.aziendaId).length;
+    if(na) a.push(`${na===1?"L'azienda collegata":"Le "+na+" aziende collegate"} nella sezione Aziende dell'app non ${na===1?"viene eliminata":"vengono eliminate"}: ${na===1?"resta":"restano"} solo scollegat${na===1?"a":"e"} dalla contabilità.`);
   }
   return a;
 }
@@ -1409,7 +1466,8 @@ function coppieDoppie(){
 const movDiCliente = id => arr("movimenti").filter(m=>m.clienteId===id);
 const pesoCliente = id => movDiCliente(id).length + arr("fatture").filter(f=>f.clienteId===id).length
   + visiteDi(id).length + arr("registri").filter(r=>r.clienteId===id).length
-  + arr("ddt").filter(d=>d.controparteTipo==="cliente"&&d.controparteId===id).length;
+  + arr("ddt").filter(d=>d.controparteTipo==="cliente"&&d.controparteId===id).length
+  + arr("preventivi").filter(p=>p.clienteId===id).length;
 
 /* unisce due schede: tutto passa a «tieni», l'altra sparisce */
 async function unisciClienti(idTieni,idVia){
@@ -1420,6 +1478,7 @@ async function unisciClienti(idTieni,idVia){
   for(const m of arr("movimenti")) if(m.clienteId===idVia){ await salva("movimenti",Object.assign({},m,{clienteId:idTieni})); spostati++; }
   for(const v of arr("visite")) if(v.clienteId===idVia){ await salva("visite",Object.assign({},v,{clienteId:idTieni})); spostati++; }
   for(const r of arr("registri")) if(r.clienteId===idVia){ await salva("registri",Object.assign({},r,{clienteId:idTieni})); spostati++; }
+  for(const r of arr("preventivi")) if(r.clienteId===idVia){ await salva("preventivi",Object.assign({},r,{clienteId:idTieni})); spostati++; }
   for(const d of arr("ddt")) if(d.controparteTipo==="cliente"&&d.controparteId===idVia){
     await salva("ddt",Object.assign({},d,{controparteId:idTieni})); spostati++; }
   /* i campi vuoti della scheda che resta si riempiono con quelli dell'altra */
@@ -1583,7 +1642,7 @@ const incMese = () => { const ym=today().slice(0,7);
 /* ══════════════ navigazione ══════════════ */
 const V = {vista:"dashboard",clienteId:null,fornitoreId:null,qCli:"",qForn:"",fStato:"tutte",fPag:"tutti",pnIst:"tutti",
            fCli:"",fDoc:"tutti",rRamo:"tutti",fnCat:"tutte",ddtTipo:"tutti",iProvv:"tutti",
-           qFat:"",qIns:"",qPn:"",qReg:"",qDdt:"",qTutto:"",qDop:"",dopFiltro:"tutti",
+           qFat:"",qIns:"",qVis:"",qPrev:"",prStato:"tutti",prFatt:"tutti",visStato:"tutte",visPer:"365",visCli:"",qPn:"",qReg:"",qDdt:"",qTutto:"",qDop:"",dopFiltro:"tutti",
            cliFiltro:"tutti",cliOrdine:"nome",cliEdit:null,
            pnPeriodo:"90",pnMetodo:"tutti",pnTipo:"tutti",
            spPeriodo:"365",spCat:"tutte",qSpe:"",spCats:false,spVoci:false};
@@ -1597,7 +1656,8 @@ function render(){
   const ci=insoluti().length;
   const c={clienti:S.clienti.size,fornitori:listaForn("fornitore").length+listaForn("spesa").length,spese:listaForn("spesa").length,fatture:S.fatture.size,
            movimenti:S.movimenti.size,visite:S.visite.size,registri:S.registri.size,
-           ddt:S.ddt.size,insoluti:ci,doppioni:coppieDoppie().length};
+           ddt:S.ddt.size,preventivi:S.preventivi.size,insoluti:ci,doppioni:coppieDoppie().length};
+  document.getElementById("nav-preventivi").hidden = !S.preventivi.size && V.vista!=="preventivi";
   document.querySelectorAll("[data-c]").forEach(e=>{
     const k=e.dataset.c; e.textContent=c[k]||"";
     e.classList.toggle("alert",(k==="insoluti"&&ci>0)||(k==="doppioni"&&c.doppioni>0));
@@ -1612,7 +1672,7 @@ function render(){
   if(V.fornitoreId) return schedaForn(V.fornitoreId);
   ({dashboard:vDashboard,contratti:vContratti,clienti:vClienti,fatture:vFatture,insoluti:vInsoluti,
     primanota:()=>vPrimaNota("tutti"),contanti:()=>vPrimaNota("cassa"),bonifici:()=>vPrimaNota("banca"),
-    registri:vRegistri,fornitori:vFornitori,spese:vSpese,ddt:vDdt,doppioni:vDoppioni}[V.vista]||vDashboard)();
+    registri:vRegistri,visite:vVisite,preventivi:vPreventivi,fornitori:vFornitori,spese:vSpese,ddt:vDdt,doppioni:vDoppioni}[V.vista]||vDashboard)();
 }
 function paint(html){ main.innerHTML=html; wire(); legaCerca("q-tutto",v=>V.qTutto=v); montaAllegati(); }
 function head(t,sub,acts){
@@ -1642,6 +1702,13 @@ function ricercaGlobale(q){
       m.fornitoreId?nomeForn(m.fornitoreId):"",n2(m.importo)],q))
     r.push({k:m.tipo==="entrata"?"Incasso":"Uscita",t:m.causale||"(senza causale)",
       s:`${fdate(m.data)} · ${eur(nm(m.importo))} · ${METLAB[m.metodo]||m.metodo}`,go:()=>apriMov(m)}); });
+  arr("preventivi").forEach(p=>{ if(combacia([nomePrev(p),p.consulente,p.descrizione,n2(p.totale)],q))
+    r.push({k:"Preventivo",t:`Preventivo del ${fdate(p.data)} — ${nomePrev(p)}`,s:`${eur(nm(p.totale))} · ${PSTATO[p.stato]||"Da fare"}`,
+      go:()=>{V.vista="preventivi";V.clienteId=null;V.qPrev=nomePrev(p);render()}}); });
+  arr("visite").forEach(v=>{ if(combacia([nomeCli(v.clienteId),v.note,fattVisita(v)?.numero,v.pagamento,
+      ...(Array.isArray(v.dipendenti)?v.dipendenti:[])],q))
+    r.push({k:"Visita",t:`Visita del ${fdate(v.data)} — ${nomeCli(v.clienteId)}`,
+      s:`${pl(nDip(v),"dipendente","dipendenti")} · ${VISST[statoVisita(v)]}`,go:()=>apriVisita(v)}); });
   arr("ddt").forEach(x=>{ if(combacia([x.numero,x.descrizione,x.rifFattura,
       x.controparteTipo==="cliente"?nomeCli(x.controparteId):nomeForn(x.controparteId)],q))
     r.push({k:"DDT",t:`${x.numero} — ${x.controparteTipo==="cliente"?nomeCli(x.controparteId):nomeForn(x.controparteId)}`,
@@ -1737,6 +1804,11 @@ function vDashboard(){
   </div>
 
   <section class="card sec">
+    ${DB&&DB.sincronizza?`<div class="cardhd">Collegamento con l'app<span class="sub">aziende, preventivi, pagamenti e visite mediche</span></div>
+    <div class="pad" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)">
+      <p style="margin:0;color:var(--ink-2);font-size:13px;max-width:62ch">Le novità dell'app arrivano qui da sole. Usa questo pulsante per allineare tutto ciò che esisteva già, o se qualcosa non torna.</p>
+      <div class="acts"><button class="btn pri" data-act="sincronizza">Sincronizza con l'app</button></div>
+    </div>`:""}
     <div class="cardhd">Archivio e backup<span class="sub">${LOCALE?"i dati restano in questo browser, su questo computer":"archivio condiviso online"}</span></div>
     <div class="pad" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
       <p style="margin:0;color:var(--ink-2);font-size:13px;max-width:62ch">
@@ -2266,7 +2338,7 @@ function vPrimaNota(conto){
     const f=m.fatturaId?S.fatture.get(m.fatturaId):null;
     return `<tr class="c ${m.tipo==="entrata"?"ent":"usc"}"><td class="sel">${boxSel("movimenti",m.id)}</td>
       <td>${fdate(m.data)}</td>
-      <td>${esc(m.causale)}${m.note?`<span class="sub2">${esc(m.note)}</span>`:""}</td>
+      <td>${esc(m.causale)}${m.origine?` <span class="tag" title="Registrato nell'app: si modifica lì">dall'app</span>`:""}${m.note?`<span class="sub2">${esc(m.note)}</span>`:""}</td>
       <td>${m.clienteId?`<button class="lnk" data-cli="${m.clienteId}">${esc(nomeCli(m.clienteId))}</button>`:'<span style="color:var(--ink-3)">—</span>'}
         ${f?`<span class="sub2">fatt. ${esc(f.numero)}</span>`:""}</td>
       <td><span class="tag ${CONTI[m.metodo]}">${METLAB[m.metodo]||m.metodo}</span>${m.istituto?`<span class="sub2">${esc(m.istituto)}</span>`:""}</td>
@@ -2593,6 +2665,123 @@ function vDdt(){
   collegaSelezione("ddt");
 }
 
+/* ---------- Visite mediche ---------- */
+function vVisite(){
+  const anno=annoCorr();
+  let list=arr("visite");
+  if(V.visPer!=="tutto"){
+    const lim=new Date(Date.now()-(+V.visPer)*864e5).toISOString().slice(0,10);
+    list=list.filter(v=>String(v.data||"")>=lim);
+  }
+  if(V.visCli) list=list.filter(v=>v.clienteId===V.visCli);
+  if(V.visStato!=="tutte") list=list.filter(v=>statoVisita(v)===V.visStato);
+  if(V.qVis.trim()) list=list.filter(v=>combacia([nomeCli(v.clienteId),v.note,v.pagamento,fattVisita(v)?.numero,
+    VISST[statoVisita(v)],...(Array.isArray(v.dipendenti)?v.dipendenti:[])],V.qVis));
+  list=list.sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+  const tutte=arr("visite"), vAnno=tutte.filter(v=>String(v.data||"").startsWith(anno));
+  const daF=tutte.filter(v=>statoVisita(v)==="dafatt"), totDaF=daF.reduce((s,v)=>s+impVisita(v),0);
+  const fattAnno=vAnno.filter(v=>statoVisita(v)==="fatturata").reduce((s,v)=>s+impVisita(v),0);
+  const totLista=list.reduce((s,v)=>s+impVisita(v),0), dipLista=list.reduce((s,v)=>s+nDip(v),0);
+  const clientiVis=[...new Set(tutte.map(v=>v.clienteId))].filter(cli)
+    .sort((a,b)=>nomeCli(a).localeCompare(nomeCli(b),"it"));
+  paint(banner()+head("Visite mediche",
+    "Sedute di sorveglianza sanitaria: chi è stato visitato, quanto va fatturato e con quale fattura.",
+    `<button class="btn" data-exp data-act="exp-vis">Esporta CSV</button><button class="btn pri" data-act="new-vis">Nuova visita</button>`)+
+  `<div class="grid g4">
+    <div class="tile tinfo"><span class="k">Visite ${anno}</span><span class="v">${vAnno.length}</span><span class="n">${pl(vAnno.reduce((s,v)=>s+nDip(v),0),"dipendente visitato","dipendenti visitati")}</span></div>
+    <div class="tile ${totDaF>0.005?"tsol":""}"><span class="k">Da fatturare</span><span class="v">${eur(totDaF)}</span><span class="n">${pl(daF.length,"visita","visite")} a pagamento senza fattura</span></div>
+    <div class="tile tok"><span class="k">Fatturate ${anno}</span><span class="v">${eur(fattAnno)}</span><span class="n">visite a pagamento già fatturate</span></div>
+    <div class="tile"><span class="k">Incluse nel canone ${anno}</span><span class="v">${vAnno.filter(v=>statoVisita(v)==="inclusa").length}</span><span class="n">nessun importo da fatturare</span></div>
+  </div>
+  <div class="bar sec">
+    ${campoCerca("q-vis",V.qVis,"Cerca cliente, dipendente, fattura")}
+    <select id="vis-per">${[["30","Ultimi 30 giorni"],["90","Ultimi 90 giorni"],["365","Ultimi 12 mesi"],["tutto","Tutto lo storico"]]
+      .map(([v,l])=>`<option value="${v}" ${V.visPer===v?"selected":""}>${l}</option>`).join("")}</select>
+    <select id="vis-stato">${[["tutte","Tutti gli stati"],["dafatt","Da fatturare"],["fatturata","Fatturate"],["inclusa","Incluse nel canone"],["preventivo","Nei preventivi"]]
+      .map(([v,l])=>`<option value="${v}" ${V.visStato===v?"selected":""}>${l}</option>`).join("")}</select>
+    <select id="vis-cli"><option value="">Tutti i clienti</option>${clientiVis.map(id=>`<option value="${id}" ${V.visCli===id?"selected":""}>${esc(nomeCli(id))}</option>`).join("")}</select>
+    <span style="color:var(--ink-3);font-size:12.5px">${pl(list.length,"visita","visite")} · ${pl(dipLista,"dipendente","dipendenti")}</span>
+  </div>
+  ${barraSel("visite")}
+  <section class="card"><div class="tw">${list.length?`<table style="min-width:900px"><thead><tr>
+    <th class="sel"><input type="checkbox" class="selbox" id="selall-visite" aria-label="Seleziona tutto"></th>
+    <th>Data</th><th>Cliente</th><th>Dipendenti</th><th class="r">Visite</th><th class="r">Prelievi</th>
+    <th>Condizione</th><th class="r">Importo</th><th>Stato</th><th></th></tr></thead><tbody>
+    ${list.map(v=>{ const st=statoVisita(v);
+      return `<tr class="c ${st==="dafatt"?"sol":st==="fatturata"?"sal":""}"><td class="sel">${boxSel("visite",v.id)}</td>
+      <td>${fdate(v.data)}</td>
+      <td><button class="lnk" data-cli="${v.clienteId}">${esc(nomeCli(v.clienteId))}</button></td>
+      <td style="white-space:nowrap">${nomiDip(v,3)}</td>
+      <td class="r">${nDip(v)}</td><td class="r">${v.prelievi?v.prelievi:"—"}</td>
+      <td style="white-space:nowrap">${tipoVisita(v)==="inclusa"?"Inclusa":"A pagamento"}</td>
+      <td class="r acc">${impVisita(v)?n2(impVisita(v)):"—"}</td>
+      <td>${pillVisita(v)}</td>
+      <td><div class="rowact">${st==="dafatt"?`<button class="btn sm" data-fatt-vis="${v.id}">Crea fattura</button>`:""}
+        <button class="btn sm gho" data-edit-vis="${v.id}">Modifica</button>
+        <button class="btn sm del" data-del="visite|${v.id}">Elimina</button></div></td></tr>`; }).join("")}
+    </tbody><tfoot><tr><td colspan="4">Totale</td><td class="r">${dipLista}</td><td></td><td></td>
+      <td class="r">${n2(totLista)}</td><td colspan="2"></td></tr></tfoot></table>`
+    :`<div class="empty"><b>Nessuna visita</b>${tutte.length?"Con questi filtri non risulta nulla.":"Premi «Nuova visita» per registrare la prima seduta."}</div>`}
+  </div></section>`);
+  bind("vis-per",v=>{V.visPer=v;render()});
+  bind("vis-stato",v=>{V.visStato=v;render()});
+  bind("vis-cli",v=>{V.visCli=v;render()});
+  legaCerca("q-vis",v=>V.qVis=v);
+  collegaSelezione("visite");
+}
+
+/* ---------- Preventivi ---------- */
+function vPreventivi(){
+  const anno=annoCorr();
+  let list=arr("preventivi");
+  if(V.prStato!=="tutti") list=list.filter(p=>(p.stato||"da_fare")===V.prStato);
+  if(V.prFatt==="da") list=list.filter(p=>!fattPrev(p));
+  if(V.prFatt==="si") list=list.filter(p=>!!fattPrev(p));
+  if(V.qPrev.trim()) list=list.filter(p=>combacia([nomePrev(p),p.consulente,p.descrizione,fattPrev(p)?.numero,n2(p.totale)],V.qPrev));
+  list=list.sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+  const tutti=arr("preventivi"), pAnno=tutti.filter(p=>String(p.data||"").startsWith(anno));
+  const aperti=tutti.filter(p=>(p.stato||"da_fare")!=="completato");
+  const daFatt=tutti.filter(p=>!fattPrev(p));
+  const tot=list.reduce((s,p)=>s+nm(p.totale),0), inc=list.reduce((s,p)=>s+incassatoPrev(p.id),0);
+  paint(banner()+head("Preventivi",
+    "Arrivano in automatico dalla sezione Preventivi dell'app, con i pagamenti registrati come incassi. Si modificano nell'app; da qui si crea la fattura.",
+    `<button class="btn" data-exp data-act="exp-prev">Esporta CSV</button>`)+
+  `<div class="grid g4">
+    <div class="tile tinfo"><span class="k">Preventivi ${anno}</span><span class="v">${pAnno.length}</span><span class="n">${eur(pAnno.reduce((s,p)=>s+nm(p.totale),0))} IVA inclusa</span></div>
+    <div class="tile tins"><span class="k">Ancora aperti</span><span class="v">${aperti.length}</span><span class="n">da fare o in corso</span></div>
+    <div class="tile tok"><span class="k">Incassato sui preventivi</span><span class="v">${eur(tutti.reduce((s,p)=>s+incassatoPrev(p.id),0))}</span><span class="n">pagamenti registrati nell'app</span></div>
+    <div class="tile ${daFatt.length?"tsol":""}"><span class="k">Senza fattura</span><span class="v">${daFatt.length}</span><span class="n">${eur(daFatt.reduce((s,p)=>s+nm(p.imponibile),0))} di imponibile</span></div>
+  </div>
+  <div class="bar sec">
+    ${campoCerca("q-prev",V.qPrev,"Cerca cliente, consulente, servizio")}
+    <select id="pr-stato">${[["tutti","Tutti gli stati"],["da_fare","Da fare"],["in_corso","In corso"],["completato","Completati"]]
+      .map(([v,l])=>`<option value="${v}" ${V.prStato===v?"selected":""}>${l}</option>`).join("")}</select>
+    <select id="pr-fatt">${[["tutti","Fatturati e no"],["da","Senza fattura"],["si","Con fattura"]]
+      .map(([v,l])=>`<option value="${v}" ${V.prFatt===v?"selected":""}>${l}</option>`).join("")}</select>
+    <span style="color:var(--ink-3);font-size:12.5px">${pl(list.length,"preventivo","preventivi")}</span>
+  </div>
+  <section class="card"><div class="tw">${list.length?`<table style="min-width:980px"><thead><tr>
+    <th>Data</th><th>Cliente</th><th>Consulente</th><th>Servizi</th><th class="r">Totale</th><th class="r">Incassato</th>
+    <th class="r">Residuo</th><th>Stato</th><th>Fattura</th><th></th></tr></thead><tbody>
+    ${list.map(p=>{ const f=fattPrev(p), i=incassatoPrev(p.id), r=Math.max(0,nm(p.totale)-i);
+      return `<tr class="c ${f?"sal":""}"><td>${fdate(p.data)}</td>
+      <td>${p.clienteId&&cli(p.clienteId)?`<button class="lnk" data-cli="${p.clienteId}">${esc(nomePrev(p))}</button>`:esc(nomePrev(p))}</td>
+      <td>${esc(p.consulente||"—")}</td>
+      <td style="max-width:260px">${esc(String(p.descrizione||"—").slice(0,90))}${String(p.descrizione||"").length>90?"…":""}</td>
+      <td class="r">${n2(p.totale)}</td><td class="r">${i?n2(i):"—"}</td>
+      <td class="r acc" style="font-weight:${r>0.005?600:400}">${r>0.005?n2(r):"—"}</td>
+      <td><span class="tag">${PSTATO[p.stato]||"Da fare"}</span></td>
+      <td>${f?`<span class="pill ${stato(f)}">${esc(f.numero)}</span>`:`<button class="btn sm" data-fatt-prev="${p.id}">Crea fattura</button>`}</td>
+      <td><div class="rowact">${p.pdfUrl?`<a class="btn sm gho" href="${esc(p.pdfUrl)}" target="_blank" rel="noopener">PDF</a>`:""}</div></td></tr>`; }).join("")}
+    </tbody><tfoot><tr><td colspan="4">Totale</td><td class="r">${n2(tot)}</td><td class="r">${n2(inc)}</td>
+      <td class="r">${n2(Math.max(0,tot-inc))}</td><td colspan="3"></td></tr></tfoot></table>`
+    :`<div class="empty"><b>Nessun preventivo</b>${tutti.length?"Con questi filtri non risulta nulla.":"I preventivi creati nell'app compariranno qui."}</div>`}
+  </div></section>`);
+  bind("pr-stato",v=>{V.prStato=v;render()});
+  bind("pr-fatt",v=>{V.prFatt=v;render()});
+  legaCerca("q-prev",v=>V.qPrev=v);
+}
+
 /* ---------- Altri registri ---------- */
 const rami = () => [...new Set(arr("registri").map(r=>String(r.ramo||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
 function vRegistri(){
@@ -2665,6 +2854,7 @@ function scheda(id){
      <button class="btn" data-act="new-fat" data-pre-cli="${c.id}">Nuova fattura</button>
      <button class="btn" data-act="new-pro" data-pre-cli="${c.id}">Nuova proforma</button>
      <button class="btn pri" data-act="new-mov" data-pre-cli="${c.id}">Registra pagamento</button>
+     <button class="btn" data-act="new-vis" data-pre-cli="${c.id}">Nuova visita</button>
      <button class="btn" data-act="sposta-doc" data-pre-cli="${c.id}">Sposta documenti</button>
      <button class="btn" data-act="unisci-cli" data-pre-cli="${c.id}">Unisci contatto</button>`)+
   (FIN?`<div class="grid g4">
@@ -2733,16 +2923,28 @@ function scheda(id){
     </section>
     <section class="card">
       <div class="cardhd">Visite mediche<span class="sub">${pl(visiteDi(c.id).length,"seduta","sedute")} · ${visiteDi(c.id).reduce((s,v)=>s+nDip(v),0)} dipendenti</span></div>
-      ${visiteDi(c.id).length?`<div class="tw"><table style="min-width:400px"><thead><tr><th>Data</th><th>Dipendenti</th><th class="r">Prelievi</th><th>Fattura</th><th></th></tr></thead>
+      ${visiteDi(c.id).length?`<div class="tw"><table style="min-width:520px"><thead><tr><th>Data</th><th>Dipendenti</th><th class="r">Prelievi</th><th class="r">Importo</th><th>Stato</th><th></th></tr></thead>
         <tbody>${visiteDi(c.id).map(v=>`<tr><td>${fdate(v.data)}</td>
-          <td>${(Array.isArray(v.dipendenti)&&v.dipendenti.length?v.dipendenti:[String(nDip(v))+" dipendenti"]).map(x=>esc(x)).join("<br>")}</td>
+          <td>${nomiDip(v,6)}</td>
           <td class="r">${v.prelievi?v.prelievi:"—"}</td>
-          <td class="num">${esc(v.pagamento||"—")}</td>
-          <td><div class="rowact"><button class="btn sm del" data-del="visite|${v.id}">Elimina</button></div></td></tr>`).join("")}</tbody></table></div>`
-        :`<div class="empty"><b>Nessuna visita registrata</b>Non risultano sedute di sorveglianza sanitaria.</div>`}
+          <td class="r">${impVisita(v)?n2(impVisita(v)):"—"}</td>
+          <td>${pillVisita(v)}</td>
+          <td><div class="rowact">${statoVisita(v)==="dafatt"?`<button class="btn sm" data-fatt-vis="${v.id}">Crea fattura</button>`:""}
+            <button class="btn sm gho" data-edit-vis="${v.id}">Modifica</button>
+            <button class="btn sm del" data-del="visite|${v.id}">Elimina</button></div></td></tr>`).join("")}</tbody></table></div>`
+        :`<div class="empty"><b>Nessuna visita registrata</b>Premi «Nuova visita» per registrare una seduta di sorveglianza sanitaria.</div>`}
     </section>
   </div>
 
+  ${arr("preventivi").some(p=>p.clienteId===c.id)?`<section class="card sec">
+    <div class="cardhd">Preventivi<span class="sub">dalla sezione Preventivi dell'app</span></div>
+    <div class="tw"><table style="min-width:620px"><thead><tr><th>Data</th><th>Servizi</th><th class="r">Totale</th><th class="r">Incassato</th><th>Stato</th><th>Fattura</th></tr></thead><tbody>
+    ${arr("preventivi").filter(p=>p.clienteId===c.id).sort((a,b)=>String(b.data).localeCompare(String(a.data))).map(p=>{ const f=fattPrev(p);
+      return `<tr><td>${fdate(p.data)}</td><td>${esc(String(p.descrizione||"—").slice(0,80))}</td>
+      <td class="r">${n2(p.totale)}</td><td class="r">${incassatoPrev(p.id)?n2(incassatoPrev(p.id)):"—"}</td>
+      <td><span class="tag">${PSTATO[p.stato]||"Da fare"}</span></td>
+      <td>${f?`<span class="pill ${stato(f)}">${esc(f.numero)}</span>`:`<button class="btn sm" data-fatt-prev="${p.id}">Crea fattura</button>`}</td></tr>`; }).join("")}
+    </tbody></table></div></section>`:""}
   ${FIN?`<section class="card sec">
     <div class="cardhd">Fatture del cliente<span class="sub">${pl(fs.length,"documento","documenti")} · residuo ${eur(res)}</span></div>
     <div class="tw">${fs.length?`<table><thead><tr><th>Numero</th><th>Documento</th><th>Emissione</th><th>Scadenza</th><th>Descrizione</th>
@@ -2955,6 +3157,9 @@ function wire(){
   main.querySelectorAll("[data-fsw]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.fsw)));
   main.querySelectorAll("[data-spcat]").forEach(b=>b.addEventListener("click",()=>{V.spCat=b.dataset.spcat;render()}));
   main.querySelectorAll("[data-edit-forn]").forEach(b=>b.addEventListener("click",()=>apriForn(forn(b.dataset.editForn))));
+  main.querySelectorAll("[data-edit-vis]").forEach(b=>b.addEventListener("click",()=>apriVisita(S.visite.get(b.dataset.editVis))));
+  main.querySelectorAll("[data-fatt-prev]").forEach(b=>b.addEventListener("click",()=>fatturaPreventivo(b.dataset.fattPrev)));
+  main.querySelectorAll("[data-fatt-vis]").forEach(b=>b.addEventListener("click",()=>fatturaVisite([b.dataset.fattVis])));
   main.querySelectorAll("[data-edit-ddt]").forEach(b=>b.addEventListener("click",()=>apriDdt(S.ddt.get(b.dataset.editDdt))));
   main.querySelectorAll("[data-inc]").forEach(b=>b.addEventListener("click",()=>apriSalda(b.dataset.inc)));
   main.querySelectorAll("[data-unisci]").forEach(b=>b.addEventListener("click",async()=>{
@@ -3033,6 +3238,8 @@ function wire(){
       "go-pn":()=>go("primanota"),"back-cli":()=>go("clienti"),"wipe-demo":wipeDemo,
       "back-forn":()=>{V.vista=naturaForn(forn(V.fornitoreId))==="spesa"?"spese":"fornitori";V.fornitoreId=null;render()},
       "new-forn":()=>apriForn(null,"fornitore"),
+      "new-vis":()=>apriVisita(null,pre),"exp-vis":expVisite,"exp-prev":expPreventivi,"sincronizza":sincronizzaApp,
+      "fattura-vis":()=>fatturaVisite(selAttivi("visite")),
       "new-ddt":()=>apriDdt(null,b.dataset.preForn||b.dataset.preCli||null),
       "backup":backup,"restore":ripristina,
       "del-sel":()=>eliminaRecord(b.dataset.col,selAttivi(b.dataset.col)),
@@ -3191,6 +3398,7 @@ document.getElementById("f-fattura").addEventListener("submit",async e=>{
   const g=id=>document.getElementById(id).value.trim();
   const id=g("fa-id"), imp=amt(g("fa-imp")), iva=amt(g("fa-iva"));
   if(!(imp>0)){ e.preventDefault(); toast("Inserisci l'imponibile del documento"); document.getElementById("fa-imp").focus(); return; }
+  const lega=id?null:LEGA; LEGA=null;
   const rec={id:id||undefined,numero:g("fa-num"),clienteId:g("fa-cl"),tipoDoc:g("fa-tipo")||"fattura",
     dataEmissione:g("fa-em"),dataScadenza:g("fa-sc"),
     descrizione:g("fa-desc"),imponibile:imp,iva:iva,totale:Math.round(imp*(1+iva/100)*100)/100,
@@ -3198,6 +3406,7 @@ document.getElementById("f-fattura").addEventListener("submit",async e=>{
   if(id&&S.fatture.get(id)?.demo) rec.demo=true;
   const et=DOCLAB[rec.tipoDoc];
   const nuovoId=await salva("fatture",conVecchio("fatture",rec));
+  if(lega) await collegaAFattura(lega,nuovoId);
   const saldata=!id && document.getElementById("fa-pag").value==="saldata" && rec.totale>0;
   if(saldata){
     const met=document.getElementById("fa-met").value;
@@ -3461,6 +3670,102 @@ document.getElementById("fo-del").addEventListener("click",()=>{
 });
 
 /* ---------- dialog documento di trasporto ---------- */
+/* ---------- dialog visita medica ---------- */
+const dVis=document.getElementById("dlg-visita");
+let LEGA=null;   // {visite:[id], preventivo:id}: cosa collegare alla fattura che si sta creando
+dFat.addEventListener("close",()=>{ LEGA=null; });
+const righeDip = () => document.getElementById("vi-dip").value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+function propostaVisita(){
+  const g=id=>document.getElementById(id), c=cli(g("vi-cl").value);
+  g("vi-hint").textContent = c ? (c.visiteRaw?`Contratto: ${c.visiteRaw} · ${CONDLAB[condVisite(c)]}`:"Condizioni delle visite non indicate nel contratto") : "";
+  if(g("vi-imp").dataset.toccato) return;
+  const n=amt(g("vi-n").value);
+  g("vi-imp").value = g("vi-tipo").value==="inclusa" ? "" : (c&&c.visitaCosto&&n ? n2(nm(c.visitaCosto)*n) : "");
+}
+function apriVisita(v,preCli){
+  if(!S.clienti.size){ toast("Inserisci prima un cliente"); return apriCliente(null); }
+  const g=id=>document.getElementById(id), cid=v?.clienteId||preCli||"";
+  g("t-visita").textContent=v?"Modifica visita medica":"Nuova visita medica";
+  g("vi-cl").innerHTML=(cid?"":`<option value="">— scegli il cliente —</option>`)+selCli(cid);
+  g("vi-id").value=v?.id||""; g("vi-data").value=v?.data||today();
+  g("vi-dip").value=Array.isArray(v?.dipendenti)?v.dipendenti.join("\n"):"";
+  g("vi-n").value=v?nDip(v)||"":""; g("vi-pre").value=v?.prelievi||"";
+  g("vi-tipo").value=v?tipoVisita(v):(condVisite(cli(cid))==="incluse"?"inclusa":"pagamento");
+  delete g("vi-imp").dataset.toccato;
+  g("vi-imp").value=v&&v.importo!=null&&v.importo!==""?n2(v.importo):"";
+  if(v&&v.importo!=null&&v.importo!=="") g("vi-imp").dataset.toccato="1";
+  g("vi-fa").innerHTML=selFat(cid,v?.fatturaId||"");
+  g("vi-note").value=v?.note||"";
+  propostaVisita();
+  g("vi-del").hidden=!v; dVis.showModal(); g(cid?"vi-data":"vi-cl").focus();
+}
+document.getElementById("vi-cl").addEventListener("change",()=>{
+  const g=id=>document.getElementById(id), c=cli(g("vi-cl").value);
+  g("vi-fa").innerHTML=selFat(g("vi-cl").value,"");
+  if(!g("vi-id").value) g("vi-tipo").value=condVisite(c)==="incluse"?"inclusa":"pagamento";
+  propostaVisita();
+});
+document.getElementById("vi-dip").addEventListener("input",()=>{
+  const n=righeDip().length; if(n) document.getElementById("vi-n").value=n; propostaVisita();
+});
+["vi-n","vi-tipo"].forEach(id=>document.getElementById(id).addEventListener(id==="vi-tipo"?"change":"input",propostaVisita));
+document.getElementById("vi-imp").addEventListener("input",e=>{ e.target.dataset.toccato="1"; });
+document.getElementById("f-visita").addEventListener("submit",async e=>{
+  const g=id=>document.getElementById(id).value.trim();
+  const id=g("vi-id"), n=Math.round(amt(g("vi-n")));
+  if(!g("vi-cl")){ e.preventDefault(); toast("Scegli il cliente"); return; }
+  if(!(n>0)){ e.preventDefault(); toast("Indica il numero di visite"); document.getElementById("vi-n").focus(); return; }
+  const tipo=g("vi-tipo");
+  const rec={id:id||undefined,clienteId:g("vi-cl"),data:g("vi-data"),dipendenti:righeDip(),nVisite:n,
+    prelievi:Math.round(amt(g("vi-pre")))||0,tipo,importo:tipo==="inclusa"?0:amt(g("vi-imp")),
+    fatturaId:g("vi-fa")||null,note:g("vi-note")};
+  await salva("visite",conVecchio("visite",rec));
+  toast(id?"Visita aggiornata":"Visita registrata");
+});
+document.getElementById("vi-del").addEventListener("click",()=>{
+  const id=document.getElementById("vi-id").value; dVis.close(); eliminaRecord("visite",[id]);
+});
+/* collega alla fattura appena creata le visite scelte, oppure preventivo, incassi e visite del preventivo */
+async function collegaAFattura(lega,fid){
+  const visite=new Set(lega.visite||[]);
+  if(lega.preventivo){
+    const p=S.preventivi.get(lega.preventivo);
+    if(p) await salva("preventivi",Object.assign({},p,{fatturaId:fid}));
+    for(const m of movDiPrev(lega.preventivo)) if(!m.fatturaId) await salva("movimenti",Object.assign({},m,{fatturaId:fid}));
+    arr("visite").forEach(v=>{ if(v.preventivoId===lega.preventivo && !v.fatturaId) visite.add(v.id); });
+  }
+  for(const vid of visite){ const v=S.visite.get(vid);
+    if(v){ await salva("visite",Object.assign({},v,{fatturaId:fid})); SEL.delete(selKey("visite",vid)); } }
+}
+function fatturaPreventivo(pid){
+  const p=S.preventivi.get(pid); if(!p) return;
+  if(!p.clienteId || !cli(p.clienteId)){ toast("Il preventivo non è collegato a un cliente: premi «Sincronizza con l'app» nel Riepilogo"); return; }
+  apriFattura(null,p.clienteId,cli(p.clienteId)?.docAbituale==="proforma"?"proforma":"fattura");
+  document.getElementById("fa-desc").value=`Preventivo del ${fdate(p.data)} — ${String(p.descrizione||"").slice(0,160)}`;
+  document.getElementById("fa-imp").value=nm(p.imponibile)?n2(p.imponibile):"";
+  document.getElementById("fa-iva").value="22";
+  calcTot();
+  LEGA={preventivo:pid};
+  const inc=incassatoPrev(pid);
+  if(inc) toast(`I ${eur(inc)} già incassati su questo preventivo verranno collegati alla fattura`);
+}
+/* fattura precompilata per una o più visite dello stesso cliente */
+function fatturaVisite(ids){
+  const vs=ids.map(id=>S.visite.get(id)).filter(Boolean).filter(v=>statoVisita(v)==="dafatt");
+  if(!vs.length){ toast("Scegli almeno una visita da fatturare"); return; }
+  const cl=[...new Set(vs.map(v=>v.clienteId))];
+  if(cl.length>1){ toast("Per creare una fattura scegli visite dello stesso cliente"); return; }
+  const tot=Math.round(vs.reduce((s,v)=>s+impVisita(v),0)*100)/100, dip=vs.reduce((s,v)=>s+nDip(v),0);
+  const date=vs.map(v=>v.data).sort().map(fdate);
+  apriFattura(null,cl[0],cli(cl[0])?.docAbituale==="proforma"?"proforma":"fattura");
+  document.getElementById("fa-desc").value = vs.length===1
+    ? `Visite mediche del ${date[0]} (${pl(dip,"dipendente","dipendenti")})`
+    : `Visite mediche: ${vs.length} sedute dal ${date[0]} al ${date[date.length-1]} (${pl(dip,"dipendente","dipendenti")})`;
+  document.getElementById("fa-imp").value = tot ? n2(tot) : "";
+  calcTot();
+  LEGA={visite:vs.map(v=>v.id)};
+}
+
 const dDdt=document.getElementById("dlg-ddt");
 function opzioniContro(tipo,sel){
   const lista = tipo==="cliente"
@@ -3640,12 +3945,21 @@ async function scarica(nome,testo,mime){
   }catch(e){ toast("Il browser ha bloccato il download"); }
 }
 
+/* ---------- allineamento completo con l'app ---------- */
+async function sincronizzaApp(){
+  if(!DB||!DB.sincronizza) return;
+  toast("Sincronizzazione in corso… può richiedere qualche minuto");
+  try{
+    const r=await DB.sincronizza();
+    toast(`Sincronizzato: ${pl(r.aziende||0,"azienda","aziende")}, ${pl(r.clienti||0,"cliente nuovo","clienti nuovi")}, ${pl(r.preventivi||0,"preventivo","preventivi")}`);
+  }catch(e){ toast("Sincronizzazione non riuscita: "+(e.message||e.code||e)); }
+}
 /* ---------- backup e ripristino ---------- */
 function backup(){
   scarica(`backup-contabilita-${today()}.json`,
     JSON.stringify({versione:1,esportato:new Date().toISOString(),
       clienti:arr("clienti"),fornitori:arr("fornitori"),fatture:arr("fatture"),
-      movimenti:arr("movimenti"),visite:arr("visite"),registri:arr("registri"),ddt:arr("ddt")},null,2),
+      movimenti:arr("movimenti"),visite:arr("visite"),registri:arr("registri"),ddt:arr("ddt"),preventivi:arr("preventivi")},null,2),
     "application/json");
 }
 const fRestore=document.getElementById("file-restore");
@@ -3704,6 +4018,16 @@ const expFornitori=()=>csv(`fornitori-${today()}.csv`,
   .concat(listaForn("fornitore").sort((a,b)=>pagatoA(b.id)-pagatoA(a.id)).map(f=>[f.ragioneSociale,f.categoria,f.piva,
     f.codiceFiscale,f.indirizzo,f.cap,f.citta,f.provincia,f.referente,f.telefono,f.email,f.iban,
     movDiForn(f.id).length,n2(pagatoA(f.id)),ultimoPag(f.id)?fdate(ultimoPag(f.id)):"",f.note])));
+const expVisite=()=>csv(`visite-mediche-${today()}.csv`,
+  [["Data","Cliente","Dipendenti","N. visite","Prelievi","Condizione","Importo","Stato","Fattura","Note"]]
+  .concat(arr("visite").sort((a,b)=>String(a.data).localeCompare(String(b.data))).map(v=>[fdate(v.data),nomeCli(v.clienteId),
+    (Array.isArray(v.dipendenti)?v.dipendenti:[]).join(", "),nDip(v),v.prelievi||"",
+    tipoVisita(v)==="inclusa"?"Inclusa nel canone":"A pagamento",n2(impVisita(v)),VISST[statoVisita(v)],
+    fattVisita(v)?.numero||v.pagamento||"",v.note||""])));
+const expPreventivi=()=>csv(`preventivi-${today()}.csv`,
+  [["Data","Cliente","Consulente","Servizi","Imponibile","Totale","Incassato","Stato","Fattura"]]
+  .concat(arr("preventivi").sort((a,b)=>String(a.data).localeCompare(String(b.data))).map(p=>[fdate(p.data),nomePrev(p),p.consulente||"",
+    p.descrizione||"",n2(p.imponibile),n2(p.totale),n2(incassatoPrev(p.id)),PSTATO[p.stato]||"Da fare",fattPrev(p)?.numero||""])));
 const expDdt=()=>csv(`documenti-trasporto-${today()}.csv`,
   [["N. DDT","Data","Tipo","Controparte","Descrizione","Colli","Peso kg","Rif. fattura","Stato","Note"]]
   .concat(arr("ddt").sort((a,b)=>String(a.data).localeCompare(String(b.data))).map(x=>[x.numero,fdate(x.data),
