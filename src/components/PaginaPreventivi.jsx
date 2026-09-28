@@ -12,7 +12,35 @@ function normalizzaStato(stato) {
   return 'da_fare';
 }
 
-function CardPreventivo({ prev, onDettaglio, onPagamento, onModifica, onElimina, canCambiaStato, onCambiaStato }) {
+const eur = (v) => (Number(v) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fdata = (iso) => (iso ? new Date(iso).toLocaleDateString('it-IT') : '—');
+const stileBtn = (bg, fg, bd) => ({ padding: '6px 10px', background: bg, color: fg, border: `1px solid ${bd}`, borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', textDecoration: 'none' });
+
+function ElencoContratti({ contratti, onContratto, isMobile }) {
+  if (!contratti.length) return null;
+  const ordinati = [...contratti].sort((a, b) => String(b.data).localeCompare(String(a.data)));
+  return (
+    <div style={{ marginTop: 28 }}>
+      <h3 style={{ margin: '0 0 12px' }}>📝 Contratti ({contratti.length})</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+        {ordinati.map((c) => (
+          <div key={c.id} style={{ padding: 14, border: '1px solid #dfe5ef', borderRadius: 10, background: '#fff' }}>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>{c.cliente?.ragioneSociale || 'Cliente'}</div>
+            <div style={{ fontSize: 12, color: '#5f6f8c', marginTop: 2 }}>📅 {fdata(c.data)} · scade il {fdata(c.scadenza)}</div>
+            <div style={{ fontSize: 12, marginTop: 4 }}>💰 <strong>€ {eur(c.importoTotale)}</strong> + IVA {c.periodicita === 'annuale' ? 'annuale' : 'mensile'}</div>
+            {c.consulente && <div style={{ fontSize: 12, color: '#5f6f8c' }}>👤 {c.consulente}</div>}
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
+              {c.pdfUrl && <a href={c.pdfUrl} target="_blank" rel="noreferrer" style={stileBtn('#2c3e66', 'white', '#2c3e66')}>📄 PDF</a>}
+              <button onClick={() => onContratto(null, c)} style={stileBtn('#fef3c7', '#92400e', '#fde68a')}>✏️ Modifica</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CardPreventivo({ prev, contratto, onContratto, onDettaglio, onPagamento, onModifica, onElimina, canCambiaStato, onCambiaStato }) {
   const statoAttuale = normalizzaStato(prev.stato);
   const pagato = (prev.pagamenti || []).reduce((s, p) => s + (parseFloat(p.importo) || 0), 0);
   const residuo = Math.max(0, (prev.totale || 0) - pagato);
@@ -44,6 +72,10 @@ function CardPreventivo({ prev, onDettaglio, onPagamento, onModifica, onElimina,
           style={{ padding: '6px 10px', background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
           ✏️ Modifica
         </button>
+        {onContratto && (contratto
+          ? <button onClick={() => (contratto.pdfUrl ? window.open(contratto.pdfUrl, '_blank') : onContratto(prev, contratto))}
+              title="Contratto già firmato per questo preventivo" style={stileBtn('#ecfdf5', '#047857', '#6ee7b7')}>📝 Contratto ✓</button>
+          : <button onClick={() => onContratto(prev, null)} style={stileBtn('#eef1f8', '#2c3e66', '#2c3e66')}>📝 Crea contratto</button>)}
         {prev.pdfUrl && (
           <a href={prev.pdfUrl} target="_blank" rel="noreferrer"
             style={{ padding: '6px 10px', background: '#2c3e66', color: 'white', borderRadius: 6, textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>
@@ -101,7 +133,11 @@ function PaginaPreventivi({
   canCambiaStato = false,
   onCambiaStato,
   isMobile,
+  contratti = [],
+  onContratto,
+  onNuovoContratto,
 }) {
+  const contrattoDi = (prev) => contratti.find((c) => c.preventivoId === prev.id);
   const [ricerca, setRicerca] = useState('');
   const [colAttiva, setColAttiva] = useState('da_fare');
   const [completatiAperti, setCompletatiAperti] = useState(false);
@@ -116,6 +152,12 @@ function PaginaPreventivi({
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <h2 style={{ margin: 0 }}>{titolo}</h2>
+        {onNuovoContratto && (
+          <button onClick={onNuovoContratto}
+            style={{ background: 'white', color: '#2c3e66', border: '2px solid #2c3e66', padding: '8px 18px', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14, marginLeft: 'auto' }}>
+            + Nuovo Contratto
+          </button>
+        )}
         {showNuovo && (
           <button
             onClick={onNuovo}
@@ -185,7 +227,7 @@ function PaginaPreventivi({
               {perColonna(colAttiva).length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '36px 0', color: '#c9d1e0', fontSize: 13, background: '#f6f8fc', borderRadius: 10, border: '1px dashed #dfe5ef' }}>Nessun preventivo</div>
               ) : perColonna(colAttiva).map(prev => (
-                <CardPreventivo key={prev.id} prev={prev} onDettaglio={onDettaglio} onPagamento={onPagamento} onModifica={onModifica} onElimina={onElimina} canCambiaStato={canCambiaStato} onCambiaStato={onCambiaStato} />
+                <CardPreventivo key={prev.id} prev={prev} contratto={contrattoDi(prev)} onContratto={onContratto} onDettaglio={onDettaglio} onPagamento={onPagamento} onModifica={onModifica} onElimina={onElimina} canCambiaStato={canCambiaStato} onCambiaStato={onCambiaStato} />
               ))}
             </div>
           )}
@@ -223,7 +265,7 @@ function PaginaPreventivi({
                     {col.length === 0 ? (
                       <div style={{ textAlign: 'center', padding: '20px 0', color: '#c9d1e0', fontSize: 13 }}>Nessun preventivo</div>
                     ) : col.map(prev => (
-                      <CardPreventivo key={prev.id} prev={prev} onDettaglio={onDettaglio} onPagamento={onPagamento} onModifica={onModifica} onElimina={onElimina} canCambiaStato={canCambiaStato} onCambiaStato={onCambiaStato} />
+                      <CardPreventivo key={prev.id} prev={prev} contratto={contrattoDi(prev)} onContratto={onContratto} onDettaglio={onDettaglio} onPagamento={onPagamento} onModifica={onModifica} onElimina={onElimina} canCambiaStato={canCambiaStato} onCambiaStato={onCambiaStato} />
                     ))}
                   </div>
                 )}
@@ -232,6 +274,7 @@ function PaginaPreventivi({
           })}
         </div>
       )}
+      {onContratto && <ElencoContratti contratti={contratti} onContratto={onContratto} isMobile={isMobile} />}
     </div>
   );
 }

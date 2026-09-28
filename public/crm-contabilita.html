@@ -2912,6 +2912,8 @@ function scheda(id){
         <div><dt>Rata</dt><dd class="mono">${canoneRata(c)?eur(canoneRata(c)):"—"}${c.canoneRegime?` <span style="font-family:var(--sans);color:var(--ink-3);font-size:11.5px">${c.canoneRegime==="ivato"?"IVA inclusa":"+ IVA"}</span>`:""}</dd></div>
         <div><dt>Valore annuo</dt><dd class="mono">${canoneAnnuo(c)?eur(canoneAnnuo(c)):"—"}</dd></div>
         <div><dt>Mese di rinnovo</dt><dd>${esc(c.meseRinnovo||"—")}</dd></div>
+        ${c.contrattoData?`<div><dt>Contratto firmato</dt><dd>${fdate(c.contrattoData)}${c.contrattoPdf?` · <a href="${esc(c.contrattoPdf)}" target="_blank" rel="noopener">PDF</a>`:""}</dd></div>
+        <div><dt>Scadenza contratto</dt><dd>${fdate(c.contrattoScadenza)}<span class="sub2">3 anni, tacito rinnovo</span></dd></div>`:""}
         <div><dt>Visite mediche</dt><dd>${esc(c.visiteRaw||"—")}<span class="sub2">${CONDLAB[condVisite(c)]}</span></dd></div>
         <div><dt>Riceve abitualmente</dt><dd>${DOCLAB[c.docAbituale==="proforma"?"proforma":"fattura"]}</dd></div>
         <div><dt>Portale</dt><dd>${c.portale?`<span class="portale ${c.portale.toLowerCase()}">${esc(c.portale)}</span>`:"—"}</dd></div>

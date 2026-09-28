@@ -5,6 +5,7 @@
 // - preventivi → crm_consulting_preventivi, con i pagamenti come incassi di prima nota
 //   e i servizi «VISITE MEDICHE» come visite.
 // - pagamenti delle aziende → incassi di prima nota.
+// - contratti → canone, periodicità e scadenza del cliente (vale il contratto più recente).
 //
 // Le eliminazioni non si propagano: la contabilità conserva lo storico. Se si elimina una parte,
 // l'altra resta ma viene segnata come scollegata e non viene ricreata.
@@ -261,6 +262,40 @@ async function allineaPreventivo(pid, dopo) {
   for (const d of await figli('visite')) if (!attesiVis.has(d.id) && !d.data().fatturaId) await d.ref.delete();
 }
 
+/* ───────── contratti → canone del cliente ───────── */
+
+const MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+const CAMPI_CONTRATTO = ['contrattoId', 'contrattoData', 'contrattoScadenza', 'contrattoPdf'];
+
+async function allineaContratto(kid, dopo) {
+  const legati = await col('clienti').where('contrattoId', '==', kid).get();
+  if (!dopo) {
+    // contratto eliminato: il cliente resta con il suo canone, si toglie solo il collegamento
+    for (const d of legati.docs) await d.ref.update(Object.fromEntries(CAMPI_CONTRATTO.map((k) => [k, CANC()])));
+    return;
+  }
+  if (!dopo.aziendaId) return;
+  const az = await db().collection('aziende').doc(dopo.aziendaId).get();
+  if (!az.exists) return;
+  const cid = await assicuraCliente(az.id, az.data());
+  if (!cid) return;
+  const cl = (await col('clienti').doc(cid).get()).data() || {};
+  // un contratto più vecchio non sostituisce quello più recente già registrato
+  if (cl.contrattoId && cl.contrattoId !== kid && s(cl.contrattoData) > s(dopo.data)) return;
+  const importo = tondo(numero(dopo.importoTotale));
+  const periodicita = dopo.periodicita === 'annuale' ? 'annuale' : 'mensile';
+  const mese = MESI[Number(s(dopo.data).slice(5, 7)) - 1] || '';
+  await col('clienti').doc(cid).update({
+    canoneRaw: importo ? `${String(importo).replace('.', ',')} + IVA` : '',
+    canoneImporto: importo || null, canoneRegime: importo ? 'netto' : '', daVerificare: false,
+    periodicita, meseRinnovo: periodicita === 'annuale' ? mese : s(cl.meseRinnovo),
+    contrattoId: kid, contrattoData: s(dopo.data), contrattoScadenza: s(dopo.scadenza), contrattoPdf: s(dopo.pdfUrl),
+  });
+  for (const d of legati.docs) {
+    if (d.id !== cid) await d.ref.update(Object.fromEntries(CAMPI_CONTRATTO.map((k) => [k, CANC()])));
+  }
+}
+
 /* ───────── trigger ───────── */
 
 exports.contabilitaAzienda = onDocumentWritten('aziende/{id}', (event) =>
@@ -272,13 +307,16 @@ exports.contabilitaCliente = onDocumentWritten(`${CRM}clienti/{id}`, (event) =>
 exports.contabilitaPreventivo = onDocumentWritten('preventivi/{id}', (event) =>
   allineaPreventivo(event.params.id, event.data?.after?.data()));
 
+exports.contabilitaContratto = onDocumentWritten('contratti/{id}', (event) =>
+  allineaContratto(event.params.id, event.data?.after?.data()));
+
 // allineamento completo, lanciato dal pulsante «Sincronizza con l'app» della contabilità (solo amministratori)
 exports.sincronizzaContabilita = onCall({ timeoutSeconds: 540, memory: '512MiB' }, async (req) => {
   const email = s(req.auth?.token?.email).toLowerCase();
   if (!email || !(await db().collection('admins').doc(email).get()).exists) {
     throw new HttpsError('permission-denied', 'Solo gli amministratori possono sincronizzare la contabilità.');
   }
-  const conta = { aziende: 0, clienti: 0, preventivi: 0 };
+  const conta = { aziende: 0, clienti: 0, preventivi: 0, contratti: 0 };
   for (const d of (await db().collection('aziende').get()).docs) {
     await allineaAzienda(d.id, null, d.data(), true); conta.aziende++;
   }
@@ -289,5 +327,8 @@ exports.sincronizzaContabilita = onCall({ timeoutSeconds: 540, memory: '512MiB' 
   for (const d of (await db().collection('preventivi').get()).docs) {
     await allineaPreventivo(d.id, d.data()); conta.preventivi++;
   }
+  const contratti = (await db().collection('contratti').get()).docs
+    .sort((a, b) => s(a.data().data).localeCompare(s(b.data().data)));
+  for (const d of contratti) { await allineaContratto(d.id, d.data()); conta.contratti++; }
   return conta;
 });

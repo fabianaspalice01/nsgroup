@@ -37,6 +37,7 @@ import { inviaNotificaPushAdmin } from './utils/inviaNotificaAdmin';
 import PaginaAziendeAssegnate from './components/PaginaAziendeAssegnate';
 import PaginaListino from './components/PaginaListino';
 import CrmContabilita from './components/crm/CrmContabilita';
+import ModaleContratto from './components/contratto/ModaleContratto';
 
 const TIPI_CONTROLLO = [
   'Visita di sicurezza',
@@ -68,6 +69,8 @@ function App({ session, onChangeCompany }) {
   const [referentiList, setReferentiList] = useState([]);
   const [preventivi, setPreventivi] = useState([]);
   const [mostraModalePreventivo, setMostraModalePreventivo] = useState(false);
+  const [contratti, setContratti] = useState([]);
+  const [modaleContratto, setModaleContratto] = useState(null); // { preventivo?, contratto? }
   const [preventivoInModifica, setPreventivoInModifica] = useState(null);
   const [preventivoDettaglio, setPreventivoDettaglio] = useState(null);
   const [preventivoPerPagamento, setPreventivoPerPagamento] = useState(null);
@@ -143,6 +146,16 @@ function App({ session, onChangeCompany }) {
     }, () => {});
     return () => unsubListino();
   }, [userData]);
+
+  // Contratti in tempo reale: admin e operatori li vedono tutti, i consulenti i propri
+  useEffect(() => {
+    if (!['admin', 'operatore', 'consulente'].includes(userData?.ruolo)) return;
+    const q = userData.ruolo === 'consulente'
+      ? query(collection(db, 'contratti'), where('consulente', '==', userData.nome || ''))
+      : collection(db, 'contratti');
+    return onSnapshot(q, snap => setContratti(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+      err => console.error('Errore caricamento contratti:', err));
+  }, [userData?.ruolo, userData?.nome]);
 
   // Preventivi consulente in tempo reale
   useEffect(() => {
@@ -464,6 +477,48 @@ function App({ session, onChangeCompany }) {
     } catch (err) {
       console.error('Errore salvataggio preventivo:', err);
       toast.error('Errore nel salvataggio del preventivo');
+    }
+  };
+
+  const handleSaveContratto = async ({ pdfBlob, fileName, isEdit, contrattoId, ...contratto }) => {
+    try {
+      // cliente non ancora registrato: lo si crea in Aziende (e da lì arriva in contabilità)
+      let aziendaId = contratto.aziendaId;
+      if (!aziendaId) {
+        const c = contratto.cliente;
+        const nuova = await addDoc(collection(db, 'aziende'), {
+          nome: c.ragioneSociale, indirizzo: c.sedeLegale || '', telefono: c.telefono || '', email: c.email || '',
+          partitaIva: c.piva || '', pec: c.pec || '', codiceUnivoco: '', contatto: c.rappresentante || '', note: '',
+          controlli: [], dipendenti: [], documenti: [], pagamenti: [],
+        });
+        aziendaId = nuova.id;
+      }
+      let pdfUrl = null, pdfPath = null;
+      try {
+        pdfPath = `contratti/${Date.now()}_${fileName}`;
+        const r = ref(storage, pdfPath);
+        await uploadBytes(r, pdfBlob, { contentType: 'application/pdf' });
+        pdfUrl = await getDownloadURL(r);
+      } catch (e) {
+        console.error(e); pdfUrl = null; pdfPath = null;
+        toast.error('PDF non caricato nel cloud: viene scaricato solo in locale', { duration: 6000 });
+      }
+      const [a, m, g] = contratto.data.split('-').map(Number);
+      const scadenza = new Date(Date.UTC(a + 3, m - 1, g)).toISOString().slice(0, 10);
+      const dati = { ...contratto, aziendaId, scadenza, ...(pdfUrl ? { pdfUrl, pdfPath } : {}) };
+      if (isEdit && contrattoId) await updateDoc(doc(db, 'contratti', contrattoId), { ...dati, dataModifica: new Date().toISOString() });
+      else await addDoc(collection(db, 'contratti'), { ...dati, stato: 'attivo', dataCreazione: new Date().toISOString() });
+      const url = pdfUrl || URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url; link.download = fileName; link.target = '_blank'; link.click();
+      if (!pdfUrl) setTimeout(() => URL.revokeObjectURL(url), 3000);
+      toast.success(isEdit ? 'Contratto aggiornato' : 'Contratto salvato');
+      await notificaOperatore(isEdit ? 'modifica_contratto' : 'nuovo_contratto',
+        `${userData.nome} ha ${isEdit ? 'modificato' : 'creato'} il contratto di ${contratto.cliente.ragioneSociale}`);
+      setModaleContratto(null);
+    } catch (err) {
+      console.error('Errore salvataggio contratto:', err);
+      toast.error('Errore nel salvataggio del contratto');
     }
   };
 
@@ -1010,6 +1065,9 @@ function App({ session, onChangeCompany }) {
                 titolo="📄 Preventivi"
                 showNuovo
                 onNuovo={() => setMostraModalePreventivo(true)}
+                contratti={contratti}
+                onNuovoContratto={() => setModaleContratto({})}
+                onContratto={(prev, contratto) => setModaleContratto({ preventivo: prev, contratto })}
                 onDettaglio={setPreventivoDettaglio}
                 onPagamento={setPreventivoPerPagamento}
                 onModifica={prev => { setPreventivoInModifica(prev); setMostraModalePreventivo(true); }}
@@ -1017,6 +1075,17 @@ function App({ session, onChangeCompany }) {
                 canCambiaStato
                 onCambiaStato={handleCambiaStatoPreventivo}
                 isMobile={isMobile}
+              />
+            )}
+
+            {modaleContratto && (
+              <ModaleContratto
+                onClose={() => setModaleContratto(null)}
+                onSave={handleSaveContratto}
+                aziende={aziendAttive}
+                preventivo={modaleContratto.preventivo}
+                contrattoInModifica={modaleContratto.contratto}
+                userData={userData}
               />
             )}
 
@@ -1125,6 +1194,17 @@ function App({ session, onChangeCompany }) {
               />
             )}
 
+            {modaleContratto && (
+              <ModaleContratto
+                onClose={() => setModaleContratto(null)}
+                onSave={handleSaveContratto}
+                aziende={aziendAttive}
+                preventivo={modaleContratto.preventivo}
+                contrattoInModifica={modaleContratto.contratto}
+                userData={userData}
+              />
+            )}
+
             {mostraModalePreventivo && (
               <ModalePreventivo
                 onClose={() => { setMostraModalePreventivo(false); setPreventivoInModifica(null); }}
@@ -1144,6 +1224,8 @@ function App({ session, onChangeCompany }) {
               <PaginaPreventivi
                 preventivi={preventivi}
                 titolo="📄 I miei preventivi"
+                contratti={contratti}
+                onContratto={(prev, contratto) => setModaleContratto({ preventivo: prev, contratto })}
                 onDettaglio={setPreventivoDettaglio}
                 onPagamento={setPreventivoPerPagamento}
                 onModifica={prev => { setPreventivoPerModifica(prev); setMotivazioneTemp(''); setMostraPromptMotivazione(true); }}
