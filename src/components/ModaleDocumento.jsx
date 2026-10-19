@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import DropZone from './DropZone';
+import { CARTELLE_DOCUMENTI } from '../utils/cartelleDocumenti';
 
-function ModaleDocumento({ onClose, onSave, documento }) {
+function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro' }) {
   const [form, setForm] = useState(documento || {
     nome: '',
+    cartella: cartellaIniziale,
     tipo: 'Visura Camerale',
     dataEmissione: '',
     dataScadenza: '',
@@ -106,6 +108,28 @@ function ModaleDocumento({ onClose, onSave, documento }) {
               fontSize: '14px'
             }}
           />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '14px' }}>
+            Cartella
+          </label>
+          <select
+            value={form.cartella || 'altro'}
+            onChange={(e) => handleChange('cartella', e.target.value)}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: '1px solid #dfe5ef',
+              borderRadius: '6px',
+              fontSize: '14px',
+              background: 'white'
+            }}
+          >
+            {CARTELLE_DOCUMENTI.map(c => (
+              <option key={c.id} value={c.id}>{c.label}</option>
+            ))}
+          </select>
         </div>
 
         <div style={{ marginBottom: '15px' }}>

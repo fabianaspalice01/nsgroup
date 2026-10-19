@@ -322,6 +322,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
             azienda={azienda}
             onUpdateAzienda={onUpdateAzienda}
             readOnly={readOnly}
+            vistaCliente={isAccountAzienda}
           />
         )}
         {tabAttiva === 'preventivi' && (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ConfirmModal from './ConfirmModal';
 import ModaleDocumento from './ModaleDocumento';
+import { CARTELLE_DOCUMENTI, cartellaDocumento } from '../utils/cartelleDocumenti';
 import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import toast from 'react-hot-toast';
@@ -33,14 +34,17 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
   const [confirm, setConfirm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(null);
-  const documentiScaricabili = (azienda.documenti || []).filter((documento) => documento.pdfUrl);
+  const [cartellaAttiva, setCartellaAttiva] = useState('haccp');
+  const documentiCartella = (azienda.documenti || []).filter((documento) => cartellaDocumento(documento) === cartellaAttiva);
+  const documentiScaricabili = documentiCartella.filter((documento) => documento.pdfUrl);
+  const nomeCartella = CARTELLE_DOCUMENTI.find((c) => c.id === cartellaAttiva)?.label;
 
   const handleDownloadTutti = async () => {
     if (!canDownload || downloadProgress || !documentiScaricabili.length) return;
     setDownloadProgress('Preparazione ZIP...');
     try {
       const { downloadDocumenti } = await import('../utils/downloadDocumenti');
-      await downloadDocumenti(documentiScaricabili, azienda.nome, (current, total) => {
+      await downloadDocumenti(documentiScaricabili, `${azienda.nome} - ${nomeCartella}`,(current, total) => {
         setDownloadProgress(`Scaricamento ${current}/${total}...`);
       });
       toast.success('Archivio ZIP pronto: download avviato');
@@ -96,6 +100,17 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
       throw error;
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSpostaDocumento = async (documentoId, cartella) => {
+    try {
+      const documentiAggiornati = (azienda.documenti || []).map((d) => d.id === documentoId ? { ...d, cartella } : d);
+      await onUpdateAzienda(azienda.id, { documenti: documentiAggiornati });
+      toast.success(`Documento spostato in ${CARTELLE_DOCUMENTI.find((c) => c.id === cartella)?.label}`);
+    } catch (error) {
+      console.error('Errore nello spostamento del documento:', error);
+      toast.error('Errore nello spostamento del documento');
     }
   };
 
@@ -166,9 +181,35 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
         </div>
       </div>
 
-      {!azienda.documenti || azienda.documenti.length === 0 ? (
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
+        {CARTELLE_DOCUMENTI.map((cartella) => {
+          const attiva = cartella.id === cartellaAttiva;
+          const numero = (azienda.documenti || []).filter((d) => cartellaDocumento(d) === cartella.id).length;
+          return (
+            <button
+              key={cartella.id}
+              onClick={() => setCartellaAttiva(cartella.id)}
+              aria-pressed={attiva}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 8,
+                border: attiva ? '1px solid #2c3e66' : '1px solid #dfe5ef',
+                background: attiva ? '#2c3e66' : 'white',
+                color: attiva ? 'white' : '#45536f',
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 600
+              }}
+            >
+              {attiva ? '📂' : '📁'} {cartella.label} ({numero})
+            </button>
+          );
+        })}
+      </div>
+
+      {documentiCartella.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#9aa7bf', padding: '20px', background: 'white', borderRadius: '10px' }}>
-          Nessun documento caricato
+          Nessun documento in {nomeCartella}
         </p>
       ) : (
         <div style={{
@@ -177,7 +218,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
           gap: '20px',
           marginBottom: '30px'
         }}>
-          {azienda.documenti.map((documento) => {
+          {documentiCartella.map((documento) => {
             const oggi = new Date();
             const scadenza = documento.dataScadenza ? new Date(documento.dataScadenza) : null;
             const isScaduto = scadenza && scadenza < oggi;
@@ -259,6 +300,19 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                     </a>
                   )}
                   {!readOnly && (
+                    <select
+                      value={cartellaDocumento(documento)}
+                      onChange={(e) => handleSpostaDocumento(documento.id, e.target.value)}
+                      aria-label="Sposta in cartella"
+                      title="Sposta in cartella"
+                      style={{ border: '1px solid #dfe5ef', borderRadius: '6px', padding: '6px 8px', fontSize: '12px', color: '#45536f', background: 'white', cursor: 'pointer' }}
+                    >
+                      {CARTELLE_DOCUMENTI.map((c) => (
+                        <option key={c.id} value={c.id}>{c.label}</option>
+                      ))}
+                    </select>
+                  )}
+                  {!readOnly && (
                     <button
                       onClick={() => handleDeleteDocumento(documento.id)}
                       style={{
@@ -290,6 +344,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
           }}
           onSave={handleSaveDocumento}
           documento={documentoInModifica}
+          cartellaIniziale={cartellaAttiva}
         />
       )}
 

@@ -39,6 +39,9 @@ import PaginaListino from './components/PaginaListino';
 import CrmContabilita from './components/crm/CrmContabilita';
 import ModaleContratto from './components/contratto/ModaleContratto';
 
+// Portale esterno mostrato all'account azienda (link provvisorio, da sostituire con quello vero)
+const PORTALE_ESTERNO = { url: 'https://www.esempio.it', label: 'Vai al portale' };
+
 const TIPI_CONTROLLO = [
   'Visita di sicurezza',
   'Controllo DPI',
@@ -1234,6 +1237,18 @@ function App({ session, onChangeCompany }) {
         )}
 
         {/* AZIENDA - Solo visualizzazione propri dati */}
+        {userData.ruolo === 'azienda' && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+            <a
+              href={PORTALE_ESTERNO.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ padding: '9px 18px', background: '#2c3e66', color: 'white', borderRadius: 8, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}
+            >
+              🔗 {PORTALE_ESTERNO.label}
+            </a>
+          </div>
+        )}
         {userData.ruolo === 'azienda' && aziendaSelezionata && (
           <SchedaAzienda
             azienda={aziendaSelezionata}

@@ -5,7 +5,7 @@ import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import toast from 'react-hot-toast';
 
-function TabPagamenti({ azienda, onUpdateAzienda, readOnly }) {
+function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false }) {
   const [mostraModalePagamento, setMostraModalePagamento] = useState(false);
   const [pagamentoInModifica, setPagamentoInModifica] = useState(null);
   const [confirm, setConfirm] = useState(null);
@@ -102,7 +102,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly }) {
         <div>
           <h3 style={{ margin: 0 }}>💰 Storico Pagamenti ({(azienda.pagamenti || []).length})</h3>
           <p style={{ margin: '4px 0 0', fontSize: 13, color: '#5f6f8c' }}>
-            Totale incassato: €{' '}
+            {vistaCliente ? 'Totale versato' : 'Totale incassato'}: €{' '}
             {(azienda.pagamenti || [])
               .reduce((sum, p) => sum + parseFloat(p.importo || 0), 0)
               .toFixed(2)
