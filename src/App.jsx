@@ -955,7 +955,6 @@ function App({ session, onChangeCompany }) {
               { id: 'dashboard', label: '🏠 Home' },
               { id: 'agenda', label: '📅 Agenda' },
               { id: 'planning', label: '📋 Planning' },
-              { id: 'mie_aziende', label: '🏢 Mie Aziende' },
               { id: 'utenti', label: '👥 Utenti' },
               { id: 'preventivi', label: '📄 Preventivi' },
               ...(userData.ruolo === 'admin' ? [{ id: 'contabilita', label: '📒 Contabilità' }] : []),
@@ -1031,19 +1030,6 @@ function App({ session, onChangeCompany }) {
 
             {vistaCorrente === 'planning' && (
               <PaginaPlanning operatori={operatoriList} userData={userData} />
-            )}
-
-            {vistaCorrente === 'mie_aziende' && (
-              <PaginaAziendeAssegnate
-                aziende={aziende}
-                userData={userData}
-                preventivi={preventivi}
-                tipiControllo={TIPI_CONTROLLO}
-                onUpdateAzienda={handleUpdateAzienda}
-                onAddControllo={handleAddControllo}
-                onCambiaStato={handleCambiaStatoAzienda}
-                isMobile={isMobile}
-              />
             )}
 
             {vistaCorrente === 'utenti' && (
@@ -1142,7 +1128,7 @@ function App({ session, onChangeCompany }) {
             <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
               {[
                 { id: 'agenda', label: '📅 Agenda' },
-                { id: 'mie_aziende', label: '🏢 Aziende' },
+                { id: 'aziende', label: '🏢 Aziende' },
                 { id: 'preventivi', label: '📄 Preventivi' },
               ].map(v => (
                 <button
@@ -1181,8 +1167,9 @@ function App({ session, onChangeCompany }) {
               />
             )}
 
-            {vistaCorrente === 'mie_aziende' && (
+            {vistaCorrente === 'aziende' && (
               <PaginaAziendeAssegnate
+                tutteLeAziende
                 aziende={aziende}
                 userData={userData}
                 preventivi={preventivi}

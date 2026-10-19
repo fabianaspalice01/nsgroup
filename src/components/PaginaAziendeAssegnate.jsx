@@ -110,7 +110,7 @@ function CardAzienda({ az, onOpen, onCambiaStato }) {
   );
 }
 
-function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiControllo = [], onUpdateAzienda, onAddControllo, onCambiaStato, isMobile }) {
+function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiControllo = [], onUpdateAzienda, onAddControllo, onCambiaStato, isMobile, tutteLeAziende = false }) {
   const [aziendaSelezionata, setAziendaSelezionata] = useState(null);
   const [ricerca, setRicerca] = useState('');
   const [colAttiva, setColAttiva] = useState('da_fare');
@@ -118,7 +118,10 @@ function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiContro
 
   const isAdmin = userData?.ruolo === 'admin' || userData?.ruolo === 'operatore';
 
-  const aziendeAssegnate = aziende.filter(a => a.assegnatoA === userData?.id);
+  // tutteLeAziende: elenco completo delle aziende attive invece delle sole assegnate
+  const aziendeAssegnate = tutteLeAziende
+    ? aziende.filter(a => !a.archiviata)
+    : aziende.filter(a => a.assegnatoA === userData?.id);
 
   const aziendeFiltrate = aziendeAssegnate.filter(a =>
     !ricerca || a.nome?.toLowerCase().includes(ricerca.toLowerCase()) || a.comune?.toLowerCase().includes(ricerca.toLowerCase())
@@ -146,9 +149,11 @@ function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiContro
     <div>
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
-        <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: '#1a2540' }}>🏢 Le mie aziende</h2>
+        <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: '#1a2540' }}>{tutteLeAziende ? '🏢 Aziende' : '🏢 Le mie aziende'}</h2>
         <p style={{ margin: '4px 0 0', fontSize: 13, color: '#5f6f8c' }}>
-          {aziendeAssegnate.length} aziend{aziendeAssegnate.length === 1 ? 'a assegnata' : 'e assegnate'}
+          {tutteLeAziende
+            ? `${aziendeAssegnate.length} aziend${aziendeAssegnate.length === 1 ? 'a' : 'e'}`
+            : `${aziendeAssegnate.length} aziend${aziendeAssegnate.length === 1 ? 'a assegnata' : 'e assegnate'}`}
         </p>
       </div>
 
@@ -173,8 +178,8 @@ function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiContro
       {aziendeAssegnate.length === 0 && (
         <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: 16, border: '1px dashed #dfe5ef' }}>
           <div style={{ fontSize: 44, marginBottom: 12 }}>🏢</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#1a2540', marginBottom: 6 }}>Nessuna azienda assegnata</div>
-          <div style={{ fontSize: 13, color: '#9aa7bf' }}>Contatta l'amministratore per ottenere l'accesso alle aziende</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#1a2540', marginBottom: 6 }}>{tutteLeAziende ? 'Nessuna azienda' : 'Nessuna azienda assegnata'}</div>
+          {!tutteLeAziende && <div style={{ fontSize: 13, color: '#9aa7bf' }}>Contatta l'amministratore per ottenere l'accesso alle aziende</div>}
         </div>
       )}
 
