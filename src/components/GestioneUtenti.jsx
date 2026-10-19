@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { useState, useEffect, useRef } from 'react';
+import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, setDoc, getDocs, query, where } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp, deleteApp } from 'firebase/app';
 import { db, firebaseConfig } from '../firebase';
@@ -13,6 +13,18 @@ async function allineaAdmin(email, nome, admin) {
   if (admin) await setDoc(rif, { email: email.trim().toLowerCase(), nome: nome || '' });
   else await deleteDoc(rif);
 }
+
+// Allo stesso modo la raccolta accessi_azienda (una voce per email) dice alle regole quali account
+// sono di un'azienda cliente: vedono solo la propria azienda. aziendaId vuoto = nessun account azienda.
+// Va scritta prima di creare l'utente o cambiargli ruolo, così l'account non ha mai più permessi del dovuto.
+async function allineaAccessoAzienda(email, aziendaId, attivo = true) {
+  if (!email) return;
+  const rif = doc(db, 'accessi_azienda', email.trim().toLowerCase());
+  if (aziendaId) await setDoc(rif, { email: email.trim().toLowerCase(), aziendaId, attivo });
+  else await deleteDoc(rif);
+}
+
+const RUOLI_VALIDI = ['admin', 'operatore', 'consulente', 'azienda'];
 
 function GestioneUtenti({ aziende, utenteCorrente }) {
   const [utenti, setUtenti] = useState([]);
@@ -38,7 +50,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     const unsubscribe = onSnapshot(
       collection(db, 'users'),
       (snapshot) => {
-        setUtenti(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })).filter(u => ['admin', 'operatore', 'consulente'].includes(u.ruolo)));
+        setUtenti(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })).filter(u => RUOLI_VALIDI.includes(u.ruolo)));
         setLoading(false);
       },
       (error) => {
@@ -49,11 +61,23 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     return () => unsubscribe();
   }, []);
 
+  // Account azienda creati prima di accessi_azienda: li allinea una volta all'apertura
+  const accessiAllineati = useRef(false);
+  useEffect(() => {
+    if (loading || accessiAllineati.current) return;
+    accessiAllineati.current = true;
+    utenti.filter(u => u.ruolo === 'azienda' && u.aziendaId).forEach(u => {
+      allineaAccessoAzienda(u.email, u.aziendaId, u.attivo !== false)
+        .catch(err => console.error('Errore allineamento accesso azienda:', err));
+    });
+  }, [loading, utenti]);
+
   const toggleAttivo = async (userId, attivoCorrente) => {
     try {
+      const u = utenti.find(x => x.id === userId);
+      if (u?.ruolo === 'azienda') await allineaAccessoAzienda(u.email, u.aziendaId, !attivoCorrente);
       const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, { attivo: !attivoCorrente });
-      const u = utenti.find(x => x.id === userId);
       if (u?.ruolo === 'admin') await allineaAdmin(u.email, u.nome, !attivoCorrente);
       setUtenti(utenti.map(u => u.id === userId ? { ...u, attivo: !attivoCorrente } : u));
       toast.success(`Utente ${!attivoCorrente ? 'attivato' : 'disattivato'} con successo!`);
@@ -71,11 +95,16 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
 
   const salvaRuolo = async () => {
     if (!utentePerRuolo) return;
-    if (!['admin', 'operatore', 'consulente'].includes(nuovoRuolo)) {
-      toast.error('Seleziona un ruolo del personale interno');
+    if (!RUOLI_VALIDI.includes(nuovoRuolo)) {
+      toast.error('Seleziona un ruolo');
+      return;
+    }
+    if (nuovoRuolo === 'azienda' && !nuovoAziendaId) {
+      toast.error('Seleziona un\'azienda');
       return;
     }
     try {
+      await allineaAccessoAzienda(utentePerRuolo.email, nuovoRuolo === 'azienda' ? nuovoAziendaId : '', utentePerRuolo.attivo !== false);
       await updateDoc(doc(db, 'users', utentePerRuolo.id), {
         ruolo: nuovoRuolo,
         aziendaId: nuovoRuolo === 'azienda' ? nuovoAziendaId : '',
@@ -456,6 +485,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                 {utenteCorrente?.ruolo === 'admin' && <option value="admin">Admin</option>}
                 <option value="consulente">Consulente</option>
                 <option value="operatore">Operatore</option>
+                <option value="azienda">Azienda</option>
               </select>
             </div>
 
@@ -636,8 +666,13 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
       return;
     }
 
-    if (!['admin', 'operatore', 'consulente'].includes(form.ruolo)) {
-      setError('Seleziona un ruolo del personale interno');
+    if (!RUOLI_VALIDI.includes(form.ruolo)) {
+      setError('Seleziona un ruolo');
+      return;
+    }
+
+    if (form.ruolo === 'azienda' && !form.aziendaId) {
+      setError('Seleziona un\'azienda per questo utente');
       return;
     }
 
@@ -646,7 +681,15 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
     // App Firebase secondaria: evita che la creazione dell'utente disconnetta l'admin
     const secondaryApp = initializeApp(firebaseConfig, `user-${Date.now()}`);
     const secondaryAuth = getAuth(secondaryApp);
+    let accessoScritto = false;
     try {
+      const esistente = await getDocs(query(collection(db, 'users'), where('email', '==', form.email.trim())));
+      if (!esistente.empty) {
+        setError('Questa email è già registrata');
+        return;
+      }
+      await allineaAccessoAzienda(form.email, form.ruolo === 'azienda' ? form.aziendaId : '');
+      accessoScritto = form.ruolo === 'azienda';
       await createUserWithEmailAndPassword(secondaryAuth, form.email, form.password);
 
       await addDoc(collection(db, 'users'), {
@@ -662,6 +705,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
       onSave();
     } catch (error) {
       console.error('Errore nella creazione utente:', error);
+      if (accessoScritto) await allineaAccessoAzienda(form.email, '').catch(() => {});
       if (error.code === 'auth/email-already-in-use') {
         setError('Questa email è già registrata');
       } else if (error.code === 'auth/invalid-email') {
@@ -717,6 +761,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             {puoCreareAdmin && <option value="admin">Admin</option>}
             <option value="consulente">Consulente</option>
             <option value="operatore">Operatore</option>
+            <option value="azienda">Azienda</option>
           </select>
         </div>
 

@@ -8,11 +8,27 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower()));
     }
 
-    // Tutto il resto: basta essere autenticati.
-    // Il controllo dei ruoli (admin/consulente/azienda) avviene nel codice React.
-    // Esclusi la contabilità (crm_*) e l'elenco admins, che hanno regole proprie qui sotto.
+    // Account azienda = email presente nella raccolta accessi_azienda (tenuta allineata da Gestione utenti).
+    function accessoAzienda() {
+      return /databases/$(database)/documents/accessi_azienda/$(request.auth.token.email.lower());
+    }
+    function isAzienda() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && exists(accessoAzienda());
+    }
+    function eLaMiaAzienda(aziendaId) {
+      return isAzienda()
+        && get(accessoAzienda()).data.attivo == true
+        && get(accessoAzienda()).data.aziendaId == aziendaId;
+    }
+
+    // Tutto il resto: basta essere autenticati come personale interno.
+    // Il controllo dei ruoli (admin/consulente/operatore) avviene nel codice React.
+    // Esclusi la contabilità (crm_*), admins e accessi_azienda, che hanno regole proprie qui sotto.
     match /{coll}/{rest=**} {
-      allow read, write: if request.auth != null && !coll.matches('crm_.*') && coll != 'admins';
+      allow read, write: if request.auth != null && !isAzienda()
+        && !coll.matches('crm_.*') && coll != 'admins' && coll != 'accessi_azienda';
     }
 
     // Contabilità (CRM): solo amministratori.
@@ -25,6 +41,21 @@ service cloud.firestore {
       allow read: if request.auth != null
         && (request.auth.token.email.lower() == email || isAdmin());
       allow write: if isAdmin();
+    }
+
+    // Elenco account azienda: ognuno vede la propria voce, solo il personale interno lo modifica.
+    match /accessi_azienda/{email} {
+      allow read: if request.auth != null
+        && (request.auth.token.email.lower() == email || !isAzienda());
+      allow write: if request.auth != null && !isAzienda();
+    }
+
+    // Account azienda: in sola lettura la propria scheda e il proprio utente.
+    match /aziende/{aziendaId} {
+      allow read: if eLaMiaAzienda(aziendaId);
+    }
+    match /users/{userId} {
+      allow read: if isAzienda() && resource.data.email == request.auth.token.email;
     }
   }
 }

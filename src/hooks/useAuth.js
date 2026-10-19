@@ -20,10 +20,12 @@ export function useAuth() {
             const userDoc = snap.docs[0];
             const data = { id: userDoc.id, ...userDoc.data() };
 
-            if (!['admin', 'operatore', 'consulente'].includes(data.ruolo)) {
+            const ruoloValido = ['admin', 'operatore', 'consulente'].includes(data.ruolo)
+              || (data.ruolo === 'azienda' && !!data.aziendaId);
+            if (!ruoloValido) {
               setUser(null);
               setUserData(null);
-              toast.error('Accesso riservato al personale interno.');
+              toast.error('Accesso non autorizzato.');
               await signOut(auth);
               setLoading(false);
               return;

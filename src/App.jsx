@@ -122,11 +122,8 @@ function App({ session, onChangeCompany }) {
     if (['admin', 'operatore', 'consulente'].includes(userData.ruolo)) caricaConsulenti();
     if (['admin', 'operatore'].includes(userData.ruolo)) caricaOperatori();
     if (['admin', 'operatore'].includes(userData.ruolo)) caricaReferenti();
-    if (userData.ruolo === 'azienda' && userData.aziendaId) {
-      getDocs(query(collection(db, 'preventivi'), where('aziendaId', '==', userData.aziendaId)))
-        .then(snap => setPreventivi(snap.docs.map(d => ({ id: d.id, ...d.data() }))))
-        .catch(err => console.error('Errore caricamento preventivi azienda:', err));
-    }
+    // L'account azienda legge solo la propria scheda: niente listino né altre raccolte
+    if (userData.ruolo === 'azienda') return;
     if (userData.ruolo === 'admin' || userData.ruolo === 'operatore') {
       caricaPreventivi();
       getDoc(doc(db, 'config', 'tipiControllo')).then(snap => {
@@ -1245,9 +1242,13 @@ function App({ session, onChangeCompany }) {
             onUpdateAzienda={() => {}}
             tipiControllo={TIPI_CONTROLLO}
             readOnly={true}
-            preventivi={preventivi}
             userData={userData}
           />
+        )}
+        {userData.ruolo === 'azienda' && !aziendaSelezionata && (
+          <p style={{ textAlign: 'center', color: '#64748b', padding: 40 }}>
+            Nessun dato disponibile per la tua azienda. Contatta NS Consulting.
+          </p>
         )}
 
         {mostraModaleAzienda && (

@@ -16,7 +16,18 @@ const TABS = [
   { id: 'note', label: '📝 Note' },
 ];
 
+// L'account azienda vede solo controlli antincendio, documenti e pagamenti
+const TABS_AZIENDA = [
+  { id: 'controlli', label: '🧯 Controlli antincendio' },
+  { id: 'documenti', label: '📁 Documenti' },
+  { id: 'pagamenti', label: '💰 Pagamenti' },
+];
+
+const isAntincendio = (controllo) => /antincendio/i.test(controllo.tipo || '');
+
 function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiControllo, readOnly = false, aziende = [], preventivi = [], tabIniziale, userData = null, referenti = [], onDeletePreventivo = null }) {
+  const isAccountAzienda = userData?.ruolo === 'azienda';
+  const tabs = isAccountAzienda ? TABS_AZIENDA : TABS;
   const [tabAttiva, setTabAttiva] = useState(tabIniziale || 'controlli');
 
   useEffect(() => {
@@ -237,8 +248,8 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
           {azienda.pec && <p><strong>PEC:</strong> {azienda.pec}</p>}
           {azienda.partitaIva && <p><strong>P.IVA:</strong> {azienda.partitaIva}</p>}
           {azienda.codiceUnivoco && <p><strong>Codice Univoco:</strong> {azienda.codiceUnivoco}</p>}
-          {azienda.note && <p><strong>Note:</strong> {azienda.note}</p>}
-          {azienda.assegnatoNome && (
+          {azienda.note && !isAccountAzienda && <p><strong>Note:</strong> {azienda.note}</p>}
+          {azienda.assegnatoNome && !isAccountAzienda && (
             <p><strong>Assegnato a:</strong> <span style={{ color: '#2c3e66', fontWeight: 600 }}>👤 {azienda.assegnatoNome}</span></p>
           )}
         </div>
@@ -247,7 +258,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
       {/* Tab navigation */}
       <div style={{ marginBottom: '20px', background: 'white', padding: '6px', borderRadius: '10px', border: '1px solid #dfe5ef', overflowX: isMobile ? 'auto' : 'visible' }}>
         <div style={{ display: 'flex', gap: '4px', minWidth: isMobile ? 'max-content' : 'unset' }}>
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setTabAttiva(tab.id)}
@@ -275,7 +286,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
       <div>
         {tabAttiva === 'controlli' && (
           <TabControlli
-            azienda={azienda}
+            azienda={isAccountAzienda ? { ...azienda, controlli: (azienda.controlli || []).filter(isAntincendio) } : azienda}
             onUpdateAzienda={onUpdateAzienda}
             onAddControllo={onAddControllo}
             tipiControllo={tipiControllo}
