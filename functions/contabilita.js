@@ -1,8 +1,11 @@
-// Collegamento fra l'app NS Consulting e la sua contabilità (collezioni crm_consulting_*).
+// Collegamento fra l'app e la contabilità delle tre società del gruppo (collezioni crm_<società>_*).
+// Aziende, preventivi e contratti hanno il campo «societa» (consulting | safety | academy; se manca vale
+// consulting): ognuno finisce nella contabilità della sua società. Un preventivo o un contratto di una
+// società diversa da quella dell'azienda rende l'azienda cliente anche di quella società.
 //
-// - aziende  ↔ crm_consulting_clienti   nei due sensi: si copiano solo i campi anagrafici cambiati,
+// - aziende  ↔ crm_<società>_clienti   nei due sensi: si copiano solo i campi anagrafici cambiati,
 //   così nessuna delle due parti cancella dati che l'altra non conosce.
-// - preventivi → crm_consulting_preventivi, con i pagamenti come incassi di prima nota
+// - preventivi → crm_<società>_preventivi, con i pagamenti come incassi di prima nota
 //   e i servizi «VISITE MEDICHE» come visite.
 // - pagamenti delle aziende → incassi di prima nota.
 // - contratti → canone, periodicità e scadenza del cliente (vale il contratto più recente).
@@ -10,12 +13,15 @@
 // Le eliminazioni non si propagano: la contabilità conserva lo storico. Se si elimina una parte,
 // l'altra resta ma viene segnata come scollegata e non viene ricreata.
 const { onDocumentWritten } = require('firebase-functions/v2/firestore');
-const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const admin = require('firebase-admin');
 
 const db = () => admin.firestore();
-const CRM = 'crm_consulting_';
-const col = (nome) => db().collection(CRM + nome);
+const SOCIETA = ['consulting', 'safety', 'academy'];
+const societaDi = (x) => (SOCIETA.includes(x?.societa) ? x.societa : 'consulting');
+const col = (soc, nome) => db().collection(`crm_${soc}_${nome}`);
+// campi dell'azienda con il cliente collegato in ogni contabilità (consulting tiene i nomi storici)
+const campoCid = (soc) => (soc === 'consulting' ? 'crmClienteId' : `crmClienteId_${soc}`);
+const campoScoll = (soc) => (soc === 'consulting' ? 'crmScollegata' : `crmScollegata_${soc}`);
 const CANC = () => admin.firestore.FieldValue.delete();
 
 const s = (v) => (v == null ? '' : String(v));
@@ -62,20 +68,20 @@ const somiglia = (a, b) => {
 
 /* ───────── aziende → clienti ───────── */
 
-// restituisce l'id del cliente collegato all'azienda, collegandone o creandone uno se serve
-async function assicuraCliente(azId, az) {
-  if (az.crmScollegata) return null;
-  if (az.crmClienteId) {
-    const d = await col('clienti').doc(az.crmClienteId).get();
+// restituisce l'id del cliente collegato all'azienda nella contabilità «soc», collegandone o creandone uno se serve
+async function assicuraCliente(soc, azId, az) {
+  if (az[campoScoll(soc)]) return null;
+  if (az[campoCid(soc)]) {
+    const d = await col(soc, 'clienti').doc(az[campoCid(soc)]).get();
     if (d.exists && (!d.data().aziendaId || d.data().aziendaId === azId)) {
       if (!d.data().aziendaId) await d.ref.update({ aziendaId: azId });
       return d.id;
     }
   }
-  const q = await col('clienti').where('aziendaId', '==', azId).limit(1).get();
+  const q = await col(soc, 'clienti').where('aziendaId', '==', azId).limit(1).get();
   let cid = q.empty ? null : q.docs[0].id;
   if (!cid) {
-    const tutti = await col('clienti').get();
+    const tutti = await col(soc, 'clienti').get();
     const libero = tutti.docs.find((d) => {
       const c = d.data();
       return !c.aziendaId && !c.aziendaScollegata && c.natura !== 'categoria'
@@ -88,13 +94,13 @@ async function assicuraCliente(azId, az) {
       if (Object.keys(verso).length) await db().collection('aziende').doc(azId).update(verso);
     } else {
       cid = azId;
-      await col('clienti').doc(cid).set({
+      await col(soc, 'clienti').doc(cid).set({
         ...daAzienda(az), aziendaId: azId, creato: oggi(), docAbituale: 'fattura',
         note: 'Creato automaticamente dalla sezione Aziende dell\'app.',
       }, { merge: true });
     }
   }
-  if (az.crmClienteId !== cid) await db().collection('aziende').doc(azId).update({ crmClienteId: cid });
+  if (az[campoCid(soc)] !== cid) await db().collection('aziende').doc(azId).update({ [campoCid(soc)]: cid });
   return cid;
 }
 
@@ -102,7 +108,7 @@ const METODO = { bonifico: 'bonifico', contanti: 'contanti', assegno: 'assegno',
 const metodo = (m) => METODO[s(m).trim().toLowerCase()] || 'altro';
 
 // pagamenti registrati nella scheda dell'azienda → incassi di prima nota
-async function allineaPagamentiAzienda(azId, pagamenti, cid) {
+async function allineaPagamentiAzienda(soc, azId, pagamenti, cid) {
   const attesi = new Set();
   for (const p of (pagamenti || [])) {
     const imp = numero(p.importo);
@@ -117,12 +123,12 @@ async function allineaPagamentiAzienda(azId, pagamenti, cid) {
       note: s(p.note),
     };
     if (p.numeroFattura && cid) {
-      const f = await col('fatture').where('clienteId', '==', cid).where('numero', '==', s(p.numeroFattura)).limit(1).get();
+      const f = await col(soc, 'fatture').where('clienteId', '==', cid).where('numero', '==', s(p.numeroFattura)).limit(1).get();
       if (!f.empty) rec.fatturaId = f.docs[0].id;
     }
-    await col('movimenti').doc(id).set(rec, { merge: true });
+    await col(soc, 'movimenti').doc(id).set(rec, { merge: true });
   }
-  const esistenti = await col('movimenti').where('aziendaId', '==', azId).get();
+  const esistenti = await col(soc, 'movimenti').where('aziendaId', '==', azId).get();
   for (const d of esistenti.docs) {
     if (d.data().origine === 'azienda' && !attesi.has(d.id)) await d.ref.delete();
   }
@@ -130,33 +136,47 @@ async function allineaPagamentiAzienda(azId, pagamenti, cid) {
 
 async function allineaAzienda(azId, prima, dopo, forza) {
   if (!dopo) {
-    const q = await col('clienti').where('aziendaId', '==', azId).get();
-    for (const d of q.docs) await d.ref.update({ aziendaId: CANC(), aziendaScollegata: true });
+    for (const soc of SOCIETA) {
+      const q = await col(soc, 'clienti').where('aziendaId', '==', azId).get();
+      for (const d of q.docs) await d.ref.update({ aziendaId: CANC(), aziendaScollegata: true });
+    }
     return;
   }
-  if (dopo.crmScollegata) return;
-  const giaCollegata = !!dopo.crmClienteId;
-  const cid = await assicuraCliente(azId, dopo);
-  if (!cid) return;
-  if (giaCollegata) {
-    const cl = (await col('clienti').doc(cid).get()).data() || {};
-    const agg = {};
-    for (const [a, c] of (forza ? MAPPA : cambiati(prima, dopo, 'azienda'))) {
-      if (s(dopo[a]) !== s(cl[c]) && !(forza && vuoto(dopo[a]))) agg[c] = s(dopo[a]);
+  const socAz = societaDi(dopo);
+  const socPrima = prima ? societaDi(prima) : socAz;
+  // anagrafica: nella contabilità della società dell'azienda e in quelle dove è già cliente;
+  // pagamenti della scheda: solo nella contabilità della società dell'azienda
+  for (const soc of SOCIETA) {
+    const principale = soc === socAz;
+    if (!principale) {
+      if (forza || socPrima === soc) await allineaPagamentiAzienda(soc, azId, [], null);
+      if (!dopo[campoCid(soc)]) continue;
     }
-    if (Object.keys(agg).length) await col('clienti').doc(cid).update(agg);
-  }
-  if (forza || JSON.stringify(prima?.pagamenti || []) !== JSON.stringify(dopo.pagamenti || []) || !giaCollegata) {
-    await allineaPagamentiAzienda(azId, dopo.pagamenti, cid);
+    if (dopo[campoScoll(soc)]) continue;
+    const giaCollegata = !!dopo[campoCid(soc)];
+    const cid = await assicuraCliente(soc, azId, dopo);
+    if (!cid) continue;
+    if (giaCollegata) {
+      const cl = (await col(soc, 'clienti').doc(cid).get()).data() || {};
+      const agg = {};
+      for (const [a, c] of (forza ? MAPPA : cambiati(prima, dopo, 'azienda'))) {
+        if (s(dopo[a]) !== s(cl[c]) && !(forza && vuoto(dopo[a]))) agg[c] = s(dopo[a]);
+      }
+      if (Object.keys(agg).length) await col(soc, 'clienti').doc(cid).update(agg);
+    }
+    if (principale && (forza || !giaCollegata || socPrima !== socAz
+      || JSON.stringify(prima?.pagamenti || []) !== JSON.stringify(dopo.pagamenti || []))) {
+      await allineaPagamentiAzienda(soc, azId, dopo.pagamenti, cid);
+    }
   }
 }
 
 /* ───────── clienti → aziende ───────── */
 
-async function allineaCliente(cid, prima, dopo) {
+async function allineaCliente(soc, cid, prima, dopo) {
   if (!dopo) {
-    const q = await db().collection('aziende').where('crmClienteId', '==', cid).get();
-    for (const d of q.docs) await d.ref.update({ crmClienteId: CANC(), crmScollegata: true });
+    const q = await db().collection('aziende').where(campoCid(soc), '==', cid).get();
+    for (const d of q.docs) await d.ref.update({ [campoCid(soc)]: CANC(), [campoScoll(soc)]: true });
     return;
   }
   if (dopo.aziendaScollegata || dopo.natura === 'categoria') return;
@@ -170,46 +190,56 @@ async function allineaCliente(cid, prima, dopo) {
     if (Object.keys(agg).length) await az.ref.update(agg);
     return;
   }
-  // cliente nuovo della contabilità: si collega a un'azienda esistente o se ne crea una
+  // cliente nuovo della contabilità: si collega a un'azienda esistente o se ne crea una della stessa società
   const aziende = await db().collection('aziende').get();
-  const trovata = aziende.docs.find((d) => d.data().crmClienteId === cid)
+  const trovata = aziende.docs.find((d) => d.data()[campoCid(soc)] === cid)
     || aziende.docs.find((d) => {
       const a = d.data();
-      return !a.crmClienteId && !a.crmScollegata
+      return !a[campoCid(soc)] && !a[campoScoll(soc)]
         && somiglia({ piva: dopo.piva, nome: dopo.ragioneSociale }, { piva: a.partitaIva, nome: a.nome });
     });
   let azId;
   if (trovata) {
     azId = trovata.id;
-    await trovata.ref.update({ crmClienteId: cid, ...completa(dopo, trovata.data(), 'cliente') });
+    await trovata.ref.update({ [campoCid(soc)]: cid, ...completa(dopo, trovata.data(), 'cliente') });
     const verso = completa(trovata.data(), dopo, 'azienda');
-    await col('clienti').doc(cid).update({ aziendaId: azId, ...verso });
+    await col(soc, 'clienti').doc(cid).update({ aziendaId: azId, ...verso });
   } else {
     const nuova = await db().collection('aziende').add({
       ...daCliente(dopo), note: '', controlli: [], dipendenti: [], documenti: [], pagamenti: [],
-      crmClienteId: cid, origine: 'contabilita',
+      societa: soc, [campoCid(soc)]: cid, origine: 'contabilita',
     });
     azId = nuova.id;
-    await col('clienti').doc(cid).update({ aziendaId: azId });
+    await col(soc, 'clienti').doc(cid).update({ aziendaId: azId });
   }
 }
 
 /* ───────── preventivi → contabilità ───────── */
 
+const figliPreventivo = async (soc, pid, nome) => (await col(soc, nome).where('preventivoId', '==', pid).get()).docs
+  .filter((d) => d.data().origine === 'preventivo');
+
+// toglie il preventivo da una contabilità (restano incassi e visite già fatturati)
+async function rimuoviPreventivo(soc, pid) {
+  const ref = col(soc, 'preventivi').doc(pid);
+  if (!(await ref.get()).exists) return;
+  await ref.delete();
+  for (const d of await figliPreventivo(soc, pid, 'movimenti')) if (!d.data().fatturaId) await d.ref.delete();
+  for (const d of await figliPreventivo(soc, pid, 'visite')) if (!d.data().fatturaId) await d.ref.delete();
+}
+
 async function allineaPreventivo(pid, dopo) {
-  const figli = async (nome) => (await col(nome).where('preventivoId', '==', pid).get()).docs
-    .filter((d) => d.data().origine === 'preventivo');
   if (!dopo) {
-    await col('preventivi').doc(pid).delete();
-    for (const d of await figli('movimenti')) if (!d.data().fatturaId) await d.ref.delete();
-    for (const d of await figli('visite')) if (!d.data().fatturaId) await d.ref.delete();
+    for (const soc of SOCIETA) await rimuoviPreventivo(soc, pid);
     return;
   }
+  const az = dopo.aziendaId ? await db().collection('aziende').doc(dopo.aziendaId).get() : null;
+  const soc = SOCIETA.includes(dopo.societa) ? dopo.societa : societaDi(az?.exists ? az.data() : null);
+  // se il preventivo è passato a un'altra società, esce dalla contabilità precedente
+  for (const altra of SOCIETA) if (altra !== soc) await rimuoviPreventivo(altra, pid);
+  const figli = (nome) => figliPreventivo(soc, pid, nome);
   let cid = null;
-  if (dopo.aziendaId) {
-    const az = await db().collection('aziende').doc(dopo.aziendaId).get();
-    if (az.exists) cid = await assicuraCliente(az.id, az.data());
-  }
+  if (az?.exists) cid = await assicuraCliente(soc, az.id, az.data());
   const servizi = (dopo.servizi || []).filter((x) => numero(x.quantita) > 0 && s(x.descrizione).trim());
   const lordo = servizi.reduce((t, x) => t + (x.omaggio ? 0 : numero(x.quantita) * numero(x.prezzoUnitario)), 0);
   const sconto = numero(dopo.sconto);
@@ -226,8 +256,8 @@ async function allineaPreventivo(pid, dopo) {
     pdfUrl: s(dopo.pdfUrl), aziendaId: s(dopo.aziendaId), origine: 'app',
   };
   if (cid) rec.clienteId = cid;
-  await col('preventivi').doc(pid).set(rec, { merge: true });
-  const clienteId = cid || (await col('preventivi').doc(pid).get()).data()?.clienteId || null;
+  await col(soc, 'preventivi').doc(pid).set(rec, { merge: true });
+  const clienteId = cid || (await col(soc, 'preventivi').doc(pid).get()).data()?.clienteId || null;
   const etichetta = `preventivo del ${fdate(rec.data)}${rec.nomeCliente ? ' — ' + rec.nomeCliente : ''}`;
 
   // pagamenti del preventivo → incassi
@@ -238,7 +268,7 @@ async function allineaPreventivo(pid, dopo) {
     const id = `pp_${pid}_${p.id}`;
     attesiMov.add(id);
     const met = metodo(p.metodoPagamento);
-    await col('movimenti').doc(id).set({
+    await col(soc, 'movimenti').doc(id).set({
       data: s(p.data).slice(0, 10) || oggi(), tipo: 'entrata', metodo: met, importo: tondo(imp),
       istituto: met === 'contanti' ? 'CASSA' : '', clienteId, preventivoId: pid, origine: 'preventivo',
       causale: `Pagamento ${etichetta}`, note: s(p.note || p.descrizione),
@@ -253,7 +283,7 @@ async function allineaPreventivo(pid, dopo) {
     const id = `pv_${pid}_${s(x.id) || attesiVis.size}`;
     attesiVis.add(id);
     const dip = (x.dipendenti || []).map((d) => s(d.nome).trim()).filter(Boolean);
-    await col('visite').doc(id).set({
+    await col(soc, 'visite').doc(id).set({
       clienteId, data: rec.data, dipendenti: dip, nVisite: Math.round(numero(x.quantita)), prelievi: 0,
       tipo: 'pagamento', importo: x.omaggio ? 0 : tondo(numero(x.quantita) * numero(x.prezzoUnitario) * (1 - sconto / 100)),
       preventivoId: pid, origine: 'preventivo', note: `Dal ${etichetta}`,
@@ -266,34 +296,37 @@ async function allineaPreventivo(pid, dopo) {
 
 const MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
 const CAMPI_CONTRATTO = ['contrattoId', 'contrattoData', 'contrattoScadenza', 'contrattoPdf'];
+const scollegaContratto = (d) => d.ref.update(Object.fromEntries(CAMPI_CONTRATTO.map((k) => [k, CANC()])));
 
 async function allineaContratto(kid, dopo) {
-  const legati = await col('clienti').where('contrattoId', '==', kid).get();
+  const legati = {};
+  for (const soc of SOCIETA) legati[soc] = (await col(soc, 'clienti').where('contrattoId', '==', kid).get()).docs;
   if (!dopo) {
     // contratto eliminato: il cliente resta con il suo canone, si toglie solo il collegamento
-    for (const d of legati.docs) await d.ref.update(Object.fromEntries(CAMPI_CONTRATTO.map((k) => [k, CANC()])));
+    for (const soc of SOCIETA) for (const d of legati[soc]) await scollegaContratto(d);
     return;
   }
   if (!dopo.aziendaId) return;
   const az = await db().collection('aziende').doc(dopo.aziendaId).get();
   if (!az.exists) return;
-  const cid = await assicuraCliente(az.id, az.data());
+  const soc = SOCIETA.includes(dopo.societa) ? dopo.societa : societaDi(az.data());
+  // se il contratto è passato a un'altra società, esce dalla contabilità precedente
+  for (const altra of SOCIETA) if (altra !== soc) for (const d of legati[altra]) await scollegaContratto(d);
+  const cid = await assicuraCliente(soc, az.id, az.data());
   if (!cid) return;
-  const cl = (await col('clienti').doc(cid).get()).data() || {};
+  const cl = (await col(soc, 'clienti').doc(cid).get()).data() || {};
   // un contratto più vecchio non sostituisce quello più recente già registrato
   if (cl.contrattoId && cl.contrattoId !== kid && s(cl.contrattoData) > s(dopo.data)) return;
   const importo = tondo(numero(dopo.importoTotale));
   const periodicita = dopo.periodicita === 'annuale' ? 'annuale' : 'mensile';
   const mese = MESI[Number(s(dopo.data).slice(5, 7)) - 1] || '';
-  await col('clienti').doc(cid).update({
+  await col(soc, 'clienti').doc(cid).update({
     canoneRaw: importo ? `${String(importo).replace('.', ',')} + IVA` : '',
     canoneImporto: importo || null, canoneRegime: importo ? 'netto' : '', daVerificare: false,
     periodicita, meseRinnovo: periodicita === 'annuale' ? mese : s(cl.meseRinnovo),
     contrattoId: kid, contrattoData: s(dopo.data), contrattoScadenza: s(dopo.scadenza), contrattoPdf: s(dopo.pdfUrl),
   });
-  for (const d of legati.docs) {
-    if (d.id !== cid) await d.ref.update(Object.fromEntries(CAMPI_CONTRATTO.map((k) => [k, CANC()])));
-  }
+  for (const d of legati[soc]) if (d.id !== cid) await scollegaContratto(d);
 }
 
 /* ───────── trigger ───────── */
@@ -301,34 +334,14 @@ async function allineaContratto(kid, dopo) {
 exports.contabilitaAzienda = onDocumentWritten('aziende/{id}', (event) =>
   allineaAzienda(event.params.id, event.data?.before?.data(), event.data?.after?.data(), false));
 
-exports.contabilitaCliente = onDocumentWritten(`${CRM}clienti/{id}`, (event) =>
-  allineaCliente(event.params.id, event.data?.before?.data(), event.data?.after?.data()));
+const triggerCliente = (soc) => onDocumentWritten(`crm_${soc}_clienti/{id}`, (event) =>
+  allineaCliente(soc, event.params.id, event.data?.before?.data(), event.data?.after?.data()));
+exports.contabilitaCliente = triggerCliente('consulting');
+exports.contabilitaClienteSafety = triggerCliente('safety');
+exports.contabilitaClienteAcademy = triggerCliente('academy');
 
 exports.contabilitaPreventivo = onDocumentWritten('preventivi/{id}', (event) =>
   allineaPreventivo(event.params.id, event.data?.after?.data()));
 
 exports.contabilitaContratto = onDocumentWritten('contratti/{id}', (event) =>
   allineaContratto(event.params.id, event.data?.after?.data()));
-
-// allineamento completo, lanciato dal pulsante «Sincronizza con l'app» della contabilità (solo amministratori)
-exports.sincronizzaContabilita = onCall({ timeoutSeconds: 540, memory: '512MiB' }, async (req) => {
-  const email = s(req.auth?.token?.email).toLowerCase();
-  if (!email || !(await db().collection('admins').doc(email).get()).exists) {
-    throw new HttpsError('permission-denied', 'Solo gli amministratori possono sincronizzare la contabilità.');
-  }
-  const conta = { aziende: 0, clienti: 0, preventivi: 0, contratti: 0 };
-  for (const d of (await db().collection('aziende').get()).docs) {
-    await allineaAzienda(d.id, null, d.data(), true); conta.aziende++;
-  }
-  for (const d of (await col('clienti').get()).docs) {
-    const c = d.data();
-    if (!c.aziendaId && !c.aziendaScollegata && c.natura !== 'categoria') { await allineaCliente(d.id, null, c); conta.clienti++; }
-  }
-  for (const d of (await db().collection('preventivi').get()).docs) {
-    await allineaPreventivo(d.id, d.data()); conta.preventivi++;
-  }
-  const contratti = (await db().collection('contratti').get()).docs
-    .sort((a, b) => s(a.data().data).localeCompare(s(b.data().data)));
-  for (const d of contratti) { await allineaContratto(d.id, d.data()); conta.contratti++; }
-  return conta;
-});

@@ -299,3 +299,6 @@ exports.notificaAttivitaConsulente = onDocumentCreated('notifiche_admin/{docId}'
 
 // ── CONTABILITÀ NS CONSULTING: collegamento con aziende e preventivi ─────────
 Object.assign(exports, require('./contabilita'));
+
+// ── AGENDA ↔ GOOGLE CALENDAR ────────────────────────────────────────────────
+Object.assign(exports, require('./googleCalendar'));

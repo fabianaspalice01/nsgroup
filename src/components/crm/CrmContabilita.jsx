@@ -2,11 +2,7 @@ import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { collection, doc, onSnapshot, setDoc, deleteDoc, updateDoc, getDocs, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { httpsCallable } from 'firebase/functions';
-import { db, storage, functions } from '../../firebase';
-
-// Aziende la cui contabilità è collegata alle sezioni dell'app (functions/contabilita.js)
-const COLLEGATE = ['consulting'];
+import { db, storage } from '../../firebase';
 
 // Il CRM contabilità è una pagina HTML autonoma (public/crm-contabilita.html) caricata in un iframe.
 // Qui gli prepariamo l'archivio dell'azienda: le collezioni Firestore crm_<azienda>_* e gli allegati su Storage.
@@ -16,7 +12,7 @@ const COLLEGATE = ['consulting'];
 const pulisci = (dati) => JSON.parse(JSON.stringify(dati));
 
 // Logo mostrato in cima alla barra laterale del CRM
-const LOGHI = { safety: '/logo-nssafety.jpeg', consulting: '/logo-nsconsulting.jpeg' };
+const LOGHI = { safety: '/logo-nssafety.jpeg', consulting: '/logo-nsconsulting.jpeg', academy: '/logo-nsacademy.jpeg' };
 
 function creaArchivio(azienda, nomeAzienda, utente) {
   const prefisso = `crm_${azienda}_`;
@@ -27,10 +23,8 @@ function creaArchivio(azienda, nomeAzienda, utente) {
     utente,
     azienda: nomeAzienda,
     logo: LOGHI[azienda] || null,
-    // allinea aziende, preventivi e pagamenti dell'app con questa contabilità
-    sincronizza: COLLEGATE.includes(azienda)
-      ? async () => (await httpsCallable(functions, 'sincronizzaContabilita', { timeout: 540000 })()).data
-      : null,
+    // nessun pulsante «Sincronizza con l'app»: l'allineamento avviene da solo a ogni modifica (functions/contabilita.js)
+    sincronizza: null,
     collection: (nome) => ({
       onSnapshot: (ok, errore) => {
         const stop = onSnapshot(collection(db, prefisso + nome), ok, errore);

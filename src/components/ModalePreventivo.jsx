@@ -5,6 +5,8 @@ import SignatureCanvas from 'react-signature-canvas';
 import jsPDF from 'jspdf';
 import { PDFDocument } from 'pdf-lib';
 import { caricaLogoPdf, LOGO_RATIO } from '../utils/logoPdf';
+import SelettoreSocieta from './SelettoreSocieta';
+import { societaDi } from '../utils/societa';
 
 const SERVIZI_PREDEFINITI = [
     'DVR (documentazione di valutazione dei rischi)',
@@ -148,7 +150,10 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
             { id: 203, descrizione: '', quantita: '', prezzoUnitario: '', custom: true, dipendenti: [] },
           ];
 
+    const aziendaDiPartenza = aziende.find(a => a.id === (preventivoInModifica?.aziendaId || appuntamento?.aziendaId));
     const formIniziale = {
+        // società del gruppo a cui va il preventivo (e la sua contabilità); di base quella dell'azienda
+        societa: preventivoInModifica?.societa || (aziendaDiPartenza || preventivoInModifica ? societaDi(aziendaDiPartenza) : ''),
         aziendaId: preventivoInModifica?.aziendaId || appuntamento?.aziendaId || '',
         nuovoCliente: preventivoInModifica?.nuovoCliente || {
             nome: appuntamento?.nuovoCliente?.nome || '',
@@ -439,6 +444,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
     };
 
     const handleSubmit = async () => {
+        if (!form.societa) { toast.error('Indica a quale società si riferisce il preventivo!'); setStep(1); return; }
         if (tipoCliente === 'registrato' && !form.aziendaId) { toast.error("Seleziona un'azienda!"); return; }
         if (tipoCliente === 'nuovo' && !form.nuovoCliente.nome) { toast.error("Inserisci la ragione sociale!"); return; }
         if (tipoCliente === 'nuovo' && !form.nuovoCliente.indirizzo) { toast.error("Inserisci l'indirizzo!"); return; }
@@ -797,6 +803,12 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                     {/* STEP 1: Dati */}
                     {step === 1 && (
                         <div>
+                            <SelettoreSocieta
+                                value={form.societa}
+                                onChange={v => handleChange('societa', v)}
+                                nota="Il preventivo e i suoi pagamenti vanno nella contabilità di questa società."
+                            />
+
                             {/* Tipo cliente */}
                             <div style={{ marginBottom: 16 }}>
                                 <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', fontSize: 14 }}>Tipo Cliente</label>
@@ -830,6 +842,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                         const az = aziende.find(a => a.id === e.target.value);
                                         setForm(prev => ({
                                             ...prev,
+                                            societa: prev.societa || (az ? societaDi(az) : ''),
                                             aziendaId: e.target.value,
                                             codiceUnivocoPec: az?.codiceUnivoco || az?.pec || prev.codiceUnivocoPec
                                         }));
@@ -1423,6 +1436,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                         )}
                         {step < 5 ? (
                             <button onClick={() => {
+                                if (step === 1 && !form.societa) { toast.error('Indica a quale società si riferisce il preventivo!'); return; }
                                 if (step === 2 && !validaServizi()) return;
                                 setStep(step + 1);
                             }} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: '#2c3e66', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>

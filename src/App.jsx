@@ -36,7 +36,7 @@ import ModalePagamento from './components/ModalePagamento';
 import { inviaNotificaPushAdmin } from './utils/inviaNotificaAdmin';
 import PaginaAziendeAssegnate from './components/PaginaAziendeAssegnate';
 import PaginaListino from './components/PaginaListino';
-import CrmContabilita from './components/crm/CrmContabilita';
+import ContabilitaGruppo from './components/crm/ContabilitaGruppo';
 import ModaleContratto from './components/contratto/ModaleContratto';
 
 // Portale esterno mostrato all'account azienda (link provvisorio, da sostituire con quello vero)
@@ -53,7 +53,7 @@ const TIPI_CONTROLLO = [
   'Controllo pronto soccorso',
 ];
 
-function App({ session, onChangeCompany }) {
+function App({ session }) {
   const { user, userData, loading, login, logout } = session;
   const { aziende } = useAziende(userData);
   const { appuntamenti } = useAppuntamenti(userData);
@@ -246,6 +246,7 @@ function App({ session, onChangeCompany }) {
       let aziendaId = datiSenzaPdf.aziendaId;
       if (!isEdit && datiSenzaPdf.tipoCliente === 'nuovo' && datiSenzaPdf.nuovoCliente?.nome) {
         const nuovaAziendaRef = await addDoc(collection(db, 'aziende'), {
+          societa: datiSenzaPdf.societa || 'consulting',
           nome: datiSenzaPdf.nuovoCliente.nome,
           indirizzo: datiSenzaPdf.nuovoCliente.indirizzo || '',
           telefono: datiSenzaPdf.nuovoCliente.telefono || '',
@@ -487,6 +488,7 @@ function App({ session, onChangeCompany }) {
       if (!aziendaId) {
         const c = contratto.cliente;
         const nuova = await addDoc(collection(db, 'aziende'), {
+          societa: contratto.societa || 'consulting',
           nome: c.ragioneSociale, indirizzo: c.sedeLegale || '', telefono: c.telefono || '', email: c.email || '',
           partitaIva: c.piva || '', pec: c.pec || '', codiceUnivoco: '', contatto: c.rappresentante || '', note: '',
           controlli: [], dipendenti: [], documenti: [], pagamenti: [],
@@ -884,7 +886,7 @@ function App({ session, onChangeCompany }) {
             </div>
             {/* Riga 2 mobile: logo app */}
             <div style={{ textAlign: 'center', marginBottom: 10 }}>
-              <img src="/logo-nsconsulting.jpeg" alt="NSConsulting" style={{ display: 'block', width: '100%', maxWidth: 280, height: 'auto', margin: '0 auto', mixBlendMode: 'multiply' }} />
+              <img src="/logo-nsgroup-completo.jpeg" alt="NSGroup" style={{ display: 'block', width: '100%', maxWidth: 280, height: 'auto', margin: '0 auto', mixBlendMode: 'multiply' }} />
 {/*               <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b' }}>Gestione Sicurezza sul Lavoro</p>
  */}            </div>
           </div>
@@ -898,7 +900,7 @@ function App({ session, onChangeCompany }) {
             gap: 15
           }}>
             <div>
-              <img src="/logo-nsconsulting.jpeg" alt="NSConsulting" style={{ display: 'block', width: 300, maxWidth: '100%', height: 'auto', mixBlendMode: 'multiply' }} />
+              <img src="/logo-nsgroup-completo.jpeg" alt="NSGroup" style={{ display: 'block', width: 300, maxWidth: '100%', height: 'auto', mixBlendMode: 'multiply' }} />
              {/*  <p style={{ margin: '4px 0 0' }}>Gestione Sicurezza sul Lavoro</p> */}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -937,10 +939,6 @@ function App({ session, onChangeCompany }) {
               </button>
             </div>
           </div>
-        )}
-
-        {userData.ruolo === 'admin' && onChangeCompany && (
-          <button type="button" onClick={onChangeCompany} style={{ background: 'white', border: '1px solid #cbd5e1', marginBottom: 16 }}>Cambia azienda</button>
         )}
 
         {/* Navigazione - Admin e Operatore */}
@@ -1037,12 +1035,7 @@ function App({ session, onChangeCompany }) {
             )}
 
             {userData.ruolo === 'admin' && vistaCorrente === 'contabilita' && (
-              <CrmContabilita
-                azienda="consulting"
-                nomeAzienda="NS Consulting"
-                utente={userData.nome}
-                style={{ display: 'block', width: '100%', height: 'calc(100vh - 160px)', minHeight: 560, border: '1px solid #e2e8f0', borderRadius: 12, background: '#fff' }}
-              />
+              <ContabilitaGruppo utente={userData.nome} />
             )}
 
             {vistaCorrente === 'preventivi' && (

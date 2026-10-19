@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
+import SelettoreSocieta from './SelettoreSocieta';
+import { societaDi } from '../utils/societa';
 
 async function cercaComuni(q) {
   if (q.length < 2) return [];
@@ -10,7 +12,8 @@ async function cercaComuni(q) {
 }
 
 function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [], referenti = [] }) {
-  const [form, setForm] = useState(azienda || {
+  const [form, setForm] = useState(azienda ? { ...azienda, societa: societaDi(azienda) } : {
+    societa: '',
     nome: '',
     contatto: '',
     indirizzo: '',
@@ -91,6 +94,10 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
   };
 
   const handleSave = () => {
+    if (!form.societa) {
+      toast.error('Indica a quale società si riferisce l\'azienda!');
+      return;
+    }
     const campiObbligatori = [
       { campo: 'nome', label: "Nome azienda" },
       { campo: 'contatto', label: "Amministratore" },
@@ -146,6 +153,12 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
         <h2 style={{ marginBottom: '20px' }}>
           {azienda ? 'Modifica Azienda' : 'Nuova Azienda'}
         </h2>
+
+        <SelettoreSocieta
+          value={form.societa}
+          onChange={(v) => handleChange('societa', v)}
+          nota="L'azienda e i suoi pagamenti vanno nella contabilità di questa società."
+        />
 
         <div style={{ marginBottom: '15px' }}>
           <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '14px' }}>

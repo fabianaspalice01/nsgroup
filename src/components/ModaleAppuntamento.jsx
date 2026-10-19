@@ -89,6 +89,9 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
     ];
 
     const tipiAppuntamento = [...tipiAppuntamentoBase, ...tipiPersonalizzati];
+    // tipo non in elenco (es. «Da Google Calendar» degli eventi importati): resta selezionabile
+    if (form.tipo && !tipiAppuntamento.includes(form.tipo)) tipiAppuntamento.push(form.tipo);
+    const durataExtra = [30, 60, 90, 120, 180, 240].includes(Number(form.durata)) ? null : Number(form.durata) || null;
 
     const statiAppuntamento = [
         'Programmato',
@@ -443,6 +446,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         <option value="120">2 ore</option>
                         <option value="180">3 ore</option>
                         <option value="240">4 ore</option>
+                        {durataExtra && <option value={durataExtra}>{durataExtra} minuti</option>}
                     </select>
                 </div>
 

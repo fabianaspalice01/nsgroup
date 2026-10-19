@@ -37,3 +37,8 @@ gli utenti autenticati: i ruoli applicativi non sono imposti dalle regole.
 
 Il progetto non e ancora pubblicato. Login, database, upload e notifiche richiedono
 il completamento dei passaggi sopra indicati.
+- Google Calendar: abilitare la Google Calendar API nel progetto
+  (https://console.cloud.google.com/apis/library/calendar-json.googleapis.com?project=nsgroup-app-20260921),
+  pubblicare le functions, poi da Agenda → «Google Calendar» (solo admin) condividere il calendario
+  con l'account di servizio mostrato, inserire l'ID calendario, importare lo storico e inviare gli
+  appuntamenti esistenti.

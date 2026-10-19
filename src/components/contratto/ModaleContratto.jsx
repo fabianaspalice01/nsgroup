@@ -4,6 +4,8 @@ import SignatureCanvas from 'react-signature-canvas';
 import toast from 'react-hot-toast';
 import { AREE, TUTTE_LE_VOCI, vociDaPreventivo } from './vociContratto';
 import { generaPdfContratto } from './pdfContratto';
+import SelettoreSocieta from '../SelettoreSocieta';
+import { societaDi } from '../../utils/societa';
 
 const oggi = () => new Date().toISOString().split('T')[0];
 const num = (v) => { const n = parseFloat(String(v ?? '').replace(/\./g, '').replace(',', '.')); return Number.isFinite(n) ? n : 0; };
@@ -34,6 +36,11 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
 
   const aziendaIniziale = base.aziendaId || preventivo?.aziendaId || '';
   const [aziendaId, setAziendaId] = useState(aziendaIniziale);
+  // società del gruppo a cui va il contratto (e la sua contabilità): di base quella del preventivo o dell'azienda
+  const [societa, setSocieta] = useState(() => {
+    const az = aziende.find((a) => a.id === aziendaIniziale);
+    return base.societa || preventivo?.societa || (az || isEdit ? societaDi(az) : '');
+  });
   const [cliente, setCliente] = useState(() => base.cliente
     || { ...clienteDaAzienda(aziende.find((a) => a.id === aziendaIniziale)), ...(!aziendaIniziale && preventivo ? { ragioneSociale: preventivo.nomeCliente || '' } : {}) });
   const [voci, setVoci] = useState(() => base.voci || (preventivo ? vociDaPreventivo(preventivo.servizi) : {}));
@@ -61,6 +68,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
 
   const scegliAzienda = (id) => {
     setAziendaId(id);
+    if (id && !societa) setSocieta(societaDi(aziende.find((a) => a.id === id)));
     if (id) setCliente((prev) => ({ ...prev, ...clienteDaAzienda(aziende.find((a) => a.id === id)) }));
   };
   const setVoce = (cod, campo, valore) => setVoci((prev) => {
@@ -81,6 +89,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
   const sommaVoci = scelte.reduce((t, v) => t + (v.perDipendente || v.senzaPrezzo ? 0 : num(voci[v.cod].prezzo)), 0);
 
   const avanti = () => {
+    if (step === 1 && !societa) { toast.error('Indica a quale società si riferisce il contratto'); return; }
     if (step === 1 && !cliente.ragioneSociale?.trim()) { toast.error('Indica la ragione sociale del cliente'); return; }
     if (step === 2 && !scelte.length) { toast.error('Seleziona almeno una voce del contratto'); return; }
     if (step === 3 && !(num(dati.importoTotale) > 0)) { toast.error("Indica l'importo totale del servizio"); return; }
@@ -95,7 +104,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
     setSalvando(true);
     try {
       const contratto = {
-        aziendaId, preventivoId: base.preventivoId || preventivo?.id || '', cliente, voci,
+        societa, aziendaId, preventivoId: base.preventivoId || preventivo?.id || '', cliente, voci,
         importoTotale: num(dati.importoTotale), periodicita: dati.periodicita, fatturazione: dati.fatturazione,
         costoAttivazione: num(dati.costoAttivazione), costoSorveglianza: num(dati.costoSorveglianza),
         risarcimento: num(dati.risarcimento), canonePortale: num(dati.canonePortale),
@@ -151,6 +160,11 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
                   ℹ️ Dati e servizi presi dal preventivo del {new Date(preventivo.dataCreazione || preventivo.data).toLocaleDateString('it-IT')}: controllali e completali.
                 </div>
               )}
+              <SelettoreSocieta
+                value={societa}
+                onChange={setSocieta}
+                nota="Il canone del contratto va nella contabilità di questa società."
+              />
               <div>
                 <label style={stileLabel}>Azienda registrata</label>
                 <select style={stileInput} value={aziendaId} onChange={(e) => scegliAzienda(e.target.value)}>

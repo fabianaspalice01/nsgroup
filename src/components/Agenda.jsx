@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import toast from "react-hot-toast";
 import ModaleAppuntamento from './ModaleAppuntamento';
 import ModalePreventivo from './ModalePreventivo';
+import ModaleGoogleCalendar from './ModaleGoogleCalendar';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage, db, auth } from '../firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
@@ -25,6 +26,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
     const [confirm, setConfirm] = useState(null);
     const [nuovoAppuntamentoDefaults, setNuovoAppuntamentoDefaults] = useState(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [mostraGoogle, setMostraGoogle] = useState(false);
 
     useEffect(() => {
         const handler = () => {
@@ -84,6 +86,17 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
         }
         return `${app.nuovoCliente?.contatto || 'N/D'} • ${app.nuovoCliente?.telefono || 'N/D'}`;
     };
+
+    const formatOra = (app) => (app.tuttoIlGiorno ? 'Giornata' : app.ora);
+    const formatDurata = (app) => {
+        const min = Number(app.durata) || 0;
+        if (app.tuttoIlGiorno) return min > 1440 ? `${Math.round(min / 1440)} giorni` : 'intera';
+        return `${min} min`;
+    };
+
+    const badgeGoogle = (app, size) => app.origine === 'google' && (
+        <span title="Importato da Google Calendar" style={{ fontSize: size, background: '#e8f0fe', color: '#1a56c4', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>GOOGLE</span>
+    );
 
     const getColoreStato = (stato) => {
         const colori = {
@@ -239,6 +252,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
             let aziendaId = datiPreventivoSenzaPdf.aziendaId;
             if (datiPreventivoSenzaPdf.tipoCliente === 'nuovo' && datiPreventivoSenzaPdf.nuovoCliente?.nome) {
                 const nuovaAziendaRef = await addDoc(collection(db, 'aziende'), {
+                    societa: datiPreventivoSenzaPdf.societa || 'consulting',
                     nome: datiPreventivoSenzaPdf.nuovoCliente.nome,
                     indirizzo: datiPreventivoSenzaPdf.nuovoCliente.indirizzo || '',
                     telefono: datiPreventivoSenzaPdf.nuovoCliente.telefono || '',
@@ -427,8 +441,11 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
         return {
             id: String(app.id),
             title: `${getNomeCliente(app)} • ${app.tipo}`,
-            start,
-            end,
+            start: app.tuttoIlGiorno ? app.data : start,
+            end: app.tuttoIlGiorno
+                ? toYMD(new Date(new Date(app.data + 'T00:00:00').getTime() + Math.max(1, Math.round(Number(app.durata || 1440) / 1440)) * 86400000))
+                : end,
+            allDay: !!app.tuttoIlGiorno,
             classNames: [`evento-${String(app.stato || '').toLowerCase()}`],
             extendedProps: { ...app }
         };
@@ -567,8 +584,8 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     {/* Fascia ora + stato */}
                     <div style={{ background: colore.bg, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                            <span style={{ fontSize: 20, fontWeight: 800, color: colore.color }}>{app.ora}</span>
-                            <span style={{ fontSize: 11, color: colore.color }}>{app.durata} min</span>
+                            <span style={{ fontSize: 20, fontWeight: 800, color: colore.color }}>{formatOra(app)}</span>
+                            <span style={{ fontSize: 11, color: colore.color }}>{formatDurata(app)}</span>
                         </div>
                         <span style={{ background: 'white', color: colore.color, border: `1px solid ${colore.border}`, borderRadius: 10, padding: '3px 10px', fontSize: 10, fontWeight: 800 }}>
                             {app.stato.toUpperCase()}
@@ -582,6 +599,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                             {app.tipoCliente === 'nuovo' && (
                                 <span style={{ fontSize: 9, background: '#fef3c7', color: '#92400e', padding: '2px 6px', borderRadius: 8, fontWeight: 700 }}>NUOVO</span>
                             )}
+                            {badgeGoogle(app, 9)}
                         </div>
 
                         <div style={{ fontSize: 12, color: '#5f6f8c', marginBottom: 6 }}>{getDettagliCliente(app)}</div>
@@ -638,8 +656,8 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
         return (
             <div key={app.id} style={{ background: 'white', padding: 16, borderRadius: 12, border: `2px solid ${colore.border}`, display: 'flex', gap: 16, alignItems: 'flex-start', opacity }}>
                 <div style={{ minWidth: 70, textAlign: 'center', padding: '8px 12px', background: colore.bg, borderRadius: 8, border: `1px solid ${colore.border}` }}>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: colore.color }}>{app.ora}</div>
-                    <div style={{ fontSize: 11, color: colore.color, marginTop: 2 }}>{app.durata} min</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: colore.color }}>{formatOra(app)}</div>
+                    <div style={{ fontSize: 11, color: colore.color, marginTop: 2 }}>{formatDurata(app)}</div>
                 </div>
 
                 <div style={{ flex: 1 }}>
@@ -648,6 +666,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                         {app.tipoCliente === 'nuovo' && (
                             <span style={{ fontSize: 10, background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>NUOVO</span>
                         )}
+                        {badgeGoogle(app, 10)}
                     </div>
                     <div style={{ fontSize: 13, color: '#5f6f8c', marginBottom: 6 }}>{getDettagliCliente(app)}</div>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 6 }}>
@@ -732,6 +751,15 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                                     🗓️ Calendario
                                 </button>
                             </>
+                        )}
+                        {userRole === 'admin' && (
+                            <button
+                                onClick={() => setMostraGoogle(true)}
+                                title="Collega l'agenda a Google Calendar e importa lo storico"
+                                style={{ padding: isMobile ? '9px 12px' : '10px 14px', borderRadius: 8, border: '1.5px solid #dfe5ef', background: '#fff', color: '#1a56c4', cursor: 'pointer', fontSize: isMobile ? 13 : 14, fontWeight: 700 }}
+                            >
+                                {isMobile ? '🔗 Google' : '🔗 Google Calendar'}
+                            </button>
                         )}
                         <button
                             onClick={() => { setAppuntamentoPerPreventivo(null); setMostraModalePreventivo(true); }}
@@ -1103,6 +1131,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     userRole={userRole}
                 />
             )}
+            {mostraGoogle && <ModaleGoogleCalendar onClose={() => setMostraGoogle(false)} />}
             {mostraModalePreventivo && (
                 <ModalePreventivo
                     onClose={() => {
