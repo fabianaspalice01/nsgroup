@@ -68,13 +68,13 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
   };
 
   const getStatoScadenza = (scadenza, completato) => {
-    if (completato) return { label: 'COMPLETATO', color: '#16223b', bg: '#dde3f0' };
+    if (completato) return { label: 'COMPLETATO', color: 'var(--navy-900)', bg: 'var(--primary-soft)' };
     const oggi = new Date();
     const dataScadenza = new Date(scadenza);
     const diff = Math.ceil((dataScadenza - oggi) / (1000 * 60 * 60 * 24));
-    if (diff < 0) return { label: 'SCADUTO', color: '#dc2626', bg: '#fee2e2' };
-    if (diff <= 7) return { label: 'URGENTE', color: '#d97706', bg: '#fef3c7' };
-    return { label: 'OK', color: '#059669', bg: '#d1fae5' };
+    if (diff < 0) return { label: 'SCADUTO', color: 'var(--danger)', bg: 'var(--danger-soft)' };
+    if (diff <= 7) return { label: 'URGENTE', color: 'var(--warning)', bg: 'var(--warning-soft)' };
+    return { label: 'OK', color: 'var(--success)', bg: 'var(--success-soft)' };
   };
 
   const handleExportExcel = () => {
@@ -194,7 +194,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
       {!readOnly && (
         <button
           onClick={onBack}
-          style={{ background: 'none', border: 'none', color: '#2c3e66', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold', marginBottom: '20px', padding: 0 }}
+          style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold', marginBottom: '20px', padding: 0 }}
         >
           ← Torna alla lista
         </button>
@@ -210,9 +210,9 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                 onClick={() => onUpdateAzienda(azienda.id, { puoScaricare: !azienda.puoScaricare })}
                 style={{
                   flex: isMobile ? 1 : 'none',
-                  background: azienda.puoScaricare ? '#fef3c7' : '#eef1f7',
-                  color: azienda.puoScaricare ? '#92400e' : '#5f6f8c',
-                  border: `1px solid ${azienda.puoScaricare ? '#fde68a' : '#dfe5ef'}`,
+                  background: azienda.puoScaricare ? 'var(--warning-soft)' : 'var(--surface-2)',
+                  color: azienda.puoScaricare ? 'var(--warning)' : 'var(--ink-muted)',
+                  border: `1px solid ${azienda.puoScaricare ? '#fde68a' : 'var(--line)'}`,
                   padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '600'
                 }}
               >
@@ -220,13 +220,13 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
               </button>
               <button
                 onClick={handleExportExcel}
-                style={{ flex: isMobile ? 1 : 'none', background: '#10b981', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
+                style={{ flex: isMobile ? 1 : 'none', background: 'var(--success)', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
               >
                 📊 Export Excel
               </button>
               <button
                 onClick={() => setMostraModaleModifica(true)}
-                style={{ flex: isMobile ? 1 : 'none', background: '#2c3e66', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
+                style={{ flex: isMobile ? 1 : 'none', background: 'var(--primary)', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
               >
                 ✏️ Modifica
               </button>
@@ -234,7 +234,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
           )}
         </div>
 
-        <div style={{ color: '#5f6f8c', fontSize: '14px' }}>
+        <div style={{ color: 'var(--ink-muted)', fontSize: '14px' }}>
           {azienda.contatto && <p><strong>Amministratore:</strong> {azienda.contatto}</p>}
           {azienda.indirizzo && <p><strong>Indirizzo:</strong> {azienda.indirizzo}</p>}
           {(azienda.comune || azienda.cap || azienda.provincia) && (
@@ -250,13 +250,13 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
           {azienda.codiceUnivoco && <p><strong>Codice Univoco:</strong> {azienda.codiceUnivoco}</p>}
           {azienda.note && !isAccountAzienda && <p><strong>Note:</strong> {azienda.note}</p>}
           {azienda.assegnatoNome && !isAccountAzienda && (
-            <p><strong>Assegnato a:</strong> <span style={{ color: '#2c3e66', fontWeight: 600 }}>👤 {azienda.assegnatoNome}</span></p>
+            <p><strong>Assegnato a:</strong> <span style={{ color: 'var(--primary)', fontWeight: 600 }}>👤 {azienda.assegnatoNome}</span></p>
           )}
         </div>
       </div>
 
       {/* Tab navigation */}
-      <div style={{ marginBottom: '20px', background: 'white', padding: '6px', borderRadius: '10px', border: '1px solid #dfe5ef', overflowX: isMobile ? 'auto' : 'visible' }}>
+      <div style={{ marginBottom: '20px', background: 'white', padding: '6px', borderRadius: '10px', border: '1px solid var(--line)', overflowX: isMobile ? 'auto' : 'visible' }}>
         <div style={{ display: 'flex', gap: '4px', minWidth: isMobile ? 'max-content' : 'unset' }}>
           {tabs.map((tab) => (
             <button
@@ -270,8 +270,8 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                 cursor: 'pointer',
                 fontSize: isMobile ? '12px' : '13px',
                 fontWeight: tabAttiva === tab.id ? '700' : '500',
-                background: tabAttiva === tab.id ? '#2c3e66' : 'transparent',
-                color: tabAttiva === tab.id ? 'white' : '#5f6f8c',
+                background: tabAttiva === tab.id ? 'var(--primary)' : 'transparent',
+                color: tabAttiva === tab.id ? 'white' : 'var(--ink-muted)',
                 transition: 'all 0.15s',
                 whiteSpace: 'nowrap'
               }}
@@ -329,24 +329,24 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
           <div style={{ background: 'white', borderRadius: 12, padding: 24 }}>
             <h3 style={{ margin: '0 0 16px' }}>Preventivi ({preventivi.filter(p => p.aziendaId === azienda.id).length})</h3>
             {preventivi.filter(p => p.aziendaId === azienda.id).length === 0 ? (
-              <p style={{ color: '#9aa7bf', fontSize: 14, textAlign: 'center', padding: 30 }}>Nessun preventivo disponibile</p>
+              <p style={{ color: 'var(--ink-muted)', fontSize: 14, textAlign: 'center', padding: 30 }}>Nessun preventivo disponibile</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {preventivi
                   .filter(p => p.aziendaId === azienda.id)
                   .sort((a, b) => new Date(b.dataCreazione) - new Date(a.dataCreazione))
                   .map(prev => (
-                    <div key={prev.id} style={{ border: '1px solid #dfe5ef', borderRadius: 10, padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div key={prev.id} style={{ border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
                         <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>
                           Preventivo del {new Date(prev.dataCreazione).toLocaleDateString('it-IT')}
                         </div>
-                        <div style={{ fontSize: 13, color: '#5f6f8c' }}>
+                        <div style={{ fontSize: 13, color: 'var(--ink-muted)' }}>
                           {prev.dataSopralluogo && `📅 Sopralluogo: ${prev.dataSopralluogo.split('-').reverse().join('/')}`}
                           {prev.consulente && ` • 👤 ${prev.consulente}`}
                         </div>
                         {prev.totale > 0 && (
-                          <div style={{ fontSize: 14, fontWeight: 700, color: '#059669', marginTop: 4 }}>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)', marginTop: 4 }}>
                             € {Number(prev.totale).toFixed(2)}
                           </div>
                         )}
@@ -354,7 +354,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                       <div style={{ display: 'flex', gap: 8 }}>
                         <button
                           onClick={() => setPreventivoDettaglio(prev)}
-                          style={{ background: '#eef1f8', border: '1px solid #c3cde3', borderRadius: 8, padding: '8px 14px', fontSize: 13, color: '#2c3e66', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                          style={{ background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 8, padding: '8px 14px', fontSize: 13, color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
                         >
                           ℹ️ Dettagli
                         </button>
@@ -363,7 +363,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                             href={prev.pdfUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ background: '#eef1f8', border: '1px solid #d5ddee', borderRadius: 8, padding: '8px 16px', fontSize: 13, color: '#34508a', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}
+                            style={{ background: 'var(--primary-soft)', border: '1px solid var(--line)', borderRadius: 8, padding: '8px 16px', fontSize: 13, color: 'var(--primary-ink)', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}
                           >
                             📄 Apri PDF
                           </a>
@@ -371,7 +371,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                         {userData?.ruolo === 'admin' && onDeletePreventivo && (
                           <button
                             onClick={() => onDeletePreventivo(prev.id)}
-                            style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 14px', fontSize: 13, color: '#dc2626', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                            style={{ background: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 14px', fontSize: 13, color: 'var(--danger)', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
                           >
                             🗑️ Elimina
                           </button>
@@ -395,25 +395,25 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                 width: '100%',
                 padding: '14px',
                 borderRadius: 8,
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 fontSize: 14,
                 resize: 'vertical',
                 boxSizing: 'border-box',
                 fontFamily: 'inherit',
-                color: '#1a2540',
-                background: readOnly ? '#f6f8fc' : '#fff',
+                color: 'var(--ink)',
+                background: readOnly ? 'var(--surface-2)' : '#fff',
               }}
             />
             {!readOnly && (
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12, gap: 10, alignItems: 'center' }}>
-                {noteModificate && <span style={{ fontSize: 13, color: '#9aa7bf' }}>Modifiche non salvate</span>}
+                {noteModificate && <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}>Modifiche non salvate</span>}
                 <button
                   onClick={handleSalvaNote}
                   disabled={salvandoNote || !noteModificate}
                   style={{
                     padding: '9px 22px',
-                    background: noteModificate ? '#2c3e66' : '#dfe5ef',
-                    color: noteModificate ? '#fff' : '#9aa7bf',
+                    background: noteModificate ? 'var(--primary)' : 'var(--line)',
+                    color: noteModificate ? '#fff' : 'var(--ink-muted)',
                     border: 'none',
                     borderRadius: 8,
                     fontSize: 14,
@@ -453,17 +453,17 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
             <div onClick={e => e.stopPropagation()}
               style={{ background: 'white', borderRadius: 12, width: '100%', maxWidth: 560, maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
 
-              <div style={{ padding: '16px 20px', borderBottom: '1px solid #dfe5ef', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <h3 style={{ margin: 0, fontSize: 17 }}>📋 {p.nomeCliente || azienda.nome}</h3>
-                  <div style={{ fontSize: 12, color: '#5f6f8c', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
                 </div>
                 <button onClick={() => setPreventivoDettaglio(null)}
-                  style={{ border: 'none', background: '#eef1f7', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#5f6f8c' }}>✕</button>
+                  style={{ border: 'none', background: 'var(--surface-2)', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: 'var(--ink-muted)' }}>✕</button>
               </div>
 
               <div style={{ overflowY: 'auto', padding: 20, flex: 1 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20, padding: 12, background: '#f6f8fc', borderRadius: 8, border: '1px solid #dfe5ef' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20, padding: 12, background: 'var(--surface-2)', borderRadius: 8, border: '1px solid var(--line)' }}>
                   {[
                     ['Data', p.data ? new Date(p.data + 'T12:00:00').toLocaleDateString('it-IT') : '—'],
                     ['Consulente', p.consulente || '—'],
@@ -471,22 +471,22 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                     ['Creato il', p.dataCreazione ? new Date(p.dataCreazione).toLocaleDateString('it-IT') : '—'],
                   ].map(([label, value]) => (
                     <div key={label}>
-                      <div style={{ fontSize: 11, color: '#9aa7bf', marginBottom: 2 }}>{label}</div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#1a2540' }}>{value}</div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-muted)', marginBottom: 2 }}>{label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>{value}</div>
                     </div>
                   ))}
                 </div>
 
                 {serviziAttivi.length === 0 && (
-                  <p style={{ color: '#9aa7bf', textAlign: 'center', padding: 20 }}>Nessun servizio selezionato</p>
+                  <p style={{ color: 'var(--ink-muted)', textAlign: 'center', padding: 20 }}>Nessun servizio selezionato</p>
                 )}
 
                 {serviziAttivi.length > 0 && (
                   <div style={{ marginBottom: 16 }}>
-                    <h4 style={{ margin: '0 0 10px', fontSize: 14, color: '#45536f' }}>📋 Servizi</h4>
+                    <h4 style={{ margin: '0 0 10px', fontSize: 14, color: 'var(--ink-muted)' }}>📋 Servizi</h4>
 
                     {/* intestazione colonne */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto auto', gap: '4px 10px', padding: '5px 10px', fontSize: 11, color: '#9aa7bf', fontWeight: 600, textTransform: 'uppercase' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto auto', gap: '4px 10px', padding: '5px 10px', fontSize: 11, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
                       <span>Descrizione</span>
                       <span style={{ textAlign: 'center' }}>Qtà</span>
                       <span style={{ textAlign: 'right' }}>Prezzo unit.</span>
@@ -500,17 +500,17 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                         const tot = qty * pu;
                         const hasDip = (s.dipendenti || []).some(d => d.nome?.trim());
                         return (
-                          <div key={s.id} style={{ background: hasDip ? '#eef1f8' : '#f6f8fc', border: `1px solid ${hasDip ? '#c3cde3' : '#dfe5ef'}`, borderRadius: 8, padding: '8px 10px' }}>
+                          <div key={s.id} style={{ background: hasDip ? 'var(--primary-soft)' : 'var(--surface-2)', border: `1px solid ${hasDip ? '#c3cde3' : 'var(--line)'}`, borderRadius: 8, padding: '8px 10px' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto auto', gap: '4px 10px', alignItems: 'center' }}>
-                              <span style={{ fontSize: 13, color: hasDip ? '#2c3e66' : '#1a2540', fontWeight: hasDip ? 700 : 400 }}>{s.descrizione}</span>
-                              <span style={{ fontSize: 13, color: '#5f6f8c', textAlign: 'center' }}>× {s.quantita}</span>
-                              <span style={{ fontSize: 13, color: '#45536f', textAlign: 'right', whiteSpace: 'nowrap' }}>€ {pu.toFixed(2)}</span>
-                              <span style={{ fontSize: 13, color: '#059669', fontWeight: 700, textAlign: 'right', whiteSpace: 'nowrap' }}>€ {tot.toFixed(2)}</span>
+                              <span style={{ fontSize: 13, color: hasDip ? 'var(--primary)' : 'var(--ink)', fontWeight: hasDip ? 700 : 400 }}>{s.descrizione}</span>
+                              <span style={{ fontSize: 13, color: 'var(--ink-muted)', textAlign: 'center' }}>× {s.quantita}</span>
+                              <span style={{ fontSize: 13, color: 'var(--ink-muted)', textAlign: 'right', whiteSpace: 'nowrap' }}>€ {pu.toFixed(2)}</span>
+                              <span style={{ fontSize: 13, color: 'var(--success)', fontWeight: 700, textAlign: 'right', whiteSpace: 'nowrap' }}>€ {tot.toFixed(2)}</span>
                             </div>
                             {hasDip && (
                               <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 2, paddingLeft: 4 }}>
                                 {(s.dipendenti || []).filter(d => d.nome?.trim()).map((dip, i) => (
-                                  <div key={i} style={{ fontSize: 12, color: '#2c3e66' }}>👤 {dip.nome}</div>
+                                  <div key={i} style={{ fontSize: 12, color: 'var(--primary)' }}>👤 {dip.nome}</div>
                                 ))}
                               </div>
                             )}
@@ -520,24 +520,24 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                     </div>
 
                     {/* riga totale */}
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginTop: 10, paddingTop: 10, borderTop: '2px solid #dfe5ef' }}>
-                      <span style={{ fontSize: 14, color: '#45536f', fontWeight: 600 }}>Totale complessivo:</span>
-                      <span style={{ fontSize: 16, color: '#059669', fontWeight: 800 }}>€ {p.totale?.toFixed(2) || '0.00'}</span>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginTop: 10, paddingTop: 10, borderTop: '2px solid var(--line)' }}>
+                      <span style={{ fontSize: 14, color: 'var(--ink-muted)', fontWeight: 600 }}>Totale complessivo:</span>
+                      <span style={{ fontSize: 16, color: 'var(--success)', fontWeight: 800 }}>€ {p.totale?.toFixed(2) || '0.00'}</span>
                     </div>
                   </div>
                 )}
 
                 {p.motivazioneModifica && (
-                  <div style={{ marginTop: 16, padding: 12, background: '#fef9c3', borderRadius: 8, border: '1px solid #fde68a' }}>
-                    <div style={{ fontSize: 12, color: '#92400e', fontWeight: 600, marginBottom: 4 }}>📝 Motivazione ultima modifica</div>
-                    <div style={{ fontSize: 13, color: '#78350f' }}>{p.motivazioneModifica}</div>
+                  <div style={{ marginTop: 16, padding: 12, background: 'var(--warning-soft)', borderRadius: 8, border: '1px solid #fde68a' }}>
+                    <div style={{ fontSize: 12, color: 'var(--warning)', fontWeight: 600, marginBottom: 4 }}>📝 Motivazione ultima modifica</div>
+                    <div style={{ fontSize: 13, color: 'var(--warning)' }}>{p.motivazioneModifica}</div>
                   </div>
                 )}
               </div>
 
-              <div style={{ padding: '12px 20px', borderTop: '1px solid #dfe5ef', textAlign: 'right' }}>
+              <div style={{ padding: '12px 20px', borderTop: '1px solid var(--line)', textAlign: 'right' }}>
                 <button onClick={() => setPreventivoDettaglio(null)}
-                  style={{ padding: '9px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                  style={{ padding: '9px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                   Chiudi
                 </button>
               </div>

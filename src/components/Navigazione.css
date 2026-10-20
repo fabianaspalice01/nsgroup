@@ -1,0 +1,37 @@
+.ns-shell { display: flex; min-height: 100vh; min-height: 100dvh; background: var(--bg); }
+.ns-shell--mobile { flex-direction: column; }
+.ns-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+/* Marchio: logo bianco su fondo trasparente, solo sulla barra scura */
+.ns-brand { padding: var(--space-2) var(--space-2) var(--space-5); }
+.ns-brand img { display: block; width: 100%; max-width: 200px; height: auto; }
+
+/* Barra laterale (desktop) */
+.ns-sidebar { position: sticky; top: 0; flex: none; display: flex; flex-direction: column; width: 240px; height: 100vh; height: 100dvh; padding: var(--space-4) var(--space-3); box-sizing: border-box; overflow-y: auto; background: var(--nav-bg); color: var(--nav-ink); }
+.ns-nav-list { display: flex; flex-direction: column; gap: 2px; }
+.ns-nav-item { display: flex; align-items: center; gap: var(--space-3); width: 100%; height: 38px; padding: 0 var(--space-3); box-sizing: border-box; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--nav-ink); font: 500 14px/20px var(--font-sans); text-align: left; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s; }
+.ns-nav-item:hover { background: var(--nav-hover-bg); color: var(--nav-ink-active); }
+.ns-nav-item[aria-current="page"] { background: var(--nav-active-bg); color: var(--nav-ink-active); font-weight: 600; }
+.ns-nav-item:focus-visible, .ns-logout:focus-visible { outline: 2px solid var(--steel-200); outline-offset: 2px; }
+.ns-nav-item svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+.ns-sidebar-foot { display: flex; align-items: center; gap: var(--space-3); margin-top: auto; padding: var(--space-4) var(--space-3) var(--space-2); border-top: 1px solid var(--nav-hover-bg); }
+.ns-user { flex: 1; min-width: 0; }
+.ns-user-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--nav-ink-active); }
+.ns-user-role { font: 600 11px/14px var(--font-condensed); letter-spacing: .1em; text-transform: uppercase; color: var(--nav-ink); }
+.ns-logout { flex: none; height: 32px; padding: 0 var(--space-3); border: 1px solid var(--nav-ink); border-radius: var(--radius-sm); background: transparent; color: var(--nav-ink-active); font: 600 13px/18px var(--font-sans); cursor: pointer; }
+.ns-logout:hover { background: var(--nav-hover-bg); border-color: var(--nav-ink-active); }
+
+/* Strumenti in alto a destra (ricerca, notifiche) */
+.ns-topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-3); padding: var(--space-4) 20px 0; }
+
+/* Telefono: barra scura in alto con le voci che scorrono */
+.ns-mobilebar { position: sticky; top: 0; z-index: 900; padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px 0; background: var(--nav-bg); }
+.ns-mobilebar-row { display: flex; align-items: center; gap: var(--space-2); }
+.ns-mobilebar .ns-brand { margin-right: auto; padding: 0; }
+.ns-mobilebar .ns-brand img { width: auto; height: 34px; }
+.ns-mobile-nav { display: flex; gap: var(--space-1); margin: 0 -12px; padding: var(--space-2) 12px; overflow-x: auto; scrollbar-width: none; }
+.ns-mobile-nav::-webkit-scrollbar { display: none; }
+.ns-mobile-nav .ns-nav-item { flex: none; width: auto; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) { .ns-nav-item { transition: none; } }

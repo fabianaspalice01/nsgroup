@@ -1,11 +1,11 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #16223b;
+  color-scheme: light;
+  color: var(--ink);
+  background-color: var(--bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,17 +15,15 @@
 
 a {
   font-weight: 500;
-  color: #2c3e66;
+  color: var(--primary-ink);
   text-decoration: inherit;
 }
 a:hover {
-  color: #1f2e4d;
+  color: var(--primary-hover);
 }
 
 body {
   margin: 0;
-  /* display: flex;
-  place-items: center; */
   min-width: 320px;
   min-height: 100vh;
 }
@@ -36,40 +34,24 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--surface);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.15s, background-color 0.15s;
 }
 button:hover {
-  border-color: #2c3e66;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  border-color: var(--primary);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #1a2540;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #4a68a0;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
 /* Stile base eventi */
 .fc-event {
-  background-color: #ffffff !important;
-  border: 1px solid #dfe5ef !important;
+  background-color: var(--surface) !important;
+  border: 1px solid var(--line) !important;
   border-left-width: 6px !important;
   border-radius: 8px !important;
   padding: 2px 4px !important;
@@ -78,40 +60,40 @@ button:focus-visible {
 
 /* PROGRAMMATO */
 .evento-programmato {
-  border-left-color: #4a68a0 !important;
+  border-left-color: var(--steel-400) !important;
 }
 
 /* CONFERMATO */
 .evento-confermato {
-  border-left-color: #10b981 !important;
+  border-left-color: var(--success) !important;
 }
 
 /* COMPLETATO */
 .evento-completato {
-  border-left-color: #2c3e66 !important;
+  border-left-color: var(--primary) !important;
   opacity: 0.75;
 }
 
 /* DISDETTO */
 .evento-disdetto {
-  border-left-color: #ef4444 !important;
+  border-left-color: var(--danger) !important;
   /* border-style: dashed !important; */
   opacity: 0.85;
 }
 /* Testo sempre visibile in timeGrid (settimana/giorno) */
 .fc .fc-timegrid-event .fc-event-main {
-  color: #1a2540 !important;
+  color: var(--ink) !important;
 }
 
 .fc .fc-timegrid-event .fc-event-title,
 .fc .fc-timegrid-event .fc-event-time {
-  color: #2c3e66 !important;
+  color: var(--primary) !important;
   font-weight: 600;
 }
 
 /* Se qualche regola mette testo bianco, questa lo sovrascrive */
 .fc .fc-timegrid-event .fc-event-main * {
-  color: #2c3e66 !important;
+  color: var(--primary) !important;
 }
 
 /* Migliora layout (evita "vuoto" per overflow/line-height) */
@@ -125,8 +107,8 @@ button:focus-visible {
 
 /* Mantieni il tuo stile (bordo sinistro) anche in timeGrid */
 .fc .fc-timegrid-event.fc-event {
-  background-color: #ffffff !important;
-  border: 1px solid #dfe5ef !important;
+  background-color: var(--surface) !important;
+  border: 1px solid var(--line) !important;
   border-left-width: 6px !important;
   border-radius: 8px !important;
 }

@@ -103,7 +103,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -120,7 +120,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               background: 'white'
@@ -142,7 +142,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               background: 'white'
@@ -171,7 +171,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 borderRadius: '6px',
                 fontSize: '14px'
               }}
@@ -189,7 +189,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 borderRadius: '6px',
                 fontSize: '14px'
               }}
@@ -208,7 +208,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -234,7 +234,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               fontFamily: 'inherit',
@@ -249,7 +249,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
             disabled={uploading}
             style={{
               padding: '10px 20px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '8px',
               background: 'white',
               cursor: uploading ? 'not-allowed' : 'pointer',
@@ -266,7 +266,7 @@ function ModaleDocumento({ onClose, onSave, documento, cartellaIniziale = 'altro
               padding: '10px 20px',
               border: 'none',
               borderRadius: '8px',
-              background: uploading ? '#9aa7bf' : '#2c3e66',
+              background: uploading ? 'var(--ink-muted)' : 'var(--primary)',
               color: 'white',
               cursor: uploading ? 'not-allowed' : 'pointer',
               fontSize: '14px',

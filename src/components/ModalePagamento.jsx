@@ -92,7 +92,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -113,7 +113,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -130,7 +130,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               background: 'white'
@@ -154,7 +154,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -173,7 +173,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -199,7 +199,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               fontFamily: 'inherit',
@@ -214,7 +214,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             disabled={uploading}
             style={{
               padding: '10px 20px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '8px',
               background: 'white',
               cursor: uploading ? 'not-allowed' : 'pointer',
@@ -231,7 +231,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
               padding: '10px 20px',
               border: 'none',
               borderRadius: '8px',
-              background: uploading ? '#9aa7bf' : '#2c3e66',
+              background: uploading ? 'var(--ink-muted)' : 'var(--primary)',
               color: 'white',
               cursor: uploading ? 'not-allowed' : 'pointer',
               fontSize: '14px',

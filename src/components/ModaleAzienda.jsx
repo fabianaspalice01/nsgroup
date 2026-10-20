@@ -171,7 +171,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -189,7 +189,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -207,7 +207,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -225,13 +225,13 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             onChange={(e) => handleComuneChange(e.target.value)}
             placeholder="Inizia a digitare..."
             autoComplete="off"
-            style={{ width: '100%', padding: '8px', border: '1px solid #dfe5ef', borderRadius: '6px', fontSize: '14px' }}
+            style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px' }}
           />
           {cercando && (
-            <div style={{ position: 'absolute', right: 10, top: 34, fontSize: 12, color: '#9aa7bf' }}>Ricerca...</div>
+            <div style={{ position: 'absolute', right: 10, top: 34, fontSize: 12, color: 'var(--ink-muted)' }}>Ricerca...</div>
           )}
           {suggerimenti.length > 0 && (
-            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', border: '1px solid #dfe5ef', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', zIndex: 9999, maxHeight: 220, overflowY: 'auto' }}>
+            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', border: '1px solid var(--line)', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', zIndex: 9999, maxHeight: 220, overflowY: 'auto' }}>
               {suggerimenti.map((r, i) => {
                 const addr = r.address;
                 const nome = addr.city || addr.town || addr.village || addr.municipality || '';
@@ -241,13 +241,13 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
                   <div
                     key={i}
                     onMouseDown={() => selezionaComune(r)}
-                    style={{ padding: '9px 14px', cursor: 'pointer', borderBottom: '1px solid #eef1f7', fontSize: 13 }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#eef1f8'}
+                    style={{ padding: '9px 14px', cursor: 'pointer', borderBottom: '1px solid var(--surface-2)', fontSize: 13 }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-soft)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'white'}
                   >
                     <span style={{ fontWeight: 600 }}>{nome}</span>
-                    {prov && <span style={{ color: '#2c3e66', marginLeft: 6 }}>({prov})</span>}
-                    {cap && <span style={{ color: '#9aa7bf', marginLeft: 6 }}>{cap}</span>}
+                    {prov && <span style={{ color: 'var(--primary)', marginLeft: 6 }}>({prov})</span>}
+                    {cap && <span style={{ color: 'var(--ink-muted)', marginLeft: 6 }}>{cap}</span>}
                   </div>
                 );
               })}
@@ -267,7 +267,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
               onChange={(e) => handleChange('provincia', e.target.value.toUpperCase().slice(0, 2))}
               placeholder="Es. LE"
               maxLength={2}
-              style={{ width: '100%', padding: '8px', border: '1px solid #dfe5ef', borderRadius: '6px', fontSize: '14px', textTransform: 'uppercase' }}
+              style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px', textTransform: 'uppercase' }}
             />
           </div>
           <div style={{ flex: 1 }}>
@@ -280,7 +280,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
               onChange={(e) => handleChange('cap', e.target.value.replace(/\D/g, '').slice(0, 5))}
               placeholder="Es. 73100"
               maxLength={5}
-              style={{ width: '100%', padding: '8px', border: '1px solid #dfe5ef', borderRadius: '6px', fontSize: '14px' }}
+              style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px' }}
             />
           </div>
         </div>
@@ -296,7 +296,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -314,7 +314,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -333,7 +333,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -351,7 +351,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -371,7 +371,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -389,7 +389,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               fontFamily: 'inherit',
@@ -405,7 +405,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
           <select
             value={form.assegnatoA}
             onChange={e => handleReferente(e.target.value)}
-            style={{ width: '100%', padding: '8px', border: '1px solid #dfe5ef', borderRadius: '6px', fontSize: '14px', background: 'white' }}
+            style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px', background: 'white' }}
           >
             <option value="">— Nessuno —</option>
             {referenti.map(r => (
@@ -419,7 +419,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             onClick={onClose}
             style={{
               padding: '10px 20px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '8px',
               background: 'white',
               cursor: 'pointer',
@@ -435,7 +435,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
               padding: '10px 20px',
               border: 'none',
               borderRadius: '8px',
-              background: saving ? '#93a7cc' : '#2c3e66',
+              background: saving ? '#93a7cc' : 'var(--primary)',
               color: 'white',
               cursor: saving ? 'not-allowed' : 'pointer',
               fontSize: '14px',
@@ -452,22 +452,22 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
           <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 16 }}>⚠️ Azienda già assegnata</h3>
-            <p style={{ margin: '0 0 8px', fontSize: 14, color: '#45536f' }}>
+            <p style={{ margin: '0 0 8px', fontSize: 14, color: 'var(--ink-muted)' }}>
               Questa azienda è già assegnata a <strong>{form.assegnatoNome}</strong>.
             </p>
-            <p style={{ margin: '0 0 22px', fontSize: 14, color: '#45536f' }}>
+            <p style={{ margin: '0 0 22px', fontSize: 14, color: 'var(--ink-muted)' }}>
               Vuoi riassegnarla a <strong>{confirmRiassegna.nuovoNome || '— Nessuno —'}</strong>?
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button
                 onClick={() => setConfirmRiassegna(null)}
-                style={{ padding: '9px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
+                style={{ padding: '9px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
               >
                 Annulla
               </button>
               <button
                 onClick={confermaCambioAssegnazione}
-                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: '#f59e0b', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
+                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: 'var(--warning)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
               >
                 Sì, riassegna
               </button>

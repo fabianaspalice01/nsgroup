@@ -56,7 +56,7 @@ function Login({ onLogin }) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #2c3e66 0%, #16223b 100%)',
+      background: 'linear-gradient(135deg, var(--primary) 0%, var(--navy-900) 100%)',
       padding: 20
     }}>
       <div style={{
@@ -75,17 +75,17 @@ function Login({ onLogin }) {
             height={768}
             style={{ display: 'block', width: '100%', height: 'auto', margin: '0 auto' }}
           />
-{/*           <p style={{ color: '#5f6f8c', marginTop: 8, fontSize: 14 }}>Gestione Sicurezza sul Lavoro</p>
+{/*           <p style={{ color: 'var(--ink-muted)', marginTop: 8, fontSize: 14 }}>Gestione Sicurezza sul Lavoro</p>
  */}        </div>
 
         {resetMode ? (
           <form onSubmit={handleReset}>
-            <p style={{ color: '#45536f', fontSize: 14, marginBottom: 20 }}>
+            <p style={{ color: 'var(--ink-muted)', fontSize: 14, marginBottom: 20 }}>
               Inserisci la tua email e ti invieremo un link per reimpostare la password.
             </p>
 
             <div style={{ marginBottom: 24 }}>
-              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, fontSize: 14, color: '#1a2540' }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, fontSize: 14, color: 'var(--ink)' }}>
                 Email
               </label>
               <input
@@ -97,25 +97,25 @@ function Login({ onLogin }) {
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  border: '2px solid #dfe5ef',
+                  border: '2px solid var(--line)',
                   borderRadius: 8,
                   fontSize: 14,
                   outline: 'none',
                   boxSizing: 'border-box',
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#2c3e66'}
-                onBlur={(e) => e.target.style.borderColor = '#dfe5ef'}
+                onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--line)'}
               />
             </div>
 
             {error && (
-              <div style={{ background: '#fee2e2', color: '#dc2626', padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 20, border: '1px solid #fecaca' }}>
+              <div style={{ background: 'var(--danger-soft)', color: 'var(--danger)', padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 20, border: '1px solid #fecaca' }}>
                 {error}
               </div>
             )}
 
             {resetMsg && (
-              <div style={{ background: '#dcfce7', color: '#16a34a', padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 20, border: '1px solid #bbf7d0' }}>
+              <div style={{ background: 'var(--success-soft)', color: 'var(--success)', padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 20, border: '1px solid #bbf7d0' }}>
                 {resetMsg}
               </div>
             )}
@@ -126,7 +126,7 @@ function Login({ onLogin }) {
               style={{
                 width: '100%',
                 padding: '12px 24px',
-                background: loading ? '#9aa7bf' : '#2c3e66',
+                background: loading ? 'var(--ink-muted)' : 'var(--primary)',
                 color: 'white',
                 border: 'none',
                 borderRadius: 8,
@@ -146,8 +146,8 @@ function Login({ onLogin }) {
                 width: '100%',
                 padding: '10px 24px',
                 background: 'transparent',
-                color: '#2c3e66',
-                border: '2px solid #2c3e66',
+                color: 'var(--primary)',
+                border: '2px solid var(--primary)',
                 borderRadius: 8,
                 fontSize: 14,
                 fontWeight: 600,
@@ -160,7 +160,7 @@ function Login({ onLogin }) {
         ) : (
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: 20 }}>
-              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, fontSize: 14, color: '#1a2540' }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, fontSize: 14, color: 'var(--ink)' }}>
                 Email
               </label>
               <input
@@ -172,20 +172,20 @@ function Login({ onLogin }) {
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  border: '2px solid #dfe5ef',
+                  border: '2px solid var(--line)',
                   borderRadius: 8,
                   fontSize: 14,
                   outline: 'none',
                   transition: 'border 0.2s',
                   boxSizing: 'border-box',
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#2c3e66'}
-                onBlur={(e) => e.target.style.borderColor = '#dfe5ef'}
+                onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--line)'}
               />
             </div>
 
             <div style={{ marginBottom: 8 }}>
-              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, fontSize: 14, color: '#1a2540' }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, fontSize: 14, color: 'var(--ink)' }}>
                 Password
               </label>
               <input
@@ -197,15 +197,15 @@ function Login({ onLogin }) {
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  border: '2px solid #dfe5ef',
+                  border: '2px solid var(--line)',
                   borderRadius: 8,
                   fontSize: 14,
                   outline: 'none',
                   transition: 'border 0.2s',
                   boxSizing: 'border-box',
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#2c3e66'}
-                onBlur={(e) => e.target.style.borderColor = '#dfe5ef'}
+                onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--line)'}
               />
             </div>
 
@@ -216,7 +216,7 @@ function Login({ onLogin }) {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#2c3e66',
+                  color: 'var(--primary)',
                   fontSize: 13,
                   cursor: 'pointer',
                   padding: 0,
@@ -227,7 +227,7 @@ function Login({ onLogin }) {
             </div>
 
             {error && (
-              <div style={{ background: '#fee2e2', color: '#dc2626', padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 20, border: '1px solid #fecaca' }}>
+              <div style={{ background: 'var(--danger-soft)', color: 'var(--danger)', padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 20, border: '1px solid #fecaca' }}>
                 {error}
               </div>
             )}
@@ -238,7 +238,7 @@ function Login({ onLogin }) {
               style={{
                 width: '100%',
                 padding: '12px 24px',
-                background: loading ? '#9aa7bf' : '#2c3e66',
+                background: loading ? 'var(--ink-muted)' : 'var(--primary)',
                 color: 'white',
                 border: 'none',
                 borderRadius: 8,
@@ -247,15 +247,15 @@ function Login({ onLogin }) {
                 cursor: loading ? 'not-allowed' : 'pointer',
                 transition: 'background 0.2s'
               }}
-              onMouseEnter={(e) => !loading && (e.target.style.background = '#1f2e4d')}
-              onMouseLeave={(e) => !loading && (e.target.style.background = '#2c3e66')}
+              onMouseEnter={(e) => !loading && (e.target.style.background = 'var(--primary-hover)')}
+              onMouseLeave={(e) => !loading && (e.target.style.background = 'var(--primary)')}
             >
               {loading ? 'Accesso in corso...' : 'Accedi'}
             </button>
           </form>
         )}
 
-        <p style={{ textAlign: 'center', marginTop: 24, fontSize: 12, color: '#9aa7bf' }}>
+        <p style={{ textAlign: 'center', marginTop: 24, fontSize: 12, color: 'var(--ink-muted)' }}>
           Accedi con le credenziali fornite dall'amministratore
         </p>
       </div>

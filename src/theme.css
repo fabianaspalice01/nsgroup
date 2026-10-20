@@ -1,0 +1,87 @@
+/* Colori, font, spazi e raggi del design system NS Group.
+   Fonte: https://claude.ai/artifact/HG8H1HFgomHNmG5hNxKyTr
+   L'app usa per ora solo il tema chiaro (vedi App.css). */
+:root {
+  /* Marchio */
+  --navy-950: #0a1226;
+  --navy-900: #0f1b36;
+  --navy-700: #1f3462;
+  --steel-400: #6f8cc4;
+  --steel-200: #c3d1ec;
+
+  /* Superfici e testo */
+  --bg: #e9edf4;
+  --surface: #ffffff;
+  --surface-2: #f3f5fa;
+  --line: #d3dae8;
+  --line-strong: #8593b0;
+  --ink: #0f1b36;
+  --ink-muted: #4c5a78;
+
+  /* Azioni */
+  --primary: var(--navy-700);
+  --primary-hover: #16264a;
+  --on-primary: #ffffff;
+  --primary-soft: #e2e8f4;
+  --primary-ink: var(--navy-700);
+  --focus: #2563c9;
+
+  /* Navigazione */
+  --nav-bg: var(--navy-900);
+  --nav-ink: #b9c6e0;
+  --nav-ink-active: #ffffff;
+  --nav-hover-bg: #16264a;
+  --nav-active-bg: var(--navy-700);
+
+  /* Stati */
+  --success: #0b7149;
+  --success-soft: #dbf2e6;
+  --warning: #9a5300;
+  --warning-soft: #fcefd6;
+  --danger: #b4232b;
+  --danger-soft: #fbe2e2;
+  --on-danger: #ffffff;
+  --overlay: rgba(10, 18, 38, 0.55);
+
+  /* Ombre */
+  --shadow-card: 0 1px 2px rgba(10, 18, 38, 0.06), 0 2px 8px rgba(10, 18, 38, 0.05);
+  --shadow-pop: 0 12px 32px rgba(10, 18, 38, 0.18);
+
+  /* Spazi e raggi */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+
+  /* Font */
+  --font-display: "Saira", "Segoe UI", system-ui, sans-serif;
+  --font-condensed: "Saira Condensed", "Arial Narrow", sans-serif;
+  --font-sans: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}

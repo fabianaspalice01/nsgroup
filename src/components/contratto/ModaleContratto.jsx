@@ -11,8 +11,8 @@ const oggi = () => new Date().toISOString().split('T')[0];
 const num = (v) => { const n = parseFloat(String(v ?? '').replace(/\./g, '').replace(',', '.')); return Number.isFinite(n) ? n : 0; };
 const eur = (v) => (Number(v) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const stileInput = { width: '100%', padding: '8px 10px', border: '1px solid #dfe5ef', borderRadius: 7, fontSize: 13, boxSizing: 'border-box' };
-const stileLabel = { display: 'block', fontSize: 11, fontWeight: 700, color: '#5f6f8c', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' };
+const stileInput = { width: '100%', padding: '8px 10px', border: '1px solid var(--line)', borderRadius: 7, fontSize: 13, boxSizing: 'border-box' };
+const stileLabel = { display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--ink-muted)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' };
 
 function clienteDaAzienda(az) {
   if (!az) return {};
@@ -134,7 +134,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
       <label style={stileLabel}>{etichetta}</label>
       <input style={stileInput} type={tipo} inputMode={tipo === 'text' && k !== 'luogo' && k !== 'consulente' ? 'decimal' : undefined}
         value={dati[k]} onChange={(e) => setDati({ ...dati, [k]: e.target.value })} />
-      {hint && <div style={{ fontSize: 11, color: '#7a888e', marginTop: 3 }}>{hint}</div>}
+      {hint && <div style={{ fontSize: 11, color: 'var(--ink-muted)', marginTop: 3 }}>{hint}</div>}
     </div>
   );
   const griglia = { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 };
@@ -142,12 +142,12 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 1000, padding: isMobile ? 0 : 20 }}>
       <div style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 900, maxHeight: isMobile ? '96vh' : '92vh', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: isMobile ? '14px 14px 10px' : '16px 20px', borderBottom: '1px solid #dfe5ef' }}>
+        <div style={{ padding: isMobile ? '14px 14px 10px' : '16px 20px', borderBottom: '1px solid var(--line)' }}>
           <h2 style={{ margin: '0 0 12px', fontSize: isMobile ? 16 : 18 }}>{isEdit ? '✏️ Modifica contratto' : '📝 Nuovo contratto di consulenza'}</h2>
           <div style={{ display: 'flex', gap: 6 }}>
             {['1. Cliente', '2. Servizi', '3. Condizioni', '4. Firme'].map((t, i) => (
               <div key={t} style={{ flex: 1, textAlign: 'center', padding: '6px 4px', borderRadius: 6, fontSize: 12, fontWeight: 700,
-                background: step === i + 1 ? '#2c3e66' : step > i + 1 ? '#dbe4f5' : '#f1f4f9', color: step === i + 1 ? 'white' : '#45536f' }}>{t}</div>
+                background: step === i + 1 ? 'var(--primary)' : step > i + 1 ? '#dbe4f5' : 'var(--surface-2)', color: step === i + 1 ? 'white' : 'var(--ink-muted)' }}>{t}</div>
             ))}
           </div>
         </div>
@@ -156,7 +156,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
           {step === 1 && (
             <div style={{ display: 'grid', gap: 12 }}>
               {preventivo && (
-                <div style={{ padding: 10, background: '#eef1f8', borderRadius: 8, fontSize: 13, color: '#2c3e66' }}>
+                <div style={{ padding: 10, background: 'var(--primary-soft)', borderRadius: 8, fontSize: 13, color: 'var(--primary)' }}>
                   ℹ️ Dati e servizi presi dal preventivo del {new Date(preventivo.dataCreazione || preventivo.data).toLocaleDateString('it-IT')}: controllali e completali.
                 </div>
               )}
@@ -171,7 +171,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
                   <option value="">— cliente non ancora registrato —</option>
                   {[...aziende].sort((a, b) => String(a.nome).localeCompare(String(b.nome), 'it')).map((a) => <option key={a.id} value={a.id}>{a.nome}</option>)}
                 </select>
-                {!aziendaId && <div style={{ fontSize: 11, color: '#7a888e', marginTop: 3 }}>Se il cliente non è registrato, al salvataggio viene creato in Aziende e in contabilità.</div>}
+                {!aziendaId && <div style={{ fontSize: 11, color: 'var(--ink-muted)', marginTop: 3 }}>Se il cliente non è registrato, al salvataggio viene creato in Aziende e in contabilità.</div>}
               </div>
               <div style={griglia}>
                 {campoCliente('ragioneSociale', 'Ragione sociale *', 'full')}
@@ -192,30 +192,30 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
           {step === 2 && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginBottom: 12, fontSize: 13 }}>
-                <span style={{ color: '#5f6f8c' }}>Apri un'area e spunta le voci: il prezzo va indicato senza IVA.</span>
+                <span style={{ color: 'var(--ink-muted)' }}>Apri un'area e spunta le voci: il prezzo va indicato senza IVA.</span>
                 <strong>{scelte.length} voci · € {eur(sommaVoci)} + IVA</strong>
               </div>
               {AREE.map((area) => {
                 const nSel = area.voci.filter((v) => voci[v.cod]?.sel).length;
                 const aperta = areaAperta === area.cod;
                 return (
-                  <div key={area.cod} style={{ border: '1px solid #dfe5ef', borderRadius: 8, marginBottom: 8, overflow: 'hidden' }}>
+                  <div key={area.cod} style={{ border: '1px solid var(--line)', borderRadius: 8, marginBottom: 8, overflow: 'hidden' }}>
                     <button type="button" onClick={() => setAreaAperta(aperta ? null : area.cod)}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', border: 0, background: nSel ? '#eef4ff' : '#f6f8fc', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: 700, color: '#1f2e4d' }}>
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', border: 0, background: nSel ? '#eef4ff' : 'var(--surface-2)', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: 700, color: 'var(--primary-hover)' }}>
                       <span style={{ flex: 1 }}>{area.cod}. {area.titolo}</span>
-                      {nSel > 0 && <span style={{ background: '#2c3e66', color: 'white', borderRadius: 10, padding: '1px 8px', fontSize: 11 }}>{nSel}</span>}
+                      {nSel > 0 && <span style={{ background: 'var(--primary)', color: 'white', borderRadius: 10, padding: '1px 8px', fontSize: 11 }}>{nSel}</span>}
                       <span>{aperta ? '▲' : '▼'}</span>
                     </button>
                     {aperta && (
                       <div style={{ padding: '4px 12px 10px' }}>
                         {area.voci.map((v) => {
                           const st = voci[v.cod] || {};
-                          if (v.titoletto) return <div key={v.cod} style={{ fontSize: 12, fontWeight: 700, color: '#45536f', padding: '8px 0 2px' }}>{v.cod} {v.label}</div>;
+                          if (v.titoletto) return <div key={v.cod} style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-muted)', padding: '8px 0 2px' }}>{v.cod} {v.label}</div>;
                           return (
-                            <div key={v.cod} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, padding: '6px 0', paddingLeft: v.rientro ? 18 : 0, borderTop: '1px solid #f0f2f6' }}>
+                            <div key={v.cod} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, padding: '6px 0', paddingLeft: v.rientro ? 18 : 0, borderTop: '1px solid var(--surface-2)' }}>
                               <label style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '1 1 260px', fontSize: 13, cursor: 'pointer', fontWeight: st.sel ? 700 : 400 }}>
                                 <input type="checkbox" checked={!!st.sel} onChange={(e) => setVoce(v.cod, 'sel', e.target.checked)} />
-                                <span><span style={{ color: '#7a888e' }}>{v.cod}</span> {v.label}{v.perDipendente && !/dip|corsista/i.test(v.label) ? ' (a dipendente)' : ''}</span>
+                                <span><span style={{ color: 'var(--ink-muted)' }}>{v.cod}</span> {v.label}{v.perDipendente && !/dip|corsista/i.test(v.label) ? ' (a dipendente)' : ''}</span>
                               </label>
                               {v.opzioni && (
                                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -229,7 +229,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
                               {v.testo && (
                                 <input style={{ ...stileInput, width: 160 }} placeholder={v.testo} value={st.testo || ''} onChange={(e) => setVoce(v.cod, 'testo', e.target.value)} />
                               )}
-                              {v.senzaPrezzo ? <span style={{ fontSize: 11, color: '#7a888e', width: 110 }}>si firma sul modulo</span> : (
+                              {v.senzaPrezzo ? <span style={{ fontSize: 11, color: 'var(--ink-muted)', width: 110 }}>si firma sul modulo</span> : (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                   <span style={{ fontSize: 13 }}>€</span>
                                   <input style={{ ...stileInput, width: 95, textAlign: 'right' }} inputMode="decimal" placeholder={v.prezzoFisso ? String(v.prezzoFisso) : '0,00'}
@@ -277,7 +277,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
                 {campoDati('data', 'Data', 'date')}
                 {campoDati('consulente', 'Consulente')}
               </div>
-              <div style={{ padding: 12, background: '#f6f8fc', borderRadius: 8, fontSize: 12, color: '#45536f', lineHeight: 1.5 }}>
+              <div style={{ padding: 12, background: 'var(--surface-2)', borderRadius: 8, fontSize: 12, color: 'var(--ink-muted)', lineHeight: 1.5 }}>
                 Durata tre anni con tacito rinnovo (condizioni F e G): la scadenza viene calcolata dalla data del contratto.
                 L'importo e la periodicità diventano il canone del cliente nella contabilità di NS Consulting.
               </div>
@@ -286,28 +286,28 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
 
           {step === 4 && (
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
-              {isEdit && <div style={{ gridColumn: '1 / -1', padding: 10, background: '#eef1f8', borderRadius: 8, fontSize: 13, color: '#2c3e66' }}>ℹ️ Lascia vuoto un riquadro per mantenere la firma già presente.</div>}
+              {isEdit && <div style={{ gridColumn: '1 / -1', padding: 10, background: 'var(--primary-soft)', borderRadius: 8, fontSize: 13, color: 'var(--primary)' }}>ℹ️ Lascia vuoto un riquadro per mantenere la firma già presente.</div>}
               {[['Contraente (cliente)', sigCliente], ['Contrattore (consulente)', sigConsulente]].map(([t, r]) => (
                 <div key={t}>
                   <label style={{ display: 'block', marginBottom: 8, fontWeight: 700, fontSize: 14 }}>Firma {t}</label>
-                  <div style={{ border: '2px solid #dfe5ef', borderRadius: 8, overflow: 'hidden' }}>
+                  <div style={{ border: '2px solid var(--line)', borderRadius: 8, overflow: 'hidden' }}>
                     <SignatureCanvas ref={r} canvasProps={{ width: 400, height: 180, style: { width: '100%', height: 180, background: 'white' } }} />
                   </div>
                   <button type="button" onClick={() => r.current?.clear()}
-                    style={{ marginTop: 8, padding: '6px 12px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, width: '100%' }}>Cancella</button>
+                    style={{ marginTop: 8, padding: '6px 12px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, width: '100%' }}>Cancella</button>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div style={{ padding: isMobile ? '12px 14px' : '14px 20px', borderTop: '1px solid #dfe5ef', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button type="button" onClick={onClose} disabled={salvando} style={{ padding: '10px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Annulla</button>
+        <div style={{ padding: isMobile ? '12px 14px' : '14px 20px', borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button type="button" onClick={onClose} disabled={salvando} style={{ padding: '10px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Annulla</button>
           <div style={{ display: 'flex', gap: 10 }}>
-            {step > 1 && <button type="button" onClick={() => setStep(step - 1)} disabled={salvando} style={{ padding: '10px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>← Indietro</button>}
+            {step > 1 && <button type="button" onClick={() => setStep(step - 1)} disabled={salvando} style={{ padding: '10px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>← Indietro</button>}
             {step < 4
-              ? <button type="button" onClick={avanti} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: '#2c3e66', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Avanti →</button>
-              : <button type="button" onClick={salva} disabled={salvando} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: '#10b981', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>{salvando ? 'Salvataggio…' : '✓ Genera PDF e salva'}</button>}
+              ? <button type="button" onClick={avanti} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: 'var(--primary)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Avanti →</button>
+              : <button type="button" onClick={salva} disabled={salvando} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: 'var(--success)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>{salvando ? 'Salvataggio…' : '✓ Genera PDF e salva'}</button>}
           </div>
         </div>
       </div>

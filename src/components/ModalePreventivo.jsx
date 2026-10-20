@@ -777,7 +777,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 820, maxHeight: isMobile ? '96vh' : '92vh', display: 'flex', flexDirection: 'column' }}>
 
                 {/* Header */}
-                <div style={{ padding: isMobile ? '14px 14px 10px' : '16px 20px', borderBottom: '1px solid #dfe5ef' }}>
+                <div style={{ padding: isMobile ? '14px 14px 10px' : '16px 20px', borderBottom: '1px solid var(--line)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                         <h2 style={{ margin: 0, fontSize: isMobile ? 16 : 18 }}>{isEdit ? '✏️ Modifica Preventivo' : '📋 Nuovo Preventivo'}</h2>
                     </div>
@@ -790,8 +790,8 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                             { n: 5, label: '5. Firma' },
                         ].map(({ n, label }) => (
                             <div key={n} style={{
-                                flex: 1, padding: '7px 4px', background: step >= n ? '#2c3e66' : '#eef1f7',
-                                color: step >= n ? 'white' : '#5f6f8c', borderRadius: 7, fontSize: 12, fontWeight: 600, textAlign: 'center'
+                                flex: 1, padding: '7px 4px', background: step >= n ? 'var(--primary)' : 'var(--surface-2)',
+                                color: step >= n ? 'white' : 'var(--ink-muted)', borderRadius: 7, fontSize: 12, fontWeight: 600, textAlign: 'center'
                             }}>{label}</div>
                         ))}
                     </div>
@@ -813,12 +813,12 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                             <div style={{ marginBottom: 16 }}>
                                 <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', fontSize: 14 }}>Tipo Cliente</label>
                                 <div style={{ display: 'flex', gap: 10 }}>
-                                    {[{ v: 'registrato', label: '🏢 Cliente Registrato', color: '#2c3e66' }, { v: 'nuovo', label: '✨ Nuovo Cliente', color: '#10b981' }].map(({ v, label, color }) => (
+                                    {[{ v: 'registrato', label: '🏢 Cliente Registrato', color: 'var(--primary)' }, { v: 'nuovo', label: '✨ Nuovo Cliente', color: 'var(--success)' }].map(({ v, label, color }) => (
                                         <button key={v} type="button" onClick={() => setTipoCliente(v)} style={{
                                             flex: 1, padding: 10, borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600,
-                                            border: tipoCliente === v ? `2px solid ${color}` : '1px solid #dfe5ef',
-                                            background: tipoCliente === v ? (v === 'registrato' ? '#eef1f8' : '#d1fae5') : 'white',
-                                            color: tipoCliente === v ? color : '#5f6f8c'
+                                            border: tipoCliente === v ? `2px solid ${color}` : '1px solid var(--line)',
+                                            background: tipoCliente === v ? (v === 'registrato' ? 'var(--primary-soft)' : 'var(--success-soft)') : 'white',
+                                            color: tipoCliente === v ? color : 'var(--ink-muted)'
                                         }}>{label}</button>
                                     ))}
                                 </div>
@@ -847,7 +847,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                             codiceUnivocoPec: az?.codiceUnivoco || az?.pec || prev.codiceUnivocoPec
                                         }));
                                     }}
-                                        style={{ width: '100%', padding: 10, border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 14 }}>
+                                        style={{ width: '100%', padding: 10, border: '1px solid var(--line)', borderRadius: 8, fontSize: 14 }}>
                                         <option value="">{aziendeFiltrate.length ? `-- Seleziona (${aziendeFiltrate.length}) --` : '-- Nessuna azienda trovata --'}</option>
                                         {aziendaSelezionata && !aziendeFiltrate.some(az => az.id === aziendaSelezionata.id) && (
                                             <option value={aziendaSelezionata.id}>{aziendaSelezionata.nome} (selezionata)</option>
@@ -855,7 +855,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                         {aziendeFiltrate.map(az => <option key={az.id} value={az.id}>{az.nome}</option>)}
                                     </select>
                                     {aziendaSelezionata && (
-                                        <div style={{ marginTop: 10, padding: 12, background: '#f0fdf4', borderRadius: 8, border: '1px solid #86efac', fontSize: 13 }}>
+                                        <div style={{ marginTop: 10, padding: 12, background: 'var(--success-soft)', borderRadius: 8, border: '1px solid #86efac', fontSize: 13 }}>
                                             {[
                                                 ['Indirizzo', aziendaSelezionata.indirizzo],
                                                 ['Comune', [aziendaSelezionata.cap, aziendaSelezionata.comune, aziendaSelezionata.provincia ? `(${aziendaSelezionata.provincia})` : ''].filter(Boolean).join(' ')],
@@ -867,8 +867,8 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                 ['PEC', aziendaSelezionata.pec],
                                             ].filter(([, v]) => v).map(([label, value]) => (
                                                 <div key={label} style={{ display: 'flex', gap: 8, marginBottom: 3 }}>
-                                                    <span style={{ fontWeight: 600, color: '#166534', minWidth: 120 }}>{label}:</span>
-                                                    <span style={{ color: '#1a2540' }}>{value}</span>
+                                                    <span style={{ fontWeight: 600, color: 'var(--success)', minWidth: 120 }}>{label}:</span>
+                                                    <span style={{ color: 'var(--ink)' }}>{value}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -878,27 +878,27 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
 
                             {/* Nuovo cliente */}
                             {tipoCliente === 'nuovo' && (
-                                <div style={{ marginBottom: 16, padding: 14, background: '#f6f8fc', borderRadius: 8, border: '1px solid #dfe5ef' }}>
+                                <div style={{ marginBottom: 16, padding: 14, background: 'var(--surface-2)', borderRadius: 8, border: '1px solid var(--line)' }}>
                                     <h4 style={{ margin: '0 0 12px', fontSize: 14 }}>Dati Nuovo Cliente</h4>
                                     <div style={{ marginBottom: 10 }}>
                                         <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>Ragione Sociale *</label>
                                         <input type="text" value={form.nuovoCliente.nome} onChange={e => handleNuovoClienteChange('nome', e.target.value)}
-                                            placeholder="Nome azienda" style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                            placeholder="Nome azienda" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                     </div>
                                     <div style={{ marginBottom: 10 }}>
                                         <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>Indirizzo *</label>
                                         <input type="text" value={form.nuovoCliente.indirizzo} onChange={e => handleNuovoClienteChange('indirizzo', e.target.value)}
-                                            placeholder="Indirizzo completo" style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                            placeholder="Indirizzo completo" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                     </div>
                                     <div style={{ marginBottom: 10, position: 'relative' }} ref={comuneDropdownRef}>
                                         <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>Comune *</label>
                                         <input type="text" value={form.nuovoCliente.comune}
                                             onChange={e => handleComuneNuovoClienteChange(e.target.value)}
                                             placeholder="Inizia a digitare..." autoComplete="off"
-                                            style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
-                                        {cercando && <div style={{ position: 'absolute', right: 10, top: 30, fontSize: 11, color: '#9aa7bf' }}>Ricerca...</div>}
+                                            style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
+                                        {cercando && <div style={{ position: 'absolute', right: 10, top: 30, fontSize: 11, color: 'var(--ink-muted)' }}>Ricerca...</div>}
                                         {suggerimenti.length > 0 && (
-                                            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', border: '1px solid #dfe5ef', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 9999, maxHeight: 200, overflowY: 'auto' }}>
+                                            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', border: '1px solid var(--line)', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 9999, maxHeight: 200, overflowY: 'auto' }}>
                                                 {suggerimenti.map((r, i) => {
                                                     const addr = r.address;
                                                     const nome = addr.city || addr.town || addr.village || addr.municipality || '';
@@ -906,12 +906,12 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                     const cap = addr.postcode?.split(';')[0] || '';
                                                     return (
                                                         <div key={i} onMouseDown={() => selezionaComune(r)}
-                                                            style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid #eef1f7', fontSize: 13 }}
-                                                            onMouseEnter={e => e.currentTarget.style.background = '#eef1f8'}
+                                                            style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid var(--surface-2)', fontSize: 13 }}
+                                                            onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-soft)'}
                                                             onMouseLeave={e => e.currentTarget.style.background = 'white'}>
                                                             <span style={{ fontWeight: 600 }}>{nome}</span>
-                                                            {prov && <span style={{ color: '#2c3e66', marginLeft: 6 }}>({prov})</span>}
-                                                            {cap && <span style={{ color: '#9aa7bf', marginLeft: 6 }}>{cap}</span>}
+                                                            {prov && <span style={{ color: 'var(--primary)', marginLeft: 6 }}>({prov})</span>}
+                                                            {cap && <span style={{ color: 'var(--ink-muted)', marginLeft: 6 }}>{cap}</span>}
                                                         </div>
                                                     );
                                                 })}
@@ -924,21 +924,21 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                             <input type="text" value={form.nuovoCliente.provincia}
                                                 onChange={e => handleNuovoClienteChange('provincia', e.target.value.toUpperCase().slice(0, 2))}
                                                 placeholder="Es. LE" maxLength={2}
-                                                style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14, textTransform: 'uppercase' }} />
+                                                style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14, textTransform: 'uppercase' }} />
                                         </div>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>CAP *</label>
                                             <input type="text" value={form.nuovoCliente.cap}
                                                 onChange={e => handleNuovoClienteChange('cap', e.target.value.replace(/\D/g, '').slice(0, 5))}
                                                 placeholder="Es. 73100" maxLength={5}
-                                                style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                                style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                         </div>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>Telefono *</label>
                                             <input type="tel" value={form.nuovoCliente.telefono} onChange={e => handleNuovoClienteChange('telefono', e.target.value)}
-                                                placeholder="Telefono" style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                                placeholder="Telefono" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                         </div>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>P.IVA / Codice Fiscale *</label>
@@ -954,31 +954,31 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                         handleChange('aziendaId', trovata.id);
                                                     }
                                                 }}
-                                                placeholder="P.IVA / Codice Fiscale" style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                                placeholder="P.IVA / Codice Fiscale" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                         </div>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: 10 }}>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>PEC *</label>
                                             <input type="email" value={form.nuovoCliente.pec} onChange={e => handleNuovoClienteChange('pec', e.target.value)}
-                                                placeholder="indirizzo@pec.it" style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                                placeholder="indirizzo@pec.it" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                         </div>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>Codice Univoco</label>
                                             <input type="text" value={form.nuovoCliente.codiceUnivoco} onChange={e => handleNuovoClienteChange('codiceUnivoco', e.target.value)}
-                                                placeholder="Es. XXXXXXX" style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                                placeholder="Es. XXXXXXX" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                         </div>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>Amministratore</label>
                                             <input type="text" value={form.nuovoCliente.contatto} onChange={e => handleNuovoClienteChange('contatto', e.target.value)}
-                                                placeholder="Nome cognome" style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }} />
+                                                placeholder="Nome cognome" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }} />
                                         </div>
                                     </div>
                                 </div>
                             )}
 
                             {/* Data e Agente */}
-                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, padding: 14, background: '#fef3c7', borderRadius: 8, border: '1px solid #fde68a' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, padding: 14, background: 'var(--warning-soft)', borderRadius: 8, border: '1px solid #fde68a' }}>
                                 <div>
                                     <label style={{ display: 'block', marginBottom: 5, fontSize: 13, fontWeight: 600 }}>Data</label>
                                     <input type="date" value={form.data} onChange={e => handleChange('data', e.target.value)}
@@ -992,11 +992,11 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                             </div>
 
                             {/* Controlli Sopralluogo */}
-                            <div style={{ marginTop: 16, padding: 14, background: '#f0fdf4', borderRadius: 8, border: '1px solid #86efac' }}>
-                                <h4 style={{ margin: '0 0 12px', fontSize: 14, color: '#166534' }}>🔍 Controlli Sopralluogo</h4>
+                            <div style={{ marginTop: 16, padding: 14, background: 'var(--success-soft)', borderRadius: 8, border: '1px solid #86efac' }}>
+                                <h4 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--success)' }}>🔍 Controlli Sopralluogo</h4>
                                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 8 }}>
                                     {(checklistVoci.length > 0 ? checklistVoci : DEFAULT_CHECKLIST).map(label => (
-                                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '6px 8px', background: form.checklistSopralluogo[label] ? '#dcfce7' : 'white', borderRadius: 6, border: `1px solid ${form.checklistSopralluogo[label] ? '#86efac' : '#dfe5ef'}` }}>
+                                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '6px 8px', background: form.checklistSopralluogo[label] ? 'var(--success-soft)' : 'white', borderRadius: 6, border: `1px solid ${form.checklistSopralluogo[label] ? '#86efac' : 'var(--line)'}` }}>
                                             <input
                                                 type="checkbox"
                                                 checked={form.checklistSopralluogo[label] ?? false}
@@ -1006,7 +1006,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                 }))}
                                                 style={{ width: 16, height: 16, cursor: 'pointer' }}
                                             />
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: form.checklistSopralluogo[label] ? '#166534' : '#374151' }}>{label}</span>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: form.checklistSopralluogo[label] ? 'var(--success)' : 'var(--ink)' }}>{label}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -1018,13 +1018,13 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                     {step === 2 && (
                         <div>
                             <h3 style={{ marginBottom: 4, fontSize: 16 }}>💼 Servizi</h3>
-                            <p style={{ marginBottom: 12, fontSize: 13, color: '#5f6f8c' }}>Inserisci quantità e prezzo unitario per ogni servizio da includere nel preventivo.</p>
+                            <p style={{ marginBottom: 12, fontSize: 13, color: 'var(--ink-muted)' }}>Inserisci quantità e prezzo unitario per ogni servizio da includere nel preventivo.</p>
 
                             {/* Tabella */}
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                                     <thead>
-                                        <tr style={{ background: '#1a2540', color: 'white' }}>
+                                        <tr style={{ background: 'var(--ink)', color: 'white' }}>
                                             <th style={{ padding: '8px 10px', textAlign: 'left', width: '50%' }}>DESCRIZIONE</th>
                                             <th style={{ padding: '8px 10px', textAlign: 'center', width: '12%' }}>QUANTITÀ</th>
                                             <th style={{ padding: '8px 10px', textAlign: 'right', width: '18%' }}>PREZZO UNITARIO</th>
@@ -1038,11 +1038,11 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                             const importo = s.omaggio ? 0 : qty * price;
                                             return (
                                                 <Fragment key={s.id}>
-                                                    <tr style={{ background: idx % 2 === 0 ? '#f6f8fc' : 'white', borderBottom: qty > 0 ? 'none' : '1px solid #dfe5ef' }}>
+                                                    <tr style={{ background: idx % 2 === 0 ? 'var(--surface-2)' : 'white', borderBottom: qty > 0 ? 'none' : '1px solid var(--line)' }}>
                                                         <td style={{ padding: '6px 8px' }}>
                                                             {s.custom ? (
                                                                 <input type="text" value={s.descrizione} onChange={e => handleServizioChange(s.id, 'descrizione', e.target.value)}
-                                                                    placeholder="Descrizione servizio..." style={{ width: '100%', padding: '4px 6px', border: '1px solid #dfe5ef', borderRadius: 4, fontSize: 13 }} />
+                                                                    placeholder="Descrizione servizio..." style={{ width: '100%', padding: '4px 6px', border: '1px solid var(--line)', borderRadius: 4, fontSize: 13 }} />
                                                             ) : (
                                                                 <span style={{ fontWeight: 600 }}>{s.descrizione}</span>
                                                             )}
@@ -1050,7 +1050,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                         <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                                                             <input type="number" value={s.quantita} onChange={e => handleServizioChange(s.id, 'quantita', e.target.value)}
                                                                 placeholder="N." min="0" step="1"
-                                                                style={{ width: '60px', padding: '4px 6px', border: '1px solid #dfe5ef', borderRadius: 4, fontSize: 13, textAlign: 'center' }} />
+                                                                style={{ width: '60px', padding: '4px 6px', border: '1px solid var(--line)', borderRadius: 4, fontSize: 13, textAlign: 'center' }} />
                                                         </td>
                                                         <td style={{ padding: '6px 8px', textAlign: 'right' }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
@@ -1061,27 +1061,27 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                                         <div style={{ display: 'flex', flexDirection: isAdmin ? 'row' : 'column', alignItems: 'center', justifyContent: 'flex-end', gap: isAdmin ? 8 : 2, whiteSpace: 'nowrap' }}>
                                                                             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                                                                 {s.omaggio ? (
-                                                                                    <span style={{ width: 98, padding: '5px 6px', borderRadius: 4, fontSize: 12, textAlign: 'center', background: '#dcfce7', color: '#15803d', border: '1px solid #86efac', fontWeight: 800 }}>
+                                                                                    <span style={{ width: 98, padding: '5px 6px', borderRadius: 4, fontSize: 12, textAlign: 'center', background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #86efac', fontWeight: 800 }}>
                                                                                         OMAGGIO
                                                                                     </span>
                                                                                 ) : (
                                                                                     <>
-                                                                                        <span style={{ color: '#5f6f8c', fontSize: 12 }}>€</span>
+                                                                                        <span style={{ color: 'var(--ink-muted)', fontSize: 12 }}>€</span>
                                                                                         <input type="number" value={s.prezzoUnitario}
                                                                                             onChange={e => handleServizioChange(s.id, 'prezzoUnitario', e.target.value)}
                                                                                             placeholder="0.00" min={prezzoMin || 0} step="0.01"
-                                                                                            style={{ width: '85px', padding: '4px 6px', borderRadius: 4, fontSize: 13, textAlign: 'right', border: `1px solid ${sottoMin ? '#fca5a5' : '#dfe5ef'}`, background: sottoMin ? '#fef2f2' : 'white' }} />
+                                                                                            style={{ width: '85px', padding: '4px 6px', borderRadius: 4, fontSize: 13, textAlign: 'right', border: `1px solid ${sottoMin ? '#fca5a5' : 'var(--line)'}`, background: sottoMin ? 'var(--danger-soft)' : 'white' }} />
                                                                                     </>
                                                                                 )}
                                                                             </div>
                                                                             {isAdmin && (
-                                                                                <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: s.omaggio ? '#15803d' : '#5f6f8c', cursor: 'pointer', fontWeight: s.omaggio ? 700 : 500 }}>
+                                                                                <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: s.omaggio ? 'var(--success)' : 'var(--ink-muted)', cursor: 'pointer', fontWeight: s.omaggio ? 700 : 500 }}>
                                                                                     <input type="checkbox" checked={!!s.omaggio} onChange={() => toggleOmaggio(s.id)} />
                                                                                     Omaggio
                                                                                 </label>
                                                                             )}
                                                                             {prezzoBloccato && prezzoMin > 0 && (
-                                                                                <span style={{ fontSize: 10, color: sottoMin ? '#dc2626' : '#9aa7bf' }}>
+                                                                                <span style={{ fontSize: 10, color: sottoMin ? 'var(--danger)' : 'var(--ink-muted)' }}>
                                                                                     min € {prezzoMin.toFixed(2)}
                                                                                 </span>
                                                                             )}
@@ -1090,15 +1090,15 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                                 })()}
                                                             </div>
                                                         </td>
-                                                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: importo > 0 ? 700 : 400, color: importo > 0 ? '#1a2540' : '#9aa7bf' }}>
-                                                            {s.omaggio ? <span style={{ color: '#15803d', fontWeight: 800 }}>OMAGGIO</span> : (importo > 0 ? `€ ${importo.toFixed(2)}` : '—')}
+                                                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: importo > 0 ? 700 : 400, color: importo > 0 ? 'var(--ink)' : 'var(--ink-muted)' }}>
+                                                            {s.omaggio ? <span style={{ color: 'var(--success)', fontWeight: 800 }}>OMAGGIO</span> : (importo > 0 ? `€ ${importo.toFixed(2)}` : '—')}
                                                         </td>
                                                     </tr>
                                                     {qty > 0 && s.descrizione?.includes('DVR') && (
-                                                        <tr key={`nota-${s.id}`} style={{ background: '#f0fdf4', borderBottom: '1px solid #dfe5ef' }}>
+                                                        <tr key={`nota-${s.id}`} style={{ background: 'var(--success-soft)', borderBottom: '1px solid var(--line)' }}>
                                                             <td colSpan={4} style={{ padding: '6px 8px 6px 24px' }}>
                                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                                                    <span style={{ fontSize: 11, color: '#15803d', fontWeight: 700, minWidth: 50 }}>📝 Note</span>
+                                                                    <span style={{ fontSize: 11, color: 'var(--success)', fontWeight: 700, minWidth: 50 }}>📝 Note</span>
                                                                     <input
                                                                         type="text"
                                                                         value={s.nota || ''}
@@ -1111,7 +1111,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                         </tr>
                                                     )}
                                                     {qty > 0 && s.descrizione?.includes('FORNITURA') && (
-                                                        <tr key={`fornitura-${s.id}`} style={{ background: '#fff7ed', borderBottom: '1px solid #dfe5ef' }}>
+                                                        <tr key={`fornitura-${s.id}`} style={{ background: '#fff7ed', borderBottom: '1px solid var(--line)' }}>
                                                             <td colSpan={4} style={{ padding: '6px 8px 6px 24px' }}>
                                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                                                     <span style={{ fontSize: 11, color: '#c2410c', fontWeight: 700, minWidth: 50 }}>📝 Note</span>
@@ -1127,10 +1127,10 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                         </tr>
                                                     )}
                                                     {qty > 0 && s.descrizione?.includes('HACCP') && (
-                                                        <tr key={`haccp-${s.id}`} style={{ background: '#fefce8', borderBottom: '1px solid #dfe5ef' }}>
+                                                        <tr key={`haccp-${s.id}`} style={{ background: 'var(--warning-soft)', borderBottom: '1px solid var(--line)' }}>
                                                             <td colSpan={4} style={{ padding: '6px 8px 6px 24px' }}>
                                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                                                                    <span style={{ fontSize: 11, color: '#a16207', fontWeight: 700, whiteSpace: 'nowrap' }}>👤 Resp. Auto Controllo</span>
+                                                                    <span style={{ fontSize: 11, color: 'var(--warning)', fontWeight: 700, whiteSpace: 'nowrap' }}>👤 Resp. Auto Controllo</span>
                                                                     <input
                                                                         type="text"
                                                                         value={s.responsabile || ''}
@@ -1139,9 +1139,9 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                                         style={{ flex: 1, minWidth: 160, padding: '3px 7px', border: '1px solid #fde68a', borderRadius: 4, fontSize: 12 }}
                                                                     />
                                                                     {(s.responsabileFiles || []).map((file, fileIdx) => (
-                                                                        <span key={`${file.name}-${fileIdx}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 5px', background: '#ecfdf5', borderRadius: 4 }}>
-                                                                            <span style={{ fontSize: 11, color: '#059669', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✓ {file.name}</span>
-                                                                            <button type="button" onClick={() => rimuoviFileServizio(s.id, fileIdx)} style={{ fontSize: 10, padding: '1px 4px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 4, cursor: 'pointer' }}>✕</button>
+                                                                        <span key={`${file.name}-${fileIdx}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 5px', background: 'var(--success-soft)', borderRadius: 4 }}>
+                                                                            <span style={{ fontSize: 11, color: 'var(--success)', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✓ {file.name}</span>
+                                                                            <button type="button" onClick={() => rimuoviFileServizio(s.id, fileIdx)} style={{ fontSize: 10, padding: '1px 4px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 4, cursor: 'pointer' }}>✕</button>
                                                                         </span>
                                                                     ))}
                                                                     <DropZone multiple compact colorScheme="yellow" accept=".pdf,.jpg,.jpeg,.png" label={(s.responsabileFiles || []).length ? 'Aggiungi' : 'Allega'} onFile={f => aggiungiFileServizio(s.id, f)} />
@@ -1153,10 +1153,10 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                         const isAlimentarista = s.descrizione?.includes('ALIMENTARISTA');
                                                         const telefonoMancante = isAlimentarista && !dip.telefono?.trim();
                                                         return (
-                                                        <tr key={`dip-${s.id}-${dipIdx}`} style={{ background: '#eef1f8', borderBottom: dipIdx === qty - 1 ? '1px solid #dfe5ef' : '1px solid #dde3f0' }}>
+                                                        <tr key={`dip-${s.id}-${dipIdx}`} style={{ background: 'var(--primary-soft)', borderBottom: dipIdx === qty - 1 ? '1px solid var(--line)' : '1px solid var(--primary-soft)' }}>
                                                             <td colSpan={4} style={{ padding: '3px 8px 3px 24px' }}>
                                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                                                                    <span style={{ fontSize: 11, color: '#2c3e66', fontWeight: 700, minWidth: 50 }}>👤 #{dipIdx + 1}</span>
+                                                                    <span style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 700, minWidth: 50 }}>👤 #{dipIdx + 1}</span>
                                                                     <input
                                                                         type="text"
                                                                         value={dip.nome}
@@ -1177,13 +1177,13 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                                                             value={dip.telefono || ''}
                                                                             onChange={e => handleDipendenteChange(s.id, dipIdx, 'telefono', e.target.value)}
                                                                             placeholder="Telefono *"
-                                                                            style={{ flex: 1, minWidth: 100, padding: '3px 7px', borderRadius: 4, fontSize: 12, border: `1px solid ${telefonoMancante ? '#fca5a5' : '#c3cde3'}`, background: telefonoMancante ? '#fef2f2' : 'white' }}
+                                                                            style={{ flex: 1, minWidth: 100, padding: '3px 7px', borderRadius: 4, fontSize: 12, border: `1px solid ${telefonoMancante ? '#fca5a5' : '#c3cde3'}`, background: telefonoMancante ? 'var(--danger-soft)' : 'white' }}
                                                                         />
                                                                     )}
                                                                     {(dip.files || []).map((file, fileIdx) => (
-                                                                        <span key={`${file.name}-${fileIdx}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 5px', background: '#ecfdf5', borderRadius: 4 }}>
-                                                                            <span style={{ fontSize: 11, color: '#059669', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✓ {file.name}</span>
-                                                                            <button type="button" onClick={() => rimuoviFileDipendente(s.id, dipIdx, fileIdx)} style={{ fontSize: 10, padding: '1px 4px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 4, cursor: 'pointer' }}>✕</button>
+                                                                        <span key={`${file.name}-${fileIdx}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 5px', background: 'var(--success-soft)', borderRadius: 4 }}>
+                                                                            <span style={{ fontSize: 11, color: 'var(--success)', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✓ {file.name}</span>
+                                                                            <button type="button" onClick={() => rimuoviFileDipendente(s.id, dipIdx, fileIdx)} style={{ fontSize: 10, padding: '1px 4px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 4, cursor: 'pointer' }}>✕</button>
                                                                         </span>
                                                                     ))}
                                                                     <DropZone multiple compact colorScheme="blue" accept=".pdf,.jpg,.jpeg,.png" label={(dip.files || []).length ? 'Aggiungi' : 'Allega'} onFile={f => aggiungiFileDipendente(s.id, dipIdx, f)} />
@@ -1200,8 +1200,8 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                             </div>
 
                             {/* Totale imponibile */}
-                            <div style={{ textAlign: 'right', marginTop: 12, padding: '10px 16px', background: '#eef1f8', borderRadius: 8 }}>
-                                <span style={{ fontSize: 15, fontWeight: 700, color: '#1f2e4d' }}>
+                            <div style={{ textAlign: 'right', marginTop: 12, padding: '10px 16px', background: 'var(--primary-soft)', borderRadius: 8 }}>
+                                <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--primary-hover)' }}>
                                     TOTALE IMPONIBILE: € {calcolaTotaleImponibile().toFixed(2)}
                                 </span>
                             </div>
@@ -1217,7 +1217,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                 <div>
                                     <label style={{ display: 'block', marginBottom: 5, fontWeight: 600, fontSize: 14 }}>
                                         Sconto (%)
-                                        {prezzoBloccato && <span style={{ fontWeight: 400, fontSize: 12, color: '#9aa7bf', marginLeft: 6 }}>max 10%</span>}
+                                        {prezzoBloccato && <span style={{ fontWeight: 400, fontSize: 12, color: 'var(--ink-muted)', marginLeft: 6 }}>max 10%</span>}
                                     </label>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                                         <input
@@ -1232,30 +1232,30 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                             min="0"
                                             max={prezzoBloccato ? 10 : 100}
                                             step="0.5"
-                                            style={{ flex: 1, padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14 }}
+                                            style={{ flex: 1, padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14 }}
                                         />
-                                        <span style={{ color: '#5f6f8c', fontWeight: 600 }}>%</span>
+                                        <span style={{ color: 'var(--ink-muted)', fontWeight: 600 }}>%</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Riepilogo totali */}
-                            <div style={{ padding: 12, background: '#f6f8fc', borderRadius: 8, marginBottom: 16, border: '1px solid #dfe5ef' }}>
+                            <div style={{ padding: 12, background: 'var(--surface-2)', borderRadius: 8, marginBottom: 16, border: '1px solid var(--line)' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                                    <span style={{ fontSize: 14, color: '#5f6f8c' }}>Totale Imponibile</span>
+                                    <span style={{ fontSize: 14, color: 'var(--ink-muted)' }}>Totale Imponibile</span>
                                     <span style={{ fontWeight: 600 }}>€ {calcolaTotaleImponibile().toFixed(2)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                                    <span style={{ fontSize: 14, color: '#5f6f8c' }}>Sconto {form.sconto ? `(${parseFloat(form.sconto)}%)` : ''}</span>
-                                    <span style={{ fontWeight: 600, color: '#dc2626' }}>- € {calcolaScontoEuro().toFixed(2)}</span>
+                                    <span style={{ fontSize: 14, color: 'var(--ink-muted)' }}>Sconto {form.sconto ? `(${parseFloat(form.sconto)}%)` : ''}</span>
+                                    <span style={{ fontWeight: 600, color: 'var(--danger)' }}>- € {calcolaScontoEuro().toFixed(2)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                                    <span style={{ fontSize: 14, color: '#5f6f8c' }}>IVA (22%)</span>
+                                    <span style={{ fontSize: 14, color: 'var(--ink-muted)' }}>IVA (22%)</span>
                                     <span style={{ fontWeight: 600 }}>+ € {calcolaIvaEuro().toFixed(2)}</span>
                                 </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, borderTop: '1px solid #dfe5ef' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, borderTop: '1px solid var(--line)' }}>
                                     <span style={{ fontSize: 15, fontWeight: 700 }}>Totale Ivato</span>
-                                    <span style={{ fontSize: 15, fontWeight: 700, color: '#1f2e4d' }}>€ {calcolaTotale().toFixed(2)}</span>
+                                    <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--primary-hover)' }}>€ {calcolaTotale().toFixed(2)}</span>
                                 </div>
                             </div>
 
@@ -1264,7 +1264,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                                     <thead>
-                                        <tr style={{ background: '#1a2540', color: 'white' }}>
+                                        <tr style={{ background: 'var(--ink)', color: 'white' }}>
                                             {['Data', 'Contanti (€)', 'Bonifico (€)', 'Assegno (€)'].map(h => (
                                                 <th key={h} style={{ padding: '8px 10px', textAlign: 'center' }}>{h}</th>
                                             ))}
@@ -1272,16 +1272,16 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                     </thead>
                                     <tbody>
                                         {form.rate.map((rata, idx) => (
-                                            <tr key={idx} style={{ background: idx % 2 === 0 ? '#f6f8fc' : 'white', borderBottom: '1px solid #dfe5ef' }}>
+                                            <tr key={idx} style={{ background: idx % 2 === 0 ? 'var(--surface-2)' : 'white', borderBottom: '1px solid var(--line)' }}>
                                                 <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                                                     <input type="date" value={rata.data} onChange={e => handleRataChange(idx, 'data', e.target.value)}
-                                                        style={{ padding: '4px 6px', border: '1px solid #dfe5ef', borderRadius: 4, fontSize: 13 }} />
+                                                        style={{ padding: '4px 6px', border: '1px solid var(--line)', borderRadius: 4, fontSize: 13 }} />
                                                 </td>
                                                 {['contanti', 'bonifico', 'assegno'].map(campo => (
                                                     <td key={campo} style={{ padding: '6px 8px', textAlign: 'center' }}>
                                                         <input type="number" value={rata[campo]} onChange={e => handleRataChange(idx, campo, e.target.value)}
                                                             placeholder="0.00" min="0" step="0.01"
-                                                            style={{ width: '90px', padding: '4px 6px', border: '1px solid #dfe5ef', borderRadius: 4, fontSize: 13, textAlign: 'right' }} />
+                                                            style={{ width: '90px', padding: '4px 6px', border: '1px solid var(--line)', borderRadius: 4, fontSize: 13, textAlign: 'right' }} />
                                                     </td>
                                                 ))}
                                             </tr>
@@ -1295,7 +1295,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                 <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Nota</label>
                                 <textarea value={form.nota} onChange={e => handleChange('nota', e.target.value)}
                                     rows="3" placeholder="Note aggiuntive..."
-                                    style={{ width: '100%', padding: 10, border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical' }} />
+                                    style={{ width: '100%', padding: 10, border: '1px solid var(--line)', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical' }} />
                             </div>
                         </div>
                     )}
@@ -1305,23 +1305,23 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                         <div>
                             <h3 style={{ marginBottom: 6, fontSize: 16 }}>📁 Documenti Azienda</h3>
                             {tipoCliente === 'nuovo' && (
-                                <div style={{ padding: 12, background: '#d1fae5', borderRadius: 8, border: '1px solid #6ee7b7', marginBottom: 16 }}>
-                                    <p style={{ margin: 0, fontSize: 13, color: '#065f46' }}>
+                                <div style={{ padding: 12, background: 'var(--success-soft)', borderRadius: 8, border: '1px solid #6ee7b7', marginBottom: 16 }}>
+                                    <p style={{ margin: 0, fontSize: 13, color: 'var(--success)' }}>
                                         ✓ Il nuovo cliente verrà registrato automaticamente in Lista Aziende al salvataggio.
                                     </p>
                                 </div>
                             )}
-                            <p style={{ marginBottom: 16, fontSize: 13, color: '#5f6f8c' }}>
+                            <p style={{ marginBottom: 16, fontSize: 13, color: 'var(--ink-muted)' }}>
                                 Carica i documenti dell'azienda. Verranno salvati automaticamente nella sezione Documenti del cliente.
                             </p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                                 {documentiDaAggiungere.map(doc => (
-                                    <div key={doc.id} style={{ background: '#f6f8fc', padding: 12, borderRadius: 8, border: '1px solid #dfe5ef' }}>
+                                    <div key={doc.id} style={{ background: 'var(--surface-2)', padding: 12, borderRadius: 8, border: '1px solid var(--line)' }}>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                                             <div>
                                                 <label style={{ display: 'block', marginBottom: 4, fontSize: 12, fontWeight: 600 }}>Tipo</label>
                                                 <select value={doc.tipo} onChange={e => handleDocumentoChange(doc.id, 'tipo', e.target.value)}
-                                                    style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 13 }}>
+                                                    style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 13 }}>
                                                     {['Visura Camerale', 'Certificato CCIAA', 'DURC', 'Polizza Assicurativa', 'Certificazione ISO', 'Attestazione SOA', 'Contratto', 'Licenze', 'Autorizzazioni', 'Altro'].map(t => (
                                                         <option key={t} value={t}>{t}</option>
                                                     ))}
@@ -1330,7 +1330,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                             <div>
                                                 <label style={{ display: 'block', marginBottom: 4, fontSize: 12, fontWeight: 600 }}>Scadenza (opzionale)</label>
                                                 <input type="date" value={doc.dataScadenza} onChange={e => handleDocumentoChange(doc.id, 'dataScadenza', e.target.value)}
-                                                    style={{ width: '100%', padding: 8, border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 13 }} />
+                                                    style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 13 }} />
                                             </div>
                                         </div>
                                         <div style={{ marginBottom: 8 }}>
@@ -1342,7 +1342,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                         </div>
                                         <div style={{ textAlign: 'right', marginTop: 8 }}>
                                             <button type="button" onClick={() => rimuoviDocumento(doc.id)}
-                                                style={{ padding: '4px 10px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
+                                                style={{ padding: '4px 10px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
                                                 🗑️ Rimuovi
                                             </button>
                                         </div>
@@ -1350,7 +1350,7 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                 ))}
                             </div>
                             <button type="button" onClick={aggiungiDocumento}
-                                style={{ marginTop: 12, width: '100%', padding: 10, background: '#eef1f8', color: '#2c3e66', border: '2px dashed #2c3e66', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                                style={{ marginTop: 12, width: '100%', padding: 10, background: 'var(--primary-soft)', color: 'var(--primary)', border: '2px dashed var(--primary)', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                                 + Aggiungi Documento
                             </button>
                         </div>
@@ -1361,8 +1361,8 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                         <div>
                             <h3 style={{ marginBottom: 15, fontSize: 16 }}>✍️ Firme</h3>
                             {isEdit && (
-                                <div style={{ padding: 12, background: '#eef1f8', borderRadius: 8, border: '1px solid #c3cde3', marginBottom: 16 }}>
-                                    <p style={{ margin: 0, fontSize: 13, color: '#2c3e66' }}>
+                                <div style={{ padding: 12, background: 'var(--primary-soft)', borderRadius: 8, border: '1px solid #c3cde3', marginBottom: 16 }}>
+                                    <p style={{ margin: 0, fontSize: 13, color: 'var(--primary)' }}>
                                         ℹ️ Modalità modifica: le firme sono opzionali. Lascia il campo vuoto per mantenere le firme precedenti.
                                     </p>
                                 </div>
@@ -1372,26 +1372,26 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                 {/* Firma Cliente + Documento identità */}
                                 <div>
                                     <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', fontSize: 14 }}>Firma Cliente {isAdmin ? '(opzionale)' : '*'}</label>
-                                    <div style={{ border: '2px solid #dfe5ef', borderRadius: 8, overflow: 'hidden' }}>
+                                    <div style={{ border: '2px solid var(--line)', borderRadius: 8, overflow: 'hidden' }}>
                                         <SignatureCanvas ref={sigCanvasCliente} canvasProps={{ width: 350, height: 200, style: { width: '100%', height: 200, background: 'white' } }} />
                                     </div>
                                     <button onClick={() => sigCanvasCliente.current?.clear()}
-                                        style={{ marginTop: 8, padding: '6px 12px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, width: '100%' }}>
+                                        style={{ marginTop: 8, padding: '6px 12px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, width: '100%' }}>
                                         Cancella
                                     </button>
 
                                     {/* Documento di identità */}
-                                    <div style={{ marginTop: 14, padding: '12px 12px 10px', background: '#f6f8fc', borderRadius: 8, border: '1px solid #dfe5ef' }}>
-                                        <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 600, color: '#45536f' }}>
+                                    <div style={{ marginTop: 14, padding: '12px 12px 10px', background: 'var(--surface-2)', borderRadius: 8, border: '1px solid var(--line)' }}>
+                                        <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>
                                             🪪 Documento di identità cliente
                                         </label>
                                         {docIdentitaCliente.length > 0 && (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 8 }}>
                                                 {docIdentitaCliente.map((file, fileIdx) => (
-                                                    <div key={`${file.name}-${fileIdx}`} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', background: '#d1fae5', borderRadius: 6, border: '1px solid #6ee7b7' }}>
-                                                        <span style={{ fontSize: 13, color: '#065f46', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✓ {file.name}</span>
+                                                    <div key={`${file.name}-${fileIdx}`} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', background: 'var(--success-soft)', borderRadius: 6, border: '1px solid #6ee7b7' }}>
+                                                        <span style={{ fontSize: 13, color: 'var(--success)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✓ {file.name}</span>
                                                         <button type="button" onClick={() => setDocIdentitaCliente(prev => prev.filter((_, i) => i !== fileIdx))}
-                                                            style={{ fontSize: 11, padding: '2px 7px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 4, cursor: 'pointer', flexShrink: 0 }}>✕</button>
+                                                            style={{ fontSize: 11, padding: '2px 7px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 4, cursor: 'pointer', flexShrink: 0 }}>✕</button>
                                                     </div>
                                                 ))}
                                             </div>
@@ -1403,17 +1403,17 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                 {/* Firma Consulente */}
                                 <div>
                                     <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', fontSize: 14 }}>Firma Consulente {isAdmin ? '(opzionale)' : '*'}</label>
-                                    <div style={{ border: '2px solid #dfe5ef', borderRadius: 8, overflow: 'hidden' }}>
+                                    <div style={{ border: '2px solid var(--line)', borderRadius: 8, overflow: 'hidden' }}>
                                         <SignatureCanvas ref={sigCanvasConsulente} canvasProps={{ width: 350, height: 200, style: { width: '100%', height: 200, background: 'white' } }} />
                                     </div>
                                     <button onClick={() => sigCanvasConsulente.current?.clear()}
-                                        style={{ marginTop: 8, padding: '6px 12px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, width: '100%' }}>
+                                        style={{ marginTop: 8, padding: '6px 12px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, width: '100%' }}>
                                         Cancella
                                     </button>
                                 </div>
                             </div>
-                            <div style={{ padding: 14, background: '#fef3c7', borderRadius: 8, border: '1px solid #fde68a' }}>
-                                <p style={{ margin: 0, fontSize: 13, color: '#92400e' }}>
+                            <div style={{ padding: 14, background: 'var(--warning-soft)', borderRadius: 8, border: '1px solid #fde68a' }}>
+                                <p style={{ margin: 0, fontSize: 13, color: 'var(--warning)' }}>
                                     {isAdmin
                                         ? 'ℹ️ Come admin puoi generare il PDF anche senza firme.'
                                         : '⚠️ Assicurarsi che entrambe le firme siano apposte prima di generare il PDF.'}
@@ -1424,13 +1424,13 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                 </div>
 
                 {/* Footer */}
-                <div style={{ padding: isMobile ? '12px 14px' : '14px 20px', borderTop: '1px solid #dfe5ef', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <button onClick={onClose} style={{ padding: '10px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                <div style={{ padding: isMobile ? '12px 14px' : '14px 20px', borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <button onClick={onClose} style={{ padding: '10px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                         Annulla
                     </button>
                     <div style={{ display: 'flex', gap: 10 }}>
                         {step > 1 && (
-                            <button onClick={() => setStep(step - 1)} style={{ padding: '10px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                            <button onClick={() => setStep(step - 1)} style={{ padding: '10px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                                 ← Indietro
                             </button>
                         )}
@@ -1439,11 +1439,11 @@ function ModalePreventivo({ onClose, onSave, aziende, appuntamento, userData, pr
                                 if (step === 1 && !form.societa) { toast.error('Indica a quale società si riferisce il preventivo!'); return; }
                                 if (step === 2 && !validaServizi()) return;
                                 setStep(step + 1);
-                            }} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: '#2c3e66', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                            }} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: 'var(--primary)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                                 Avanti →
                             </button>
                         ) : (
-                            <button onClick={handleSubmit} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: '#10b981', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
+                            <button onClick={handleSubmit} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: 'var(--success)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
                                 ✓ Genera PDF e Salva
                             </button>
                         )}

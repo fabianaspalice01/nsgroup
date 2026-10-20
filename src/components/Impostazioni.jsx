@@ -29,14 +29,14 @@ export default function Impostazioni({ giorniPreavviso, onUpdate }) {
     <div style={{ maxWidth: 500 }}>
       <h2 style={{ marginBottom: 24 }}>⚙️ Impostazioni</h2>
 
-      <div style={{ background: '#fff', border: '1px solid #dfe5ef', borderRadius: 12, padding: 24 }}>
-        <h3 style={{ margin: '0 0 8px', fontSize: 16, color: '#1a2540' }}>Notifiche scadenze</h3>
-        <p style={{ margin: '0 0 20px', fontSize: 14, color: '#5f6f8c' }}>
+      <div style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: 12, padding: 24 }}>
+        <h3 style={{ margin: '0 0 8px', fontSize: 16, color: 'var(--ink)' }}>Notifiche scadenze</h3>
+        <p style={{ margin: '0 0 20px', fontSize: 14, color: 'var(--ink-muted)' }}>
           Quanti giorni prima di una scadenza inviare l'email e la notifica push all'amministratore.
         </p>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <label style={{ fontSize: 14, fontWeight: 600, color: '#45536f', whiteSpace: 'nowrap' }}>
+          <label style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-muted)', whiteSpace: 'nowrap' }}>
             Preavviso giorni:
           </label>
           <input
@@ -50,7 +50,7 @@ export default function Impostazioni({ giorniPreavviso, onUpdate }) {
           <button
             onClick={salva}
             disabled={saving}
-            style={{ padding: '8px 20px', background: saving ? '#9aa7bf' : '#2c3e66', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer' }}
+            style={{ padding: '8px 20px', background: saving ? 'var(--ink-muted)' : 'var(--primary)', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer' }}
           >
             {saving ? 'Salvo...' : 'Salva'}
           </button>

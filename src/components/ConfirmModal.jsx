@@ -17,7 +17,7 @@ function ConfirmModal({ message, onConfirm, onCancel, confirmLabel = 'Conferma',
         width: '90%',
         boxShadow: '0 20px 60px rgba(0,0,0,0.2)'
       }}>
-        <p style={{ margin: '0 0 24px', fontSize: 15, color: '#1a2540', lineHeight: 1.6 }}>
+        <p style={{ margin: '0 0 24px', fontSize: 15, color: 'var(--ink)', lineHeight: 1.6 }}>
           {message}
         </p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
@@ -25,13 +25,13 @@ function ConfirmModal({ message, onConfirm, onCancel, confirmLabel = 'Conferma',
             onClick={onCancel}
             style={{
               padding: '8px 18px',
-              border: '1.5px solid #dfe5ef',
+              border: '1.5px solid var(--line)',
               borderRadius: 8,
               background: 'white',
               cursor: 'pointer',
               fontSize: 14,
               fontWeight: 600,
-              color: '#5f6f8c'
+              color: 'var(--ink-muted)'
             }}
           >
             Annulla
@@ -42,7 +42,7 @@ function ConfirmModal({ message, onConfirm, onCancel, confirmLabel = 'Conferma',
               padding: '8px 18px',
               border: 'none',
               borderRadius: 8,
-              background: danger ? '#dc2626' : '#2c3e66',
+              background: danger ? 'var(--danger)' : 'var(--primary)',
               color: 'white',
               cursor: 'pointer',
               fontSize: 14,

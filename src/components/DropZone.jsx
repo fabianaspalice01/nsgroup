@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 
 const SCHEMES = {
-    blue:   { color: '#2c3e66', bg: '#dde3f0', border: '#c3cde3', dragBg: '#c3cde3' },
-    yellow: { color: '#a16207', bg: '#fef3c7', border: '#fde68a', dragBg: '#fde68a' },
+    blue:   { color: 'var(--primary)', bg: 'var(--primary-soft)', border: '#c3cde3', dragBg: '#c3cde3' },
+    yellow: { color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', dragBg: '#fde68a' },
 };
 
 let _counter = 0;
@@ -65,14 +65,14 @@ function DropZone({ accept, onFile, onRemove, file, label, compact = false, colo
     /* ── FILE GIÀ SELEZIONATO ── */
     if (file) {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, position: 'relative' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'var(--success-soft)', border: '1px solid #bbf7d0', borderRadius: 8, position: 'relative' }}>
                 {fileInput}{camInput}
-                <span style={{ flex: 1, fontSize: 13, color: '#15803d', fontWeight: 600 }}>
+                <span style={{ flex: 1, fontSize: 13, color: 'var(--success)', fontWeight: 600 }}>
                     ✓ {file.name} ({(file.size / 1024).toFixed(0)} KB)
                 </span>
                 {onRemove && (
                     <button type="button" onClick={e => { e.preventDefault(); onRemove(); }}
-                        style={{ padding: '4px 10px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                        style={{ padding: '4px 10px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
                         ✕ Rimuovi
                     </button>
                 )}
@@ -86,24 +86,24 @@ function DropZone({ accept, onFile, onRemove, file, label, compact = false, colo
             {fileInput}{camInput}
             <label htmlFor={id} style={{
                 display: 'block', width: '100%', padding: '18px 12px',
-                border: `2px dashed ${dragging ? '#2c3e66' : '#c9d1e0'}`,
+                border: `2px dashed ${dragging ? 'var(--primary)' : '#c9d1e0'}`,
                 borderRadius: 8,
-                background: dragging ? '#eef1f8' : '#f6f8fc',
+                background: dragging ? 'var(--primary-soft)' : 'var(--surface-2)',
                 cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
                 boxSizing: 'border-box', userSelect: 'none',
             }}>
                 <div style={{ fontSize: 22, marginBottom: 6 }}>📂</div>
-                <div style={{ fontSize: 13, color: dragging ? '#2c3e66' : '#5f6f8c', fontWeight: dragging ? 700 : 400 }}>
+                <div style={{ fontSize: 13, color: dragging ? 'var(--primary)' : 'var(--ink-muted)', fontWeight: dragging ? 700 : 400 }}>
                     {dragging ? 'Rilascia il file qui' : (label ?? 'Trascina qui o clicca per selezionare')}
                 </div>
-                <div style={{ fontSize: 11, color: '#9aa7bf', marginTop: 3 }}>oppure clicca per sfogliare</div>
+                <div style={{ fontSize: 11, color: 'var(--ink-muted)', marginTop: 3 }}>oppure clicca per sfogliare</div>
             </label>
             {hasCamera && (
                 <label htmlFor={camId} style={{
                     display: 'block', width: '100%', padding: '10px', marginTop: 6,
-                    background: '#eef1f8', border: '1px solid #c3cde3', borderRadius: 8,
+                    background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 8,
                     cursor: 'pointer', textAlign: 'center', fontSize: 13,
-                    color: '#2c3e66', fontWeight: 600, userSelect: 'none', boxSizing: 'border-box',
+                    color: 'var(--primary)', fontWeight: 600, userSelect: 'none', boxSizing: 'border-box',
                 }}>
                     📷 Scatta foto
                 </label>

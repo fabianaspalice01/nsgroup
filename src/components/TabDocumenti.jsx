@@ -9,8 +9,8 @@ import toast from 'react-hot-toast';
 function VisualiizzatorePdf({ pdfUrl, nome, onClose }) {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '90%', maxWidth: 900, height: '90vh', display: 'flex', flexDirection: 'column', background: '#1a2540', borderRadius: 12, overflow: 'hidden' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', background: '#1a2540', color: 'white', flexShrink: 0 }}>
+      <div style={{ width: '90%', maxWidth: 900, height: '90vh', display: 'flex', flexDirection: 'column', background: 'var(--ink)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', background: 'var(--ink)', color: 'white', flexShrink: 0 }}>
           <span style={{ fontWeight: 700, fontSize: 15 }}>{nome}</span>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', fontSize: 22, cursor: 'pointer', lineHeight: 1 }}>✕</button>
         </div>
@@ -156,7 +156,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
             onClick={handleDownloadTutti}
             disabled={!!downloadProgress}
             aria-live="polite"
-            style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '8px 16px', borderRadius: 8, cursor: downloadProgress ? 'wait' : 'pointer', fontSize: 14, fontWeight: 'bold', opacity: downloadProgress ? 0.7 : 1 }}
+            style={{ background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #bbf7d0', padding: '8px 16px', borderRadius: 8, cursor: downloadProgress ? 'wait' : 'pointer', fontSize: 14, fontWeight: 'bold', opacity: downloadProgress ? 0.7 : 1 }}
           >
             {downloadProgress || `Scarica tutti (${documentiScaricabili.length}) · ZIP`}
           </button>
@@ -165,7 +165,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
           <button
             onClick={handleAddDocumento}
             style={{
-              background: '#4a68a0',
+              background: 'var(--primary-ink)',
               color: 'white',
               border: 'none',
               padding: '8px 16px',
@@ -193,9 +193,9 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
               style={{
                 padding: '8px 16px',
                 borderRadius: 8,
-                border: attiva ? '1px solid #2c3e66' : '1px solid #dfe5ef',
-                background: attiva ? '#2c3e66' : 'white',
-                color: attiva ? 'white' : '#45536f',
+                border: attiva ? '1px solid var(--primary)' : '1px solid var(--line)',
+                background: attiva ? 'var(--primary)' : 'white',
+                color: attiva ? 'white' : 'var(--ink-muted)',
                 cursor: 'pointer',
                 fontSize: 14,
                 fontWeight: 600
@@ -208,7 +208,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
       </div>
 
       {documentiCartella.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#9aa7bf', padding: '20px', background: 'white', borderRadius: '10px' }}>
+        <p style={{ textAlign: 'center', color: 'var(--ink-muted)', padding: '20px', background: 'white', borderRadius: '10px' }}>
           Nessun documento in {nomeCartella}
         </p>
       ) : (
@@ -228,21 +228,21 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
               <div
                 key={documento.id}
                 style={{
-                  background: isScaduto ? '#fef2f2' : isUrgente ? '#fffbeb' : 'white',
+                  background: isScaduto ? 'var(--danger-soft)' : isUrgente ? 'var(--warning-soft)' : 'white',
                   padding: '16px',
                   borderRadius: '10px',
-                  border: `1px solid ${isScaduto ? '#fecaca' : isUrgente ? '#fde68a' : '#dfe5ef'}`,
+                  border: `1px solid ${isScaduto ? '#fecaca' : isUrgente ? '#fde68a' : 'var(--line)'}`,
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px'
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '14px', fontWeight: '700', color: '#1a2540', marginBottom: '4px' }}>{documento.nome}</div>
-                  <div style={{ fontSize: '12px', color: '#4a68a0', fontWeight: '600', marginBottom: '8px' }}>{documento.tipo}</div>
+                  <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--ink)', marginBottom: '4px' }}>{documento.nome}</div>
+                  <div style={{ fontSize: '12px', color: 'var(--primary-ink)', fontWeight: '600', marginBottom: '8px' }}>{documento.tipo}</div>
 
                   {documento.dataScadenza && (
-                    <div style={{ fontSize: '12px', color: isScaduto ? '#dc2626' : isUrgente ? '#d97706' : '#5f6f8c', marginBottom: '4px' }}>
+                    <div style={{ fontSize: '12px', color: isScaduto ? 'var(--danger)' : isUrgente ? 'var(--warning)' : 'var(--ink-muted)', marginBottom: '4px' }}>
                       📅 Scadenza: {formatData(documento.dataScadenza)}
                       {isScaduto && ' ⚠️ SCADUTO'}
                       {isUrgente && !isScaduto && ' ⏰ In scadenza'}
@@ -250,11 +250,11 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                   )}
 
                   {documento.numeroDocumento && (
-                    <div style={{ fontSize: '11px', color: '#9aa7bf' }}>N° {documento.numeroDocumento}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--ink-muted)' }}>N° {documento.numeroDocumento}</div>
                   )}
 
                   {documento.note && (
-                    <div style={{ fontSize: '11px', color: '#9aa7bf', fontStyle: 'italic', marginTop: '4px' }}>{documento.note}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--ink-muted)', fontStyle: 'italic', marginTop: '4px' }}>{documento.note}</div>
                   )}
                 </div>
 
@@ -264,12 +264,12 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                       onClick={() => setPdfInVisualizzazione(documento)}
                       style={{
                         flex: 1,
-                        background: '#eef1f8',
-                        border: '1px solid #d5ddee',
+                        background: 'var(--primary-soft)',
+                        border: '1px solid var(--line)',
                         borderRadius: '6px',
                         padding: '6px 10px',
                         fontSize: '12px',
-                        color: '#34508a',
+                        color: 'var(--primary-ink)',
                         fontWeight: 'bold',
                         cursor: 'pointer',
                         textAlign: 'center'
@@ -285,12 +285,12 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                       rel="noopener noreferrer"
                       style={{
                         flex: 1,
-                        background: '#f0fdf4',
+                        background: 'var(--success-soft)',
                         border: '1px solid #bbf7d0',
                         borderRadius: '6px',
                         padding: '6px 10px',
                         fontSize: '12px',
-                        color: '#16a34a',
+                        color: 'var(--success)',
                         textDecoration: 'none',
                         fontWeight: 'bold',
                         textAlign: 'center'
@@ -305,7 +305,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                       onChange={(e) => handleSpostaDocumento(documento.id, e.target.value)}
                       aria-label="Sposta in cartella"
                       title="Sposta in cartella"
-                      style={{ border: '1px solid #dfe5ef', borderRadius: '6px', padding: '6px 8px', fontSize: '12px', color: '#45536f', background: 'white', cursor: 'pointer' }}
+                      style={{ border: '1px solid var(--line)', borderRadius: '6px', padding: '6px 8px', fontSize: '12px', color: 'var(--ink-muted)', background: 'white', cursor: 'pointer' }}
                     >
                       {CARTELLE_DOCUMENTI.map((c) => (
                         <option key={c.id} value={c.id}>{c.label}</option>
@@ -316,13 +316,13 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                     <button
                       onClick={() => handleDeleteDocumento(documento.id)}
                       style={{
-                        background: '#fee2e2',
+                        background: 'var(--danger-soft)',
                         border: '1px solid #fecaca',
                         borderRadius: '6px',
                         padding: '6px 10px',
                         cursor: 'pointer',
                         fontSize: '12px',
-                        color: '#dc2626',
+                        color: 'var(--danger)',
                         fontWeight: 'bold'
                       }}
                     >

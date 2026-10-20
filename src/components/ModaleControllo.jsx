@@ -89,7 +89,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -115,7 +115,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
                 style={{
                   flex: 1,
                   padding: 8,
-                  border: '1px solid #dfe5ef',
+                  border: '1px solid var(--line)',
                   borderRadius: 6,
                   fontSize: 13
                 }}
@@ -126,7 +126,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
                 onClick={aggiungiTipoControllo}
                 style={{
                   padding: '8px 12px',
-                  background: '#10b981',
+                  background: 'var(--success)',
                   color: 'white',
                   border: 'none',
                   borderRadius: 6,
@@ -152,7 +152,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -176,21 +176,21 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             Documento PDF (opzionale)
           </label>
           {file ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8 }}>
-              <span style={{ flex: 1, fontSize: 13, color: '#15803d', fontWeight: 600 }}>✓ {file.name}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'var(--success-soft)', border: '1px solid #bbf7d0', borderRadius: 8 }}>
+              <span style={{ flex: 1, fontSize: 13, color: 'var(--success)', fontWeight: 600 }}>✓ {file.name}</span>
               <button type="button" onClick={() => setFile(null)}
-                style={{ padding: '4px 10px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
+                style={{ padding: '4px 10px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
                 ✕ Rimuovi
               </button>
             </div>
           ) : controllo?.pdfUrl && !rimuoviDoc ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: '#eef1f8', border: '1px solid #c3cde3', borderRadius: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 8 }}>
               <a href={controllo.pdfUrl} target="_blank" rel="noopener noreferrer"
-                style={{ flex: 1, fontSize: 13, color: '#2c3e66', fontWeight: 600 }}>
+                style={{ flex: 1, fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>
                 📄 Documento attuale
               </a>
               <button type="button" onClick={() => setRimuoviDoc(true)}
-                style={{ padding: '4px 10px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
+                style={{ padding: '4px 10px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
                 ✕ Rimuovi
               </button>
             </div>
@@ -219,7 +219,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               fontFamily: 'inherit',
@@ -233,7 +233,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             onClick={onClose}
             style={{
               padding: '10px 20px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '8px',
               background: 'white',
               cursor: 'pointer',
@@ -248,7 +248,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
               padding: '10px 20px',
               border: 'none',
               borderRadius: '8px',
-              background: '#2c3e66',
+              background: 'var(--primary)',
               color: 'white',
               cursor: 'pointer',
               fontSize: '14px',

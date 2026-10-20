@@ -16,12 +16,12 @@ function BlocoAttivita({ attivita, segnaAttivitaLetta }) {
   if (!attivita.length) return null;
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: '#2c3e66', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--primary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
         👤 Attività
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {attivita.map(a => (
-          <div key={a.id} style={{ background: a.letta ? '#f6f8fc' : '#eef1f8', border: `1px solid ${a.letta ? '#dfe5ef' : '#c3cde3'}`, borderRadius: 8, padding: 10, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <div key={a.id} style={{ background: a.letta ? 'var(--surface-2)' : 'var(--primary-soft)', border: `1px solid ${a.letta ? 'var(--line)' : '#c3cde3'}`, borderRadius: 8, padding: 10, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
             <span style={{ fontSize: 16 }}>
               {a.tipo === 'modifica_appuntamento' ? '✏️'
                 : a.tipo === 'nuovo_appuntamento' ? '📅'
@@ -37,13 +37,13 @@ function BlocoAttivita({ attivita, segnaAttivitaLetta }) {
                 : '🔔'}
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, color: '#1a2540', marginBottom: 2 }}>{a.messaggio}</div>
-              <div style={{ fontSize: 11, color: '#9aa7bf' }}>
+              <div style={{ fontSize: 13, color: 'var(--ink)', marginBottom: 2 }}>{a.messaggio}</div>
+              <div style={{ fontSize: 11, color: 'var(--ink-muted)' }}>
                 {new Date(a.createdAt).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
             {!a.letta && (
-              <button onClick={() => segnaAttivitaLetta(a.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9aa7bf', fontSize: 14, padding: '0 2px', flexShrink: 0 }} title="Segna come letta">✕</button>
+              <button onClick={() => segnaAttivitaLetta(a.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14, padding: '0 2px', flexShrink: 0 }} title="Segna come letta">✕</button>
             )}
           </div>
         ))}
@@ -56,15 +56,15 @@ function BlocoScadenze({ notifiche, notificheFiltrate, filtroAttivo, setFiltroAt
   if (!notifiche.length) return null;
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: '#5f6f8c', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
         ⏰ Scadenze {filtroAttivo && (
-          <span style={{ textTransform: 'none', fontWeight: 400, color: '#9aa7bf' }}>
-            — filtro attivo · <button onClick={() => setFiltroAttivo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2c3e66', fontSize: 12, padding: 0, fontWeight: 600 }}>Mostra tutte</button>
+          <span style={{ textTransform: 'none', fontWeight: 400, color: 'var(--ink-muted)' }}>
+            — filtro attivo · <button onClick={() => setFiltroAttivo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', fontSize: 12, padding: 0, fontWeight: 600 }}>Mostra tutte</button>
           </span>
         )}
       </div>
       {notificheFiltrate.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: 12, color: '#9aa7bf', fontSize: 13 }}>
+        <div style={{ textAlign: 'center', padding: 12, color: 'var(--ink-muted)', fontSize: 13 }}>
           Nessuna notifica di questo tipo
         </div>
       ) : (
@@ -94,7 +94,7 @@ function BlocoScadenze({ notifiche, notificheFiltrate, filtroAttivo, setFiltroAt
                     <div style={{ fontSize: 12, fontWeight: 700, color: colore.text, marginBottom: 2 }}>
                       {notifica.categoria} - {notifica.azienda}
                     </div>
-                    <div style={{ fontSize: 13, color: '#1a2540', marginBottom: 4 }}>
+                    <div style={{ fontSize: 13, color: 'var(--ink)', marginBottom: 4 }}>
                       {notifica.descrizione}
                     </div>
                     <div style={{ fontSize: 11, color: colore.text }}>
@@ -107,7 +107,7 @@ function BlocoScadenze({ notifiche, notificheFiltrate, filtroAttivo, setFiltroAt
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); ignoraNotifica(notifica); }}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9aa7bf', fontSize: 16, lineHeight: 1, padding: '2px 4px', flexShrink: 0 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 16, lineHeight: 1, padding: '2px 4px', flexShrink: 0 }}
                     title="Cancella notifica"
                   >✕</button>
                 </div>
@@ -317,9 +317,9 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
   };
 
   const getColore = (tipo) => {
-    if (tipo === 'scaduto') return { bg: '#fef2f2', border: '#fecaca', text: '#dc2626' };
-    if (tipo === 'urgente') return { bg: '#fef3c7', border: '#fde68a', text: '#d97706' };
-    return { bg: '#eef1f8', border: '#d5ddee', text: '#34508a' };
+    if (tipo === 'scaduto') return { bg: 'var(--danger-soft)', border: '#fecaca', text: 'var(--danger)' };
+    if (tipo === 'urgente') return { bg: 'var(--warning-soft)', border: '#fde68a', text: 'var(--warning)' };
+    return { bg: 'var(--primary-soft)', border: 'var(--line)', text: 'var(--primary-ink)' };
   };
 
   const [filtroAttivo, setFiltroAttivo] = useState(null);
@@ -342,9 +342,9 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
         style={{
           position: 'relative',
           padding: compact ? '8px 10px' : '8px 16px',
-          background: totBadge > 0 ? '#fee2e2' : '#eef1f7',
-          color: totBadge > 0 ? '#dc2626' : '#5f6f8c',
-          border: `1px solid ${totBadge > 0 ? '#fecaca' : '#dfe5ef'}`,
+          background: totBadge > 0 ? 'var(--danger-soft)' : 'var(--surface-2)',
+          color: totBadge > 0 ? 'var(--danger)' : 'var(--ink-muted)',
+          border: `1px solid ${totBadge > 0 ? '#fecaca' : 'var(--line)'}`,
           borderRadius: 8,
           cursor: 'pointer',
           fontSize: compact ? 18 : 14,
@@ -358,7 +358,7 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
         {!compact && ' Notifiche'}
         {totBadge > 0 && (
           <span style={{
-            background: '#dc2626',
+            background: 'var(--danger)',
             color: 'white',
             borderRadius: '50%',
             width: 20,
@@ -407,20 +407,20 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
             background: 'white',
             borderRadius: 12,
             boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-            border: '1px solid #dfe5ef',
+            border: '1px solid var(--line)',
             zIndex: 1000,
             display: 'flex',
             flexDirection: 'column'
           }}>
             {/* Header */}
-            <div style={{ padding: 20, borderBottom: '1px solid #dfe5ef', flexShrink: 0 }}>
+            <div style={{ padding: 20, borderBottom: '1px solid var(--line)', flexShrink: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>🔔 Notifiche Scadenze</h3>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                   {notifiche.length > 0 && (
                     <button
                       onClick={ignoraTutte}
-                      style={{ background: 'none', border: '1px solid #dfe5ef', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: '#5f6f8c', fontWeight: 600 }}
+                      style={{ background: 'none', border: '1px solid var(--line)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: 'var(--ink-muted)', fontWeight: 600 }}
                     >
                       Cancella tutte
                     </button>
@@ -428,7 +428,7 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
                   {compact && (
                     <button
                       onClick={() => setMostraPannello(false)}
-                      style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#5f6f8c', lineHeight: 1, padding: '0 4px' }}
+                      style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: 'var(--ink-muted)', lineHeight: 1, padding: '0 4px' }}
                     >
                       ✕
                     </button>
@@ -438,27 +438,27 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
               <div style={{ display: 'flex', gap: 8, marginTop: 8, fontSize: 13, flexWrap: 'wrap' }}>
                 {scaduti > 0 && (
                   <button onClick={() => toggleFiltro('scaduto')} style={{
-                    color: '#dc2626', fontWeight: 600, background: filtroAttivo === 'scaduto' ? '#fecaca' : '#fef2f2',
-                    border: `1px solid ${filtroAttivo === 'scaduto' ? '#dc2626' : '#fecaca'}`,
+                    color: 'var(--danger)', fontWeight: 600, background: filtroAttivo === 'scaduto' ? '#fecaca' : 'var(--danger-soft)',
+                    border: `1px solid ${filtroAttivo === 'scaduto' ? 'var(--danger)' : '#fecaca'}`,
                     borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontSize: 13
                   }}>🔴 {scaduti} scadut{scaduti === 1 ? 'o' : 'i'}</button>
                 )}
                 {urgenti > 0 && (
                   <button onClick={() => toggleFiltro('urgente')} style={{
-                    color: '#d97706', fontWeight: 600, background: filtroAttivo === 'urgente' ? '#fde68a' : '#fef3c7',
-                    border: `1px solid ${filtroAttivo === 'urgente' ? '#d97706' : '#fde68a'}`,
+                    color: 'var(--warning)', fontWeight: 600, background: filtroAttivo === 'urgente' ? '#fde68a' : 'var(--warning-soft)',
+                    border: `1px solid ${filtroAttivo === 'urgente' ? 'var(--warning)' : '#fde68a'}`,
                     borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontSize: 13
                   }}>🟡 {urgenti} urgent{urgenti === 1 ? 'e' : 'i'}</button>
                 )}
-                {nonLette > 0 && <span style={{ color: '#2c3e66', fontWeight: 600, padding: '3px 0' }}>🔵 {nonLette} attività</span>}
-                {totBadge === 0 && <span style={{ color: '#059669', fontWeight: 600 }}>✅ Tutto ok!</span>}
+                {nonLette > 0 && <span style={{ color: 'var(--primary)', fontWeight: 600, padding: '3px 0' }}>🔵 {nonLette} attività</span>}
+                {totBadge === 0 && <span style={{ color: 'var(--success)', fontWeight: 600 }}>✅ Tutto ok!</span>}
               </div>
             </div>
 
             {/* Lista notifiche */}
             <div style={{ flex: 1, overflowY: 'auto', padding: 12 }}>
               {notifiche.length === 0 && attivita.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: '#9aa7bf' }}>
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--ink-muted)' }}>
                   <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
                   <div style={{ fontSize: 16, fontWeight: 600 }}>Nessuna scadenza imminente</div>
                   <div style={{ fontSize: 13, marginTop: 4 }}>Tutti i documenti sono in regola</div>

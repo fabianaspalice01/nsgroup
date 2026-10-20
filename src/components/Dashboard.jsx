@@ -1,39 +1,39 @@
 import { useState } from 'react';
 import { generaReportMensile } from '../utils/generaReport';
 import RicercaGlobale from './RicercaGlobale';
+import './Dashboard.css';
 
-function Collapsible({ titolo, conteggio, coloreBadge, children }) {
+const ICONE = {
+  check: <path d="M20 6 9 17l-5-5" />,
+  clock: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
+  alert: <><path d="M12 3 2 20h20L12 3z" /><path d="M12 10v4M12 17.5v.01" /></>,
+  download: <><path d="M12 4v12M7 11l5 5 5-5" /><path d="M4 20h16" /></>,
+  chevron: <path d="m6 9 6 6 6-6" />,
+};
+const Icona = ({ nome }) => <svg viewBox="0 0 24 24" aria-hidden="true">{ICONE[nome]}</svg>;
+
+const euro = (n, decimali = 0) => `€ ${n.toLocaleString('it-IT', { minimumFractionDigits: decimali, maximumFractionDigits: decimali })}`;
+
+function Collapsible({ titolo, conteggio, urgente = false, children }) {
   const [aperto, setAperto] = useState(false);
   return (
-    <div style={{ border: '1px solid #dfe5ef', borderRadius: 10, overflow: 'hidden', marginBottom: 0 }}>
-      <button
-        onClick={() => setAperto(a => !a)}
-        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#f6f8fc', border: 'none', cursor: 'pointer', fontSize: 15, fontWeight: 600, color: '#45536f' }}
-      >
-        <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {titolo}
-          {conteggio > 0 && (
-            <span style={{ background: coloreBadge || '#2c3e66', color: '#fff', borderRadius: 20, padding: '1px 9px', fontSize: 12, fontWeight: 700 }}>
-              {conteggio}
-            </span>
-          )}
-        </span>
-        <span style={{ fontSize: 18, transition: 'transform 0.2s', display: 'inline-block', transform: aperto ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
+    <section className="ns-card dash-section">
+      <button type="button" className="dash-section__head" aria-expanded={aperto} onClick={() => setAperto(a => !a)}>
+        <span className="dash-section__title">{titolo}</span>
+        {conteggio > 0 && <span className={`ns-count${urgente ? ' ns-count--danger' : ''}`}>{conteggio}</span>}
+        <span className="dash-section__chevron"><Icona nome="chevron" /></span>
       </button>
-      {aperto && (
-        <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8, background: '#fff' }}>
-          {children}
-        </div>
-      )}
-    </div>
+      {aperto && <div className="dash-section__body">{children}</div>}
+    </section>
   );
 }
 
-function StatCard({ valore, label, bg, color }) {
+function StatCard({ valore, label, meta, allarme = false }) {
   return (
-    <div style={{ background: bg, padding: '18px 20px', borderRadius: 12, flex: 1, minWidth: 120 }}>
-      <div style={{ fontSize: 28, fontWeight: 700, color }}>{valore}</div>
-      <div style={{ fontSize: 13, color, opacity: 0.75, marginTop: 4 }}>{label}</div>
+    <div className="ns-card ns-stat">
+      <span className="ns-stat__label">{label}</span>
+      <span className={`ns-stat__value${allarme ? ' ns-stat__value--danger' : ''}`} title={String(valore)}>{valore}</span>
+      <span className="ns-stat__meta">{meta}</span>
     </div>
   );
 }
@@ -116,130 +116,139 @@ function Dashboard({ aziende, ricerca, onRicerca, appuntamenti, preventivi, gior
   pagamentiMese.sort((a, b) => b.data - a.data);
   const totalePagamenti = pagamentiMese.reduce((s, p) => s + p.importo, 0);
 
+  const scadute = scadenze.filter(s => s.scadenza < oggi).length;
+  const statoScadenza = d => {
+    if (d < oggi) return <span className="ns-badge ns-badge--danger"><Icona nome="alert" />Scaduto</span>;
+    if (d <= traGiorni) return <span className="ns-badge ns-badge--warn"><Icona nome="clock" />In scadenza</span>;
+    return <span className="ns-badge ns-badge--neutral">Prevista</span>;
+  };
+
   return (
-    <div>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <h2 style={{ margin: 0 }}>Home</h2>
+    <div className="dash">
+      {/* Intestazione */}
+      <div className="dash-head">
+        <h2 className="ns-page-title">Home</h2>
         {isMobile && ricercaGlobaleProps ? (
           <RicercaGlobale {...ricercaGlobaleProps} />
         ) : (
           <input
-            type="text"
-            placeholder="Cerca azienda..."
+            type="search"
+            className="ns-input dash-search"
+            placeholder="Cerca azienda…"
+            aria-label="Cerca azienda"
             value={ricerca}
             onChange={e => onRicerca(e.target.value)}
-            style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 14, width: 200 }}
           />
         )}
       </div>
 
       {/* Selettore mese */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
+      <div className="dash-toolbar">
         <input
           type="month"
+          className="ns-input"
+          aria-label="Mese"
           value={meseSelezionato}
           onChange={e => setMeseSelezionato(e.target.value)}
-          style={{ padding: '7px 10px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 14 }}
         />
         {meseSelezionato !== meseCorrente && (
-          <button
-            onClick={() => setMeseSelezionato(meseCorrente)}
-            style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid #2c3e66', background: 'transparent', color: '#2c3e66', fontSize: 13, cursor: 'pointer' }}
-          >
+          <button type="button" className="ns-btn ns-btn--ghost ns-btn--sm" onClick={() => setMeseSelezionato(meseCorrente)}>
             Mese corrente
           </button>
         )}
-        <span style={{ fontSize: 14, color: '#9aa7bf', textTransform: 'capitalize' }}>{nomeMese}</span>
+        <span className="dash-month">{nomeMese}</span>
         <button
+          type="button"
+          className="ns-btn ns-btn--primary dash-report"
           onClick={() => generaReportMensile({ aziende, appuntamenti, preventivi, anno, mese, giorniPreavviso })}
-          style={{ marginLeft: 'auto', padding: '7px 16px', background: '#2c3e66', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
         >
-          📋 Scarica Report PDF
+          <Icona nome="download" />Scarica report PDF
         </button>
       </div>
 
       {/* Card statistiche */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
-        <StatCard valore={aziende.length} label="Aziende" bg="#dde3f0" color="#3a5a94" />
-        <StatCard valore={appMese.length} label="Appuntamenti" bg="#dde3f0" color="#2c3e66" />
-        <StatCard valore={scadenze.length} label="Scadenze" bg={scadenze.length > 0 ? '#fee2e2' : '#d1fae5'} color={scadenze.length > 0 ? '#dc2626' : '#059669'} />
-        <StatCard valore={`€ ${valorePrev.toLocaleString('it-IT', { maximumFractionDigits: 0 })}`} label="Preventivi" bg="#f0fdf4" color="#15803d" />
-        <StatCard valore={`€ ${totalePagamenti.toLocaleString('it-IT', { maximumFractionDigits: 0 })}`} label="Incassato" bg="#eef1f8" color="#2c3e66" />
+      <div className="ns-stats dash-stats">
+        <StatCard label="Aziende" valore={aziende.length} meta="Attive" />
+        <StatCard label="Appuntamenti" valore={appMese.length} meta={<span style={{ textTransform: 'capitalize' }}>{nomeMese}</span>} />
+        <StatCard
+          label="Scadenze"
+          valore={scadenze.length}
+          allarme={scadute > 0}
+          meta={scadenze.length === 0
+            ? <span className="ns-badge ns-badge--ok"><Icona nome="check" />Tutto in regola</span>
+            : scadute > 0
+              ? <span className="ns-badge ns-badge--danger"><Icona nome="alert" />{scadute === 1 ? '1 scaduta' : `${scadute} scadute`}</span>
+              : <span className="ns-badge ns-badge--warn"><Icona nome="clock" />Da rinnovare</span>}
+        />
+        <StatCard label="Preventivi" valore={euro(valorePrev)} meta={prevMese.length === 1 ? '1 nel mese' : `${prevMese.length} nel mese`} />
+        <StatCard label="Incassato" valore={euro(totalePagamenti)} meta={pagamentiMese.length === 1 ? '1 pagamento' : `${pagamentiMese.length} pagamenti`} />
       </div>
 
       {/* Elenchi collassabili */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-
-        <Collapsible titolo={`⚠️ Scadenze — ${nomeMese}`} conteggio={scadenze.length} coloreBadge="#dc2626">
+      <div className="dash-sections">
+        <Collapsible titolo="Scadenze del mese" conteggio={scadenze.length} urgente={scadute > 0}>
           {scadenze.length === 0 ? (
-            <div style={{ color: '#15803d', fontSize: 14 }}>Nessuna scadenza</div>
+            <p className="dash-empty">Nessuna scadenza in questo mese.</p>
           ) : scadenze.map((s, i) => (
-            <div key={i} style={{ border: '1px solid #fecaca', borderRadius: 8, padding: '10px 14px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 600, fontSize: 14 }}>{s.azienda}</span>
-                <span style={{ fontWeight: 700, color: '#dc2626', fontSize: 13 }}>{fmt(s.scadenza)}</span>
+            <div key={i} className="dash-row">
+              <div className="dash-row__main">
+                <span className="dash-row__name">{s.azienda}</span>
+                <span className="dash-row__sub">{s.tipo} · {s.nome}</span>
               </div>
-              <div style={{ fontSize: 13, color: '#5f6f8c', marginTop: 2 }}>{s.tipo} — {s.nome}</div>
+              <div className="dash-row__side">
+                <span className="dash-row__date">{fmt(s.scadenza)}</span>
+                {statoScadenza(s.scadenza)}
+              </div>
             </div>
           ))}
         </Collapsible>
 
-        <Collapsible titolo={`📅 Appuntamenti — ${nomeMese}`} conteggio={appMese.length} coloreBadge="#2c3e66">
+        <Collapsible titolo="Appuntamenti del mese" conteggio={appMese.length}>
           {appMese.length === 0 ? (
-            <div style={{ color: '#9aa7bf', fontSize: 14 }}>Nessun appuntamento</div>
+            <p className="dash-empty">Nessun appuntamento in questo mese.</p>
           ) : appMese.map((a, i) => (
-            <div key={i} style={{ border: '1px solid #dfe5ef', borderRadius: 8, padding: '10px 14px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 600, fontSize: 14 }}>
+            <div key={i} className="dash-row">
+              <div className="dash-row__main">
+                <span className="dash-row__name">
                   {a.tipoCliente === 'registrato'
                     ? (aziende.find(az => az.id === a.aziendaId)?.nome || 'Azienda non trovata')
                     : (a.nuovoCliente?.nome || 'Nuovo cliente')}
                 </span>
-                <span style={{ fontWeight: 600, color: '#2c3e66', fontSize: 13 }}>{fmt(a.data)}{a.ora ? ` ${a.ora}` : ''}</span>
+                <span className="dash-row__sub">{[a.tipo, a.consulente].filter(Boolean).join(' · ')}</span>
               </div>
-              <div style={{ fontSize: 13, color: '#5f6f8c', marginTop: 2 }}>
-                {[a.tipo, a.consulente].filter(Boolean).join(' — ')}
+              <div className="dash-row__side">
+                <span className="dash-row__date">{fmt(a.data)}{a.ora ? ` · ${a.ora}` : ''}</span>
               </div>
             </div>
           ))}
         </Collapsible>
 
-        <Collapsible
-          titolo={`💶 Pagamenti ricevuti — ${nomeMese}`}
-          conteggio={pagamentiMese.length}
-          coloreBadge="#2c3e66"
-        >
+        <Collapsible titolo="Pagamenti ricevuti" conteggio={pagamentiMese.length}>
           {pagamentiMese.length === 0 ? (
-            <div style={{ color: '#9aa7bf', fontSize: 14 }}>Nessun pagamento registrato</div>
+            <p className="dash-empty">Nessun pagamento registrato in questo mese.</p>
           ) : (
             <>
               {pagamentiMese.map((p, i) => (
-                <div key={i} style={{ border: '1px solid #c3cde3', borderRadius: 8, padding: '10px 14px', background: '#eef1f8' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 600, fontSize: 14, color: '#1a2540' }}>{p.azienda}</span>
-                    <span style={{ fontWeight: 700, color: '#059669', fontSize: 14 }}>€ {p.importo.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                  </div>
-                  <div style={{ fontSize: 12, color: '#5f6f8c', marginTop: 3, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                    <span>{fmt(p.data)}</span>
-                    {p.metodoPagamento && <span>· {p.metodoPagamento}</span>}
-                    {p.numeroFattura && <span>· {p.numeroFattura}</span>}
-                    {p.descrizione && <span>· {p.descrizione}</span>}
-                    <span style={{ marginLeft: 'auto', color: p.fonte === 'preventivo' ? '#2c3e66' : '#2c3e66', fontWeight: 600 }}>
-                      {p.fonte === 'preventivo' ? '📄 Preventivo' : '🏢 Azienda'}
+                <div key={i} className="dash-row">
+                  <div className="dash-row__main">
+                    <span className="dash-row__name">{p.azienda}</span>
+                    <span className="dash-row__sub">
+                      {[fmt(p.data), p.metodoPagamento, p.numeroFattura, p.descrizione].filter(Boolean).join(' · ')}
                     </span>
+                  </div>
+                  <div className="dash-row__side">
+                    <span className="ns-badge ns-badge--neutral">{p.fonte === 'preventivo' ? 'Preventivo' : 'Azienda'}</span>
+                    <span className="dash-row__amount">{euro(p.importo, 2)}</span>
                   </div>
                 </div>
               ))}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 6, borderTop: '2px solid #dde3f0', marginTop: 4 }}>
-                <span style={{ fontWeight: 700, fontSize: 15, color: '#2c3e66' }}>
-                  Totale: € {totalePagamenti.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
+              <div className="dash-total">
+                <span className="ns-label">Totale</span>
+                <span className="dash-row__amount">{euro(totalePagamenti, 2)}</span>
               </div>
             </>
           )}
         </Collapsible>
-
       </div>
     </div>
   );

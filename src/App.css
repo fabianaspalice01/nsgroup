@@ -4,17 +4,17 @@
 }
 
 html, body {
-  background-color: #eef1f7;
-  color: #1a2540;
+  background-color: var(--bg);
+  color: var(--ink);
 }
 
 input, select, textarea, button {
   color-scheme: light;
-  color: #1a2540;
+  color: var(--ink);
 }
 
 input::placeholder, textarea::placeholder {
-  color: #9aa7bf;
+  color: var(--ink-muted);
 }
 
 /* Fix pulsanti con sfondo bianco che perdono il testo in dark mode */

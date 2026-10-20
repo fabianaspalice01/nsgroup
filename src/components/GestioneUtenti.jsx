@@ -228,14 +228,14 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <div>
           <h2 style={{ margin: 0 }}>👥 Gestione Utenti</h2>
-          <p style={{ color: '#5f6f8c', fontSize: 14, margin: '4px 0 0' }}>
+          <p style={{ color: 'var(--ink-muted)', fontSize: 14, margin: '4px 0 0' }}>
             {utenti.length} utenti totali
           </p>
         </div>
         <button
           onClick={() => setMostraModale(true)}
           style={{
-            background: '#2c3e66',
+            background: 'var(--primary)',
             color: 'white',
             border: 'none',
             padding: '10px 20px',
@@ -256,28 +256,28 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
             const isSe = utente.email === utenteCorrente?.email;
             const puoGestireMobile = !isSe && (utente.ruolo !== 'admin' || utenteCorrente?.ruolo === 'admin');
             return (
-            <div key={utente.id} style={{ background: 'white', borderRadius: 12, border: '1px solid #dfe5ef', padding: '14px 16px' }}>
+            <div key={utente.id} style={{ background: 'white', borderRadius: 12, border: '1px solid var(--line)', padding: '14px 16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{utente.nome}{isSe && <span style={{ fontSize: 11, color: '#9aa7bf', marginLeft: 6 }}>(tu)</span>}</div>
-                  <div style={{ fontSize: 13, color: '#5f6f8c', marginBottom: 8, wordBreak: 'break-all' }}>{utente.email}</div>
+                  <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{utente.nome}{isSe && <span style={{ fontSize: 11, color: 'var(--ink-muted)', marginLeft: 6 }}>(tu)</span>}</div>
+                  <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 8, wordBreak: 'break-all' }}>{utente.email}</div>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                     <span style={{
-                      background: utente.ruolo === 'admin' ? '#eef1f8' : utente.ruolo === 'operatore' ? '#f3f5fa' : utente.ruolo === 'consulente' ? '#f0fdf4' : '#fef3c7',
-                      color: utente.ruolo === 'admin' ? '#2c3e66' : utente.ruolo === 'operatore' ? '#3a5a94' : utente.ruolo === 'consulente' ? '#15803d' : '#a16207',
+                      background: utente.ruolo === 'admin' ? 'var(--primary-soft)' : utente.ruolo === 'operatore' ? 'var(--surface-2)' : utente.ruolo === 'consulente' ? 'var(--success-soft)' : 'var(--warning-soft)',
+                      color: utente.ruolo === 'admin' ? 'var(--primary)' : utente.ruolo === 'operatore' ? 'var(--primary-ink)' : utente.ruolo === 'consulente' ? 'var(--success)' : 'var(--warning)',
                       padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 600
                     }}>
                       {utente.ruolo === 'admin' ? 'Admin' : utente.ruolo === 'operatore' ? 'Operatore' : utente.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
                     </span>
                     <span style={{
-                      background: utente.attivo ? '#d1fae5' : '#fee2e2',
-                      color: utente.attivo ? '#059669' : '#dc2626',
+                      background: utente.attivo ? 'var(--success-soft)' : 'var(--danger-soft)',
+                      color: utente.attivo ? 'var(--success)' : 'var(--danger)',
                       padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 600
                     }}>
                       {utente.attivo ? '✓ Attivo' : '✗ Disattivato'}
                     </span>
                     {utente.aziendaId && (
-                      <span style={{ fontSize: 11, color: '#9aa7bf' }}>{getAziendaNome(utente.aziendaId)}</span>
+                      <span style={{ fontSize: 11, color: 'var(--ink-muted)' }}>{getAziendaNome(utente.aziendaId)}</span>
                     )}
                   </div>
                 </div>
@@ -286,8 +286,8 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                       <button
                         onClick={() => toggleAttivo(utente.id, utente.attivo)}
                         style={{
-                          background: utente.attivo ? '#fee2e2' : '#dcfce7',
-                          color: utente.attivo ? '#dc2626' : '#16a34a',
+                          background: utente.attivo ? 'var(--danger-soft)' : 'var(--success-soft)',
+                          color: utente.attivo ? 'var(--danger)' : 'var(--success)',
                           border: `1px solid ${utente.attivo ? '#fecaca' : '#bbf7d0'}`,
                           padding: '8px 14px', borderRadius: 8, cursor: 'pointer',
                           fontSize: 12, fontWeight: 600
@@ -299,7 +299,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                     {puoGestireMobile && (
                       <button
                         onClick={() => apriModificaRuolo(utente)}
-                        style={{ background: '#eef1f8', color: '#2c3e66', border: '1px solid #c3cde3', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                        style={{ background: 'var(--primary-soft)', color: 'var(--primary)', border: '1px solid #c3cde3', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
                         ✏️ Ruolo
                       </button>
@@ -307,7 +307,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                     {utente.ruolo !== 'azienda' && (
                       <button
                         onClick={() => apriAssegnazioneAziende(utente)}
-                        style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                        style={{ background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #bbf7d0', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
                         🏢 Aziende{aziende.filter(a => a.assegnatoA === utente.id).length > 0 && ` (${aziende.filter(a => a.assegnatoA === utente.id).length})`}
                       </button>
@@ -316,7 +316,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                       <button
                         onClick={() => setUtentePerElimina(utente)}
                         style={{
-                          background: '#fff1f2', color: '#be123c',
+                          background: 'var(--danger-soft)', color: 'var(--danger)',
                           border: '1px solid #fecdd3',
                           padding: '8px 14px', borderRadius: 8, cursor: 'pointer',
                           fontSize: 12, fontWeight: 600
@@ -332,19 +332,19 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
           })}
         </div>
       ) : (
-        <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', border: '1px solid #dfe5ef' }}>
+        <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--line)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: '#f6f8fc', borderBottom: '2px solid #dfe5ef' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Nome</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Email</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Ruolo</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Azienda</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Stato</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Attiva/Disattiva</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Ruolo</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Aziende</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#45536f' }}>Elimina</th>
+              <tr style={{ background: 'var(--surface-2)', borderBottom: '2px solid var(--line)' }}>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Nome</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Email</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Ruolo</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Azienda</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Stato</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Attiva/Disattiva</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Ruolo</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Aziende</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Elimina</th>
               </tr>
             </thead>
             <tbody>
@@ -352,27 +352,27 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                 const isSe = utente.email === utenteCorrente?.email;
                 const puoGestire = !isSe && (utente.ruolo !== 'admin' || utenteCorrente?.ruolo === 'admin');
                 return (
-                <tr key={utente.id} style={{ borderBottom: '1px solid #eef1f7' }}>
+                <tr key={utente.id} style={{ borderBottom: '1px solid var(--surface-2)' }}>
                   <td style={{ padding: '12px 16px', fontSize: 14 }}>
-                    {utente.nome}{isSe && <span style={{ fontSize: 11, color: '#9aa7bf', marginLeft: 6 }}>(tu)</span>}
+                    {utente.nome}{isSe && <span style={{ fontSize: 11, color: 'var(--ink-muted)', marginLeft: 6 }}>(tu)</span>}
                   </td>
-                  <td style={{ padding: '12px 16px', fontSize: 14, color: '#5f6f8c' }}>{utente.email}</td>
+                  <td style={{ padding: '12px 16px', fontSize: 14, color: 'var(--ink-muted)' }}>{utente.email}</td>
                   <td style={{ padding: '12px 16px' }}>
                     <span style={{
-                      background: utente.ruolo === 'admin' ? '#eef1f8' : utente.ruolo === 'operatore' ? '#f3f5fa' : utente.ruolo === 'consulente' ? '#f0fdf4' : '#fef3c7',
-                      color: utente.ruolo === 'admin' ? '#2c3e66' : utente.ruolo === 'operatore' ? '#3a5a94' : utente.ruolo === 'consulente' ? '#15803d' : '#a16207',
+                      background: utente.ruolo === 'admin' ? 'var(--primary-soft)' : utente.ruolo === 'operatore' ? 'var(--surface-2)' : utente.ruolo === 'consulente' ? 'var(--success-soft)' : 'var(--warning-soft)',
+                      color: utente.ruolo === 'admin' ? 'var(--primary)' : utente.ruolo === 'operatore' ? 'var(--primary-ink)' : utente.ruolo === 'consulente' ? 'var(--success)' : 'var(--warning)',
                       padding: '4px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600
                     }}>
                       {utente.ruolo === 'admin' ? 'Admin' : utente.ruolo === 'operatore' ? 'Operatore' : utente.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px', fontSize: 13, color: '#5f6f8c' }}>
+                  <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--ink-muted)' }}>
                     {utente.aziendaId ? getAziendaNome(utente.aziendaId) : '-'}
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                     <span style={{
-                      background: utente.attivo ? '#d1fae5' : '#fee2e2',
-                      color: utente.attivo ? '#059669' : '#dc2626',
+                      background: utente.attivo ? 'var(--success-soft)' : 'var(--danger-soft)',
+                      color: utente.attivo ? 'var(--success)' : 'var(--danger)',
                       padding: '4px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600
                     }}>
                       {utente.attivo ? '✓ Attivo' : '✗ Disattivato'}
@@ -383,8 +383,8 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                       <button
                         onClick={() => toggleAttivo(utente.id, utente.attivo)}
                         style={{
-                          background: utente.attivo ? '#fee2e2' : '#dcfce7',
-                          color: utente.attivo ? '#dc2626' : '#16a34a',
+                          background: utente.attivo ? 'var(--danger-soft)' : 'var(--success-soft)',
+                          color: utente.attivo ? 'var(--danger)' : 'var(--success)',
                           border: `1px solid ${utente.attivo ? '#fecaca' : '#bbf7d0'}`,
                           padding: '6px 16px', borderRadius: 6, cursor: 'pointer',
                           fontSize: 12, fontWeight: 600
@@ -398,7 +398,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                     {puoGestire ? (
                       <button
                         onClick={() => apriModificaRuolo(utente)}
-                        style={{ background: '#eef1f8', color: '#2c3e66', border: '1px solid #c3cde3', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                        style={{ background: 'var(--primary-soft)', color: 'var(--primary)', border: '1px solid #c3cde3', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
                         ✏️ Ruolo
                       </button>
@@ -408,7 +408,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                     {utente.ruolo !== 'azienda' ? (
                       <button
                         onClick={() => apriAssegnazioneAziende(utente)}
-                        style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                        style={{ background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #bbf7d0', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
                         🏢{aziende.filter(a => a.assegnatoA === utente.id).length > 0 ? ` ${aziende.filter(a => a.assegnatoA === utente.id).length}` : ''}
                       </button>
@@ -418,7 +418,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                     {puoGestire ? (
                       <button
                         onClick={() => setUtentePerElimina(utente)}
-                        style={{ background: '#fff1f2', color: '#be123c', border: '1px solid #fecdd3', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                        style={{ background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecdd3', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
                         🗑️
                       </button>
@@ -445,22 +445,22 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
             <h3 style={{ margin: '0 0 10px', fontSize: 17 }}>🗑️ Elimina utente</h3>
-            <p style={{ margin: '0 0 6px', fontSize: 14, color: '#45536f' }}>
+            <p style={{ margin: '0 0 6px', fontSize: 14, color: 'var(--ink-muted)' }}>
               Stai per eliminare <strong>{utentePerElimina.nome}</strong> ({utentePerElimina.email}).
             </p>
-            <p style={{ margin: '0 0 22px', fontSize: 13, color: '#dc2626', background: '#fff1f2', padding: '10px 14px', borderRadius: 8, border: '1px solid #fecdd3' }}>
+            <p style={{ margin: '0 0 22px', fontSize: 13, color: 'var(--danger)', background: 'var(--danger-soft)', padding: '10px 14px', borderRadius: 8, border: '1px solid #fecdd3' }}>
               ⚠️ L'account verrà rimosso definitivamente e non potrà più accedere all'app.
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button
                 onClick={() => setUtentePerElimina(null)}
-                style={{ padding: '9px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
+                style={{ padding: '9px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
               >
                 Annulla
               </button>
               <button
                 onClick={eliminaUtente}
-                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: '#dc2626', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
+                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: 'var(--danger)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
               >
                 Elimina
               </button>
@@ -473,14 +473,14 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
             <h3 style={{ margin: '0 0 4px', fontSize: 17 }}>✏️ Modifica ruolo</h3>
-            <p style={{ margin: '0 0 20px', fontSize: 13, color: '#5f6f8c' }}>{utentePerRuolo.nome} — {utentePerRuolo.email}</p>
+            <p style={{ margin: '0 0 20px', fontSize: 13, color: 'var(--ink-muted)' }}>{utentePerRuolo.nome} — {utentePerRuolo.email}</p>
 
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: 'block', marginBottom: 6, fontWeight: 600, fontSize: 13 }}>Ruolo</label>
               <select
                 value={nuovoRuolo}
                 onChange={e => setNuovoRuolo(e.target.value)}
-                style={{ width: '100%', padding: '9px 12px', border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 14 }}
+                style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 14 }}
               >
                 {utenteCorrente?.ruolo === 'admin' && <option value="admin">Admin</option>}
                 <option value="consulente">Consulente</option>
@@ -495,7 +495,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                 <select
                   value={nuovoAziendaId}
                   onChange={e => setNuovoAziendaId(e.target.value)}
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 14 }}
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 14 }}
                 >
                   <option value="">-- Seleziona azienda --</option>
                   {aziende.map(az => (
@@ -508,13 +508,13 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
               <button
                 onClick={() => setUtentePerRuolo(null)}
-                style={{ padding: '9px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
+                style={{ padding: '9px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
               >
                 Annulla
               </button>
               <button
                 onClick={salvaRuolo}
-                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: '#2c3e66', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
+                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: 'var(--primary)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
               >
                 Salva
               </button>
@@ -528,39 +528,39 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 480, maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
             <h3 style={{ margin: '0 0 4px', fontSize: 17 }}>🏢 Aziende assegnate</h3>
-            <p style={{ margin: '0 0 16px', fontSize: 13, color: '#5f6f8c' }}>{utentePerAziende.nome} — {utentePerAziende.ruolo}</p>
+            <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--ink-muted)' }}>{utentePerAziende.nome} — {utentePerAziende.ruolo}</p>
 
             {/* Cerca */}
             <input
               type="text"
               id="ricercaAziendeModal"
               placeholder="Cerca azienda..."
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 13, marginBottom: 10, boxSizing: 'border-box', outline: 'none' }}
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 13, marginBottom: 10, boxSizing: 'border-box', outline: 'none' }}
             />
 
             {/* Lista con scroll */}
-            <div style={{ flex: 1, overflowY: 'auto', border: '1px solid #dfe5ef', borderRadius: 8, marginBottom: 14 }}>
+            <div style={{ flex: 1, overflowY: 'auto', border: '1px solid var(--line)', borderRadius: 8, marginBottom: 14 }}>
               {aziende.length === 0 && (
-                <div style={{ padding: '20px 14px', fontSize: 13, color: '#9aa7bf', textAlign: 'center' }}>Nessuna azienda disponibile</div>
+                <div style={{ padding: '20px 14px', fontSize: 13, color: 'var(--ink-muted)', textAlign: 'center' }}>Nessuna azienda disponibile</div>
               )}
               {aziende.map(az => {
                 const assegnata = aziendeTemp.includes(az.id);
                 const downloadOn = downloadTemp.includes(az.id);
                 const altroAssegnato = az.assegnatoA && az.assegnatoA !== utentePerAziende?.id;
                 return (
-                  <div key={az.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderBottom: '1px solid #f6f8fc', background: assegnata ? '#f0fdf4' : altroAssegnato ? '#fffbeb' : 'white' }}>
+                  <div key={az.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderBottom: '1px solid var(--surface-2)', background: assegnata ? 'var(--success-soft)' : altroAssegnato ? 'var(--warning-soft)' : 'white' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, cursor: 'pointer', minWidth: 0 }}>
                       <input
                         type="checkbox"
                         checked={assegnata}
                         onChange={() => toggleAziendaTemp(az.id)}
-                        style={{ accentColor: '#10b981', width: 16, height: 16, flexShrink: 0 }}
+                        style={{ accentColor: 'var(--success)', width: 16, height: 16, flexShrink: 0 }}
                       />
                       <div style={{ minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2540' }}>{az.nome}</div>
-                        {az.comune && <div style={{ fontSize: 11, color: '#9aa7bf' }}>{[az.comune, az.provincia ? `(${az.provincia})` : ''].filter(Boolean).join(' ')}</div>}
+                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)' }}>{az.nome}</div>
+                        {az.comune && <div style={{ fontSize: 11, color: 'var(--ink-muted)' }}>{[az.comune, az.provincia ? `(${az.provincia})` : ''].filter(Boolean).join(' ')}</div>}
                         {altroAssegnato && !assegnata && (
-                          <div style={{ fontSize: 11, color: '#d97706', fontWeight: 600 }}>👤 Assegnata a {az.assegnatoNome}</div>
+                          <div style={{ fontSize: 11, color: 'var(--warning)', fontWeight: 600 }}>👤 Assegnata a {az.assegnatoNome}</div>
                         )}
                       </div>
                     </label>
@@ -570,9 +570,9 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         title="Abilita/disabilita download documenti"
                         style={{
                           flexShrink: 0,
-                          background: downloadOn ? '#fef3c7' : '#eef1f7',
-                          color: downloadOn ? '#92400e' : '#9aa7bf',
-                          border: `1px solid ${downloadOn ? '#fde68a' : '#dfe5ef'}`,
+                          background: downloadOn ? 'var(--warning-soft)' : 'var(--surface-2)',
+                          color: downloadOn ? 'var(--warning)' : 'var(--ink-muted)',
+                          border: `1px solid ${downloadOn ? '#fde68a' : 'var(--line)'}`,
                           borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 11, fontWeight: 600,
                         }}
                       >
@@ -585,17 +585,17 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 12, color: '#5f6f8c' }}>
+              <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>
                 {aziendeTemp.length > 0 ? `${aziendeTemp.length} selezionat${aziendeTemp.length === 1 ? 'a' : 'e'}` : 'Nessuna selezionata'}
                 {aziendeTemp.length > 0 && (
-                  <button onClick={() => setAziendeTemp([])} style={{ border: 'none', background: 'none', color: '#9aa7bf', cursor: 'pointer', fontSize: 12, marginLeft: 8 }}>Deseleziona tutto</button>
+                  <button onClick={() => setAziendeTemp([])} style={{ border: 'none', background: 'none', color: 'var(--ink-muted)', cursor: 'pointer', fontSize: 12, marginLeft: 8 }}>Deseleziona tutto</button>
                 )}
               </span>
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setUtentePerAziende(null)} style={{ padding: '9px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}>
+                <button onClick={() => setUtentePerAziende(null)} style={{ padding: '9px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}>
                   Annulla
                 </button>
-                <button onClick={salvaAziendeAssegnate} style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: '#10b981', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
+                <button onClick={salvaAziendeAssegnate} style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: 'var(--success)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>
                   Salva
                 </button>
               </div>
@@ -609,22 +609,22 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
           <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 16 }}>⚠️ Azienda già assegnata</h3>
-            <p style={{ margin: '0 0 8px', fontSize: 14, color: '#45536f' }}>
+            <p style={{ margin: '0 0 8px', fontSize: 14, color: 'var(--ink-muted)' }}>
               <strong>{confirmAssegna.az.nome}</strong> è già assegnata a <strong>{confirmAssegna.assegnatoNome}</strong>.
             </p>
-            <p style={{ margin: '0 0 22px', fontSize: 14, color: '#45536f' }}>
+            <p style={{ margin: '0 0 22px', fontSize: 14, color: 'var(--ink-muted)' }}>
               Vuoi aggiungerla comunque alle aziende visibili da <strong>{utentePerAziende?.nome}</strong>?
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button
                 onClick={() => setConfirmAssegna(null)}
-                style={{ padding: '9px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
+                style={{ padding: '9px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
               >
                 Annulla
               </button>
               <button
                 onClick={confermaAssegnaConflitto}
-                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: '#f59e0b', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
+                style={{ padding: '9px 20px', border: 'none', borderRadius: 8, background: 'var(--warning)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
               >
                 Sì, aggiungi
               </button>
@@ -753,7 +753,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: 6,
               fontSize: 14
             }}
@@ -777,7 +777,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: 6,
               fontSize: 14
             }}
@@ -796,7 +796,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: 6,
               fontSize: 14
             }}
@@ -815,7 +815,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: 6,
               fontSize: 14
             }}
@@ -833,7 +833,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
               style={{
                 width: '100%',
                 padding: 10,
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 borderRadius: 6,
                 fontSize: 14
               }}
@@ -848,8 +848,8 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
 
         {error && (
           <div style={{
-            background: '#fee2e2',
-            color: '#dc2626',
+            background: 'var(--danger-soft)',
+            color: 'var(--danger)',
             padding: 12,
             borderRadius: 8,
             fontSize: 13,
@@ -866,7 +866,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             disabled={loading}
             style={{
               padding: '10px 20px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: 8,
               background: 'white',
               cursor: loading ? 'not-allowed' : 'pointer',
@@ -882,7 +882,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
               padding: '10px 20px',
               border: 'none',
               borderRadius: 8,
-              background: loading ? '#9aa7bf' : '#2c3e66',
+              background: loading ? 'var(--ink-muted)' : 'var(--primary)',
               color: 'white',
               cursor: loading ? 'not-allowed' : 'pointer',
               fontSize: 14,

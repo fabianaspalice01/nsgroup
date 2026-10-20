@@ -4,15 +4,15 @@ function Gruppo({ titolo, items, onSelect, renderItem }) {
   if (!items.length) return null;
   return (
     <div>
-      <div style={{ padding: '6px 14px', fontSize: 11, fontWeight: 700, color: '#9aa7bf', textTransform: 'uppercase', letterSpacing: 1, background: '#f6f8fc' }}>
+      <div style={{ padding: '6px 14px', fontSize: 11, fontWeight: 700, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: 1, background: 'var(--surface-2)' }}>
         {titolo}
       </div>
       {items.map((item, i) => (
         <div
           key={i}
           onClick={() => onSelect(item)}
-          style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '1px solid #eef1f7', display: 'flex', flexDirection: 'column', gap: 2 }}
-          onMouseEnter={e => e.currentTarget.style.background = '#eef1f7'}
+          style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '1px solid var(--surface-2)', display: 'flex', flexDirection: 'column', gap: 2 }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
           onMouseLeave={e => e.currentTarget.style.background = '#fff'}
         >
           {renderItem(item)}
@@ -90,9 +90,9 @@ export default function RicercaGlobale({ aziende, appuntamenti, preventivi, onSe
       />
 
       {aperto && risultati && (
-        <div style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: '#fff', borderRadius: 10, boxShadow: '0 8px 30px rgba(0,0,0,0.15)', border: '1px solid #dfe5ef', zIndex: 1000, maxHeight: 420, overflowY: 'auto' }}>
+        <div style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: '#fff', borderRadius: 10, boxShadow: '0 8px 30px rgba(0,0,0,0.15)', border: '1px solid var(--line)', zIndex: 1000, maxHeight: 420, overflowY: 'auto' }}>
           {totale === 0 ? (
-            <div style={{ padding: '16px 14px', color: '#9aa7bf', fontSize: 14 }}>Nessun risultato per "{query}"</div>
+            <div style={{ padding: '16px 14px', color: 'var(--ink-muted)', fontSize: 14 }}>Nessun risultato per "{query}"</div>
           ) : (
             <>
               <Gruppo
@@ -102,7 +102,7 @@ export default function RicercaGlobale({ aziende, appuntamenti, preventivi, onSe
                 renderItem={item => (
                   <>
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{item.nome}</span>
-                    {item.indirizzo && <span style={{ fontSize: 12, color: '#9aa7bf' }}>{item.indirizzo}</span>}
+                    {item.indirizzo && <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>{item.indirizzo}</span>}
                   </>
                 )}
               />
@@ -113,7 +113,7 @@ export default function RicercaGlobale({ aziende, appuntamenti, preventivi, onSe
                 renderItem={item => (
                   <>
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{item.nome} {item.cognome}</span>
-                    <span style={{ fontSize: 12, color: '#9aa7bf' }}>{item._azienda.nome}</span>
+                    <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>{item._azienda.nome}</span>
                   </>
                 )}
               />
@@ -124,7 +124,7 @@ export default function RicercaGlobale({ aziende, appuntamenti, preventivi, onSe
                 renderItem={item => (
                   <>
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{item.nome}</span>
-                    <span style={{ fontSize: 12, color: '#9aa7bf' }}>{item._azienda.nome}</span>
+                    <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>{item._azienda.nome}</span>
                   </>
                 )}
               />
@@ -135,7 +135,7 @@ export default function RicercaGlobale({ aziende, appuntamenti, preventivi, onSe
                 renderItem={item => (
                   <>
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{item.aziendaNome || item.nuovoCliente?.nome || 'Cliente'}</span>
-                    <span style={{ fontSize: 12, color: '#9aa7bf' }}>{item.data}{item.ora ? ` ${item.ora}` : ''}{item.consulente ? ` — ${item.consulente}` : ''}</span>
+                    <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>{item.data}{item.ora ? ` ${item.ora}` : ''}{item.consulente ? ` — ${item.consulente}` : ''}</span>
                   </>
                 )}
               />
@@ -146,7 +146,7 @@ export default function RicercaGlobale({ aziende, appuntamenti, preventivi, onSe
                 renderItem={item => (
                   <>
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{item.nomeCliente}</span>
-                    <span style={{ fontSize: 12, color: '#9aa7bf' }}>€ {item.totale?.toFixed(2)} — {new Date(item.dataCreazione).toLocaleDateString('it-IT')}</span>
+                    <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>€ {item.totale?.toFixed(2)} — {new Date(item.dataCreazione).toLocaleDateString('it-IT')}</span>
                   </>
                 )}
               />

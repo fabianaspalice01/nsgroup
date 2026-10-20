@@ -101,7 +101,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
         <div>
           <h3 style={{ margin: 0 }}>💰 Storico Pagamenti ({(azienda.pagamenti || []).length})</h3>
-          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#5f6f8c' }}>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-muted)' }}>
             {vistaCliente ? 'Totale versato' : 'Totale incassato'}: €{' '}
             {(azienda.pagamenti || [])
               .reduce((sum, p) => sum + parseFloat(p.importo || 0), 0)
@@ -113,7 +113,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
           <button
             onClick={handleAddPagamento}
             style={{
-              background: '#10b981',
+              background: 'var(--success)',
               color: 'white',
               border: 'none',
               padding: '8px 16px',
@@ -129,7 +129,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
       </div>
 
       {(!azienda.pagamenti || azienda.pagamenti.length === 0) ? (
-        <p style={{ textAlign: 'center', color: '#9aa7bf', padding: '20px', background: 'white', borderRadius: '10px' }}>
+        <p style={{ textAlign: 'center', color: 'var(--ink-muted)', padding: '20px', background: 'white', borderRadius: '10px' }}>
           Nessun pagamento registrato
         </p>
       ) : (
@@ -141,7 +141,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
                 background: 'white',
                 padding: '16px',
                 borderRadius: '10px',
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
@@ -151,29 +151,29 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
                   <span style={{ fontSize: 24 }}>{iconaMetodo[pagamento.metodoPagamento] || '💳'}</span>
                   <div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: '#10b981' }}>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--success)' }}>
                       € {parseFloat(pagamento.importo).toFixed(2).replace('.', ',')}
                     </div>
-                    <div style={{ fontSize: 12, color: '#5f6f8c' }}>
+                    <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}>
                       {formatData(pagamento.data)} • {pagamento.metodoPagamento}
                     </div>
                   </div>
                 </div>
 
                 {pagamento.numeroFattura && (
-                  <div style={{ fontSize: 13, color: '#5f6f8c', marginBottom: 4 }}>
+                  <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 4 }}>
                     📄 Fattura: {pagamento.numeroFattura}
                   </div>
                 )}
 
                 {pagamento.descrizione && (
-                  <div style={{ fontSize: 13, color: '#5f6f8c', marginBottom: 4 }}>
+                  <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 4 }}>
                     {pagamento.descrizione}
                   </div>
                 )}
 
                 {pagamento.note && (
-                  <div style={{ fontSize: 12, color: '#9aa7bf', fontStyle: 'italic', marginTop: 4 }}>
+                  <div style={{ fontSize: 12, color: 'var(--ink-muted)', fontStyle: 'italic', marginTop: 4 }}>
                     {pagamento.note}
                   </div>
                 )}
@@ -186,12 +186,12 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
-                      background: '#eef1f8',
-                      border: '1px solid #d5ddee',
+                      background: 'var(--primary-soft)',
+                      border: '1px solid var(--line)',
                       borderRadius: '6px',
                       padding: '6px 12px',
                       fontSize: '12px',
-                      color: '#34508a',
+                      color: 'var(--primary-ink)',
                       textDecoration: 'none',
                       fontWeight: 'bold'
                     }}
@@ -203,13 +203,13 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
                   <button
                     onClick={() => handleDeletePagamento(pagamento.id)}
                     style={{
-                      background: '#fee2e2',
+                      background: 'var(--danger-soft)',
                       border: '1px solid #fecaca',
                       borderRadius: '6px',
                       padding: '6px 12px',
                       cursor: 'pointer',
                       fontSize: '12px',
-                      color: '#dc2626',
+                      color: 'var(--danger)',
                       fontWeight: 'bold'
                     }}
                   >

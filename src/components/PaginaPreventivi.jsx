@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 const STATI_PREVENTIVO = [
-  { value: 'da_fare', label: 'Da fare', color: '#45536f', bg: '#eef1f7', border: '#c9d1e0', icon: '⬜' },
-  { value: 'in_corso', label: 'In corso', color: '#d97706', bg: '#fef3c7', border: '#fde68a', icon: '🟡' },
-  { value: 'completato', label: 'Completato', color: '#059669', bg: '#f0fdf4', border: '#bbf7d0', icon: '✅' },
+  { value: 'da_fare', label: 'Da fare', color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: '⬜' },
+  { value: 'in_corso', label: 'In corso', color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: '🟡' },
+  { value: 'completato', label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: '✅' },
 ];
 
 function normalizzaStato(stato) {
@@ -24,14 +24,14 @@ function ElencoContratti({ contratti, onContratto, isMobile }) {
       <h3 style={{ margin: '0 0 12px' }}>📝 Contratti ({contratti.length})</h3>
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
         {ordinati.map((c) => (
-          <div key={c.id} style={{ padding: 14, border: '1px solid #dfe5ef', borderRadius: 10, background: '#fff' }}>
+          <div key={c.id} style={{ padding: 14, border: '1px solid var(--line)', borderRadius: 10, background: '#fff' }}>
             <div style={{ fontWeight: 700, fontSize: 14 }}>{c.cliente?.ragioneSociale || 'Cliente'}</div>
-            <div style={{ fontSize: 12, color: '#5f6f8c', marginTop: 2 }}>📅 {fdata(c.data)} · scade il {fdata(c.scadenza)}</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2 }}>📅 {fdata(c.data)} · scade il {fdata(c.scadenza)}</div>
             <div style={{ fontSize: 12, marginTop: 4 }}>💰 <strong>€ {eur(c.importoTotale)}</strong> + IVA {c.periodicita === 'annuale' ? 'annuale' : 'mensile'}</div>
-            {c.consulente && <div style={{ fontSize: 12, color: '#5f6f8c' }}>👤 {c.consulente}</div>}
+            {c.consulente && <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}>👤 {c.consulente}</div>}
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
-              {c.pdfUrl && <a href={c.pdfUrl} target="_blank" rel="noreferrer" style={stileBtn('#2c3e66', 'white', '#2c3e66')}>📄 PDF</a>}
-              <button onClick={() => onContratto(null, c)} style={stileBtn('#fef3c7', '#92400e', '#fde68a')}>✏️ Modifica</button>
+              {c.pdfUrl && <a href={c.pdfUrl} target="_blank" rel="noreferrer" style={stileBtn('var(--primary)', 'white', 'var(--primary)')}>📄 PDF</a>}
+              <button onClick={() => onContratto(null, c)} style={stileBtn('var(--warning-soft)', 'var(--warning)', '#fde68a')}>✏️ Modifica</button>
             </div>
           </div>
         ))}
@@ -46,45 +46,45 @@ function CardPreventivo({ prev, contratto, onContratto, onDettaglio, onPagamento
   const residuo = Math.max(0, (prev.totale || 0) - pagato);
 
   return (
-    <div style={{ padding: 14, border: '1px solid #dfe5ef', borderRadius: 10, background: '#fff' }}>
+    <div style={{ padding: 14, border: '1px solid var(--line)', borderRadius: 10, background: '#fff' }}>
       <div style={{ fontWeight: 700, fontSize: 14 }}>{prev.nomeCliente || 'Cliente sconosciuto'}</div>
-      <div style={{ fontSize: 12, color: '#5f6f8c', marginTop: 2 }}>📅 {new Date(prev.dataCreazione).toLocaleDateString()}</div>
+      <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2 }}>📅 {new Date(prev.dataCreazione).toLocaleDateString()}</div>
       <div style={{ fontSize: 12, marginTop: 4 }}>💰 Totale: <strong>€ {(prev.totale || 0).toFixed(2)}</strong></div>
-      {pagato > 0 && <div style={{ fontSize: 12, color: '#059669' }}>✅ Pagato: € {pagato.toFixed(2)}</div>}
+      {pagato > 0 && <div style={{ fontSize: 12, color: 'var(--success)' }}>✅ Pagato: € {pagato.toFixed(2)}</div>}
       {residuo > 0
-        ? <div style={{ fontSize: 12, color: '#dc2626', fontWeight: 700 }}>⏳ Residuo: € {residuo.toFixed(2)}</div>
-        : pagato > 0 && <div style={{ fontSize: 12, color: '#059669', fontWeight: 700 }}>✔ Saldato</div>
+        ? <div style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>⏳ Residuo: € {residuo.toFixed(2)}</div>
+        : pagato > 0 && <div style={{ fontSize: 12, color: 'var(--success)', fontWeight: 700 }}>✔ Saldato</div>
       }
       {prev.motivazioneModifica && (
-        <div style={{ fontSize: 11, color: '#2c3e66', marginTop: 4, fontStyle: 'italic' }}>📝 {prev.motivazioneModifica}</div>
+        <div style={{ fontSize: 11, color: 'var(--primary)', marginTop: 4, fontStyle: 'italic' }}>📝 {prev.motivazioneModifica}</div>
       )}
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
         <button onClick={() => onDettaglio(prev)}
-          style={{ padding: '6px 10px', background: '#eef1f8', color: '#2c3e66', border: '1px solid #c3cde3', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+          style={{ padding: '6px 10px', background: 'var(--primary-soft)', color: 'var(--primary)', border: '1px solid #c3cde3', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
           ℹ️ Dettagli
         </button>
         <button onClick={() => onPagamento(prev)}
-          style={{ padding: '6px 10px', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+          style={{ padding: '6px 10px', background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #86efac', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
           💳 Pagamento
         </button>
         <button onClick={() => onModifica(prev)}
-          style={{ padding: '6px 10px', background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+          style={{ padding: '6px 10px', background: 'var(--warning-soft)', color: 'var(--warning)', border: '1px solid #fde68a', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
           ✏️ Modifica
         </button>
         {onContratto && (contratto
           ? <button onClick={() => (contratto.pdfUrl ? window.open(contratto.pdfUrl, '_blank') : onContratto(prev, contratto))}
-              title="Contratto già firmato per questo preventivo" style={stileBtn('#ecfdf5', '#047857', '#6ee7b7')}>📝 Contratto ✓</button>
-          : <button onClick={() => onContratto(prev, null)} style={stileBtn('#eef1f8', '#2c3e66', '#2c3e66')}>📝 Crea contratto</button>)}
+              title="Contratto già firmato per questo preventivo" style={stileBtn('var(--success-soft)', 'var(--success)', '#6ee7b7')}>📝 Contratto ✓</button>
+          : <button onClick={() => onContratto(prev, null)} style={stileBtn('var(--primary-soft)', 'var(--primary)', 'var(--primary)')}>📝 Crea contratto</button>)}
         {prev.pdfUrl && (
           <a href={prev.pdfUrl} target="_blank" rel="noreferrer"
-            style={{ padding: '6px 10px', background: '#2c3e66', color: 'white', borderRadius: 6, textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>
+            style={{ padding: '6px 10px', background: 'var(--primary)', color: 'white', borderRadius: 6, textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>
             📄 PDF
           </a>
         )}
         {onElimina && (
           <button onClick={() => onElimina(prev.id)}
-            style={{ padding: '6px 10px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ padding: '6px 10px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
             🗑️ Elimina
           </button>
         )}
@@ -103,11 +103,11 @@ function CardPreventivo({ prev, contratto, onContratto, onDettaglio, onPagamento
                   padding: '5px 0',
                   fontSize: 10,
                   fontWeight: 700,
-                  border: `1px solid ${attivo ? s.color : '#dfe5ef'}`,
+                  border: `1px solid ${attivo ? s.color : 'var(--line)'}`,
                   borderRadius: 6,
                   cursor: 'pointer',
                   background: attivo ? s.bg : 'white',
-                  color: attivo ? s.color : '#9aa7bf',
+                  color: attivo ? s.color : 'var(--ink-muted)',
                   transition: 'all 0.15s',
                 }}
               >
@@ -154,14 +154,14 @@ function PaginaPreventivi({
         <h2 style={{ margin: 0 }}>{titolo}</h2>
         {onNuovoContratto && (
           <button onClick={onNuovoContratto}
-            style={{ background: 'white', color: '#2c3e66', border: '2px solid #2c3e66', padding: '8px 18px', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14, marginLeft: 'auto' }}>
+            style={{ background: 'white', color: 'var(--primary)', border: '2px solid var(--primary)', padding: '8px 18px', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14, marginLeft: 'auto' }}>
             + Nuovo Contratto
           </button>
         )}
         {showNuovo && (
           <button
             onClick={onNuovo}
-            style={{ background: '#2c3e66', color: 'white', border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14 }}
+            style={{ background: 'var(--primary)', color: 'white', border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14 }}
           >
             + Nuovo Preventivo
           </button>
@@ -173,19 +173,19 @@ function PaginaPreventivi({
         placeholder="🔍 Cerca per cliente..."
         value={ricerca}
         onChange={e => setRicerca(e.target.value)}
-        style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #dfe5ef', fontSize: 14, marginBottom: 16, boxSizing: 'border-box' }}
+        style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 14, marginBottom: 16, boxSizing: 'border-box' }}
       />
 
       {preventivi.length === 0 ? (
-        <p style={{ color: '#5f6f8c' }}>Nessun preventivo trovato</p>
+        <p style={{ color: 'var(--ink-muted)' }}>Nessun preventivo trovato</p>
       ) : preventiviFiltrati.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: 32, color: '#9aa7bf', fontSize: 14 }}>
+        <div style={{ textAlign: 'center', padding: 32, color: 'var(--ink-muted)', fontSize: 14 }}>
           Nessun preventivo trovato per "{ricerca}"
         </div>
       ) : isMobile ? (
         <div>
           {/* Selettore colonna */}
-          <div style={{ display: 'flex', borderRadius: 10, overflow: 'hidden', border: '1px solid #dfe5ef', marginBottom: 16 }}>
+          <div style={{ display: 'flex', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--line)', marginBottom: 16 }}>
             {STATI_PREVENTIVO.map((s, i) => {
               const count = perColonna(s.value).length;
               const active = colAttiva === s.value;
@@ -195,10 +195,10 @@ function PaginaPreventivi({
                   onClick={() => { setColAttiva(s.value); if (s.value === 'completato') setCompletatiAperti(true); }}
                   style={{
                     flex: 1, padding: '11px 4px', border: 'none',
-                    borderRight: i < 2 ? '1px solid #dfe5ef' : 'none',
+                    borderRight: i < 2 ? '1px solid var(--line)' : 'none',
                     cursor: 'pointer', fontSize: 11, fontWeight: 700,
                     background: active ? s.bg : 'white',
-                    color: active ? s.color : '#9aa7bf',
+                    color: active ? s.color : 'var(--ink-muted)',
                     transition: 'all 0.15s',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
                   }}
@@ -206,8 +206,8 @@ function PaginaPreventivi({
                   <span style={{ fontSize: 16 }}>{s.icon}</span>
                   <span>{s.label}</span>
                   <span style={{
-                    background: active ? s.color : '#dfe5ef',
-                    color: active ? 'white' : '#9aa7bf',
+                    background: active ? s.color : 'var(--line)',
+                    color: active ? 'white' : 'var(--ink-muted)',
                     borderRadius: 8, padding: '0 6px', fontSize: 10, fontWeight: 800,
                   }}>{count}</span>
                 </button>
@@ -218,14 +218,14 @@ function PaginaPreventivi({
           {colAttiva === 'completato' && !completatiAperti ? (
             <div
               onClick={() => setCompletatiAperti(true)}
-              style={{ textAlign: 'center', padding: '22px 0', color: '#059669', fontSize: 13, fontWeight: 600, background: '#f0fdf4', borderRadius: 10, border: '1px dashed #bbf7d0', cursor: 'pointer' }}
+              style={{ textAlign: 'center', padding: '22px 0', color: 'var(--success)', fontSize: 13, fontWeight: 600, background: 'var(--success-soft)', borderRadius: 10, border: '1px dashed #bbf7d0', cursor: 'pointer' }}
             >
               ✅ {perColonna('completato').length} completati — clicca per espandere
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {perColonna(colAttiva).length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '36px 0', color: '#c9d1e0', fontSize: 13, background: '#f6f8fc', borderRadius: 10, border: '1px dashed #dfe5ef' }}>Nessun preventivo</div>
+                <div style={{ textAlign: 'center', padding: '36px 0', color: '#c9d1e0', fontSize: 13, background: 'var(--surface-2)', borderRadius: 10, border: '1px dashed var(--line)' }}>Nessun preventivo</div>
               ) : perColonna(colAttiva).map(prev => (
                 <CardPreventivo key={prev.id} prev={prev} contratto={contrattoDi(prev)} onContratto={onContratto} onDettaglio={onDettaglio} onPagamento={onPagamento} onModifica={onModifica} onElimina={onElimina} canCambiaStato={canCambiaStato} onCambiaStato={onCambiaStato} />
               ))}
@@ -258,7 +258,7 @@ function PaginaPreventivi({
                 </div>
                 {(!isCompletato || completatiAperti) && (
                   <div style={{
-                    background: '#f6f8fc', border: `1px solid ${stato.border}`, borderTop: 'none',
+                    background: 'var(--surface-2)', border: `1px solid ${stato.border}`, borderTop: 'none',
                     borderRadius: '0 0 10px 10px', padding: 10,
                     display: 'flex', flexDirection: 'column', gap: 10, minHeight: 120,
                   }}>

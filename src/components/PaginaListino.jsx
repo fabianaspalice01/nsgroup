@@ -150,7 +150,7 @@ function PaginaListino() {
     }
   };
 
-  if (caricando) return <div style={{ padding: 40, textAlign: 'center', color: '#9aa7bf' }}>Caricamento listino...</div>;
+  if (caricando) return <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-muted)' }}>Caricamento listino...</div>;
 
   const colStyle = { display: 'grid', gridTemplateColumns: '1fr 160px', alignItems: 'center', padding: '14px 20px' };
 
@@ -158,8 +158,8 @@ function PaginaListino() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#1a2540' }}>💰 Listino Prezzi</h2>
-          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#5f6f8c' }}>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>💰 Listino Prezzi</h2>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-muted)' }}>
             I prezzi impostati qui vengono pre-compilati automaticamente nei nuovi preventivi
           </p>
         </div>
@@ -168,7 +168,7 @@ function PaginaListino() {
           disabled={salvando}
           style={{
             padding: '10px 24px', border: 'none', borderRadius: 8,
-            background: salvando ? '#93a7cc' : '#2c3e66',
+            background: salvando ? '#93a7cc' : 'var(--primary)',
             color: 'white', cursor: salvando ? 'not-allowed' : 'pointer',
             fontSize: 14, fontWeight: 700,
           }}
@@ -178,12 +178,12 @@ function PaginaListino() {
       </div>
 
       {/* Lista unica servizi */}
-      <div style={{ background: 'white', borderRadius: 12, border: '1px solid #dfe5ef', overflow: 'hidden', marginBottom: 12 }}>
+      <div style={{ background: 'white', borderRadius: 12, border: '1px solid var(--line)', overflow: 'hidden', marginBottom: 12 }}>
         <div style={{
           display: 'grid', gridTemplateColumns: '52px 1fr 160px 36px',
-          padding: '12px 20px', background: '#f6f8fc',
-          borderBottom: '2px solid #dfe5ef',
-          fontSize: 12, fontWeight: 700, color: '#5f6f8c', textTransform: 'uppercase', letterSpacing: '0.05em',
+          padding: '12px 20px', background: 'var(--surface-2)',
+          borderBottom: '2px solid var(--line)',
+          fontSize: 12, fontWeight: 700, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em',
         }}>
           <span />
           <span>Servizio</span>
@@ -199,7 +199,7 @@ function PaginaListino() {
               style={{
                 display: 'grid', gridTemplateColumns: '52px 1fr 160px 36px',
                 alignItems: 'center', padding: '8px 20px',
-                borderBottom: idx < servizi.length - 1 ? '1px solid #eef1f7' : 'none',
+                borderBottom: idx < servizi.length - 1 ? '1px solid var(--surface-2)' : 'none',
               }}
             >
               {/* Frecce ↑ ↓ */}
@@ -207,13 +207,13 @@ function PaginaListino() {
                 <button
                   onClick={() => sposta(idx, -1)}
                   disabled={idx === 0}
-                  style={{ border: 'none', background: 'none', cursor: idx === 0 ? 'default' : 'pointer', color: idx === 0 ? '#dfe5ef' : '#9aa7bf', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}
+                  style={{ border: 'none', background: 'none', cursor: idx === 0 ? 'default' : 'pointer', color: idx === 0 ? 'var(--line)' : 'var(--ink-muted)', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}
                   title="Sposta su"
                 >▲</button>
                 <button
                   onClick={() => sposta(idx, 1)}
                   disabled={idx === servizi.length - 1}
-                  style={{ border: 'none', background: 'none', cursor: idx === servizi.length - 1 ? 'default' : 'pointer', color: idx === servizi.length - 1 ? '#dfe5ef' : '#9aa7bf', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}
+                  style={{ border: 'none', background: 'none', cursor: idx === servizi.length - 1 ? 'default' : 'pointer', color: idx === servizi.length - 1 ? 'var(--line)' : 'var(--ink-muted)', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}
                   title="Sposta giù"
                 >▼</button>
               </div>
@@ -224,22 +224,22 @@ function PaginaListino() {
                 onChange={e => handleChange(s.id, 'descrizione', e.target.value)}
                 placeholder="Nome servizio..."
                 style={{
-                  padding: '7px 10px', border: '1px solid #dfe5ef', borderRadius: 6,
-                  fontSize: 14, outline: 'none', marginRight: 12, color: '#1a2540',
+                  padding: '7px 10px', border: '1px solid var(--line)', borderRadius: 6,
+                  fontSize: 14, outline: 'none', marginRight: 12, color: 'var(--ink)',
                   background: 'white',
                 }}
               />
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end' }}>
-                <span style={{ fontSize: 13, color: '#5f6f8c' }}>€</span>
+                <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}>€</span>
                 <input
                   type="number" min="0" step="0.01" value={s.prezzo}
                   onChange={e => handleChange(s.id, 'prezzo', e.target.value)}
                   placeholder="0.00"
                   style={{
                     width: 110, padding: '7px 10px', textAlign: 'right',
-                    border: `1px solid ${haPrezzo ? '#93a7cc' : '#dfe5ef'}`,
+                    border: `1px solid ${haPrezzo ? '#93a7cc' : 'var(--line)'}`,
                     borderRadius: 6, fontSize: 14, outline: 'none',
-                    background: haPrezzo ? '#eef1f8' : 'white', color: '#1a2540',
+                    background: haPrezzo ? 'var(--primary-soft)' : 'white', color: 'var(--ink)',
                   }}
                 />
               </div>
@@ -247,7 +247,7 @@ function PaginaListino() {
                 onClick={() => rimuovi(s.id)}
                 style={{
                   marginLeft: 8, width: 28, height: 28, border: 'none', borderRadius: 6,
-                  background: '#fee2e2', color: '#dc2626', cursor: 'pointer',
+                  background: 'var(--danger-soft)', color: 'var(--danger)', cursor: 'pointer',
                   fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
                 title="Rimuovi"
@@ -256,12 +256,12 @@ function PaginaListino() {
           );
         })}
 
-        <div style={{ padding: '12px 20px', borderTop: '1px solid #eef1f7' }}>
+        <div style={{ padding: '12px 20px', borderTop: '1px solid var(--surface-2)' }}>
           <button
             onClick={aggiungi}
             style={{
-              padding: '8px 16px', border: '1px dashed #2c3e66', borderRadius: 8,
-              background: 'transparent', color: '#2c3e66', cursor: 'pointer',
+              padding: '8px 16px', border: '1px dashed var(--primary)', borderRadius: 8,
+              background: 'transparent', color: 'var(--primary)', cursor: 'pointer',
               fontSize: 13, fontWeight: 600,
             }}
           >
@@ -270,24 +270,24 @@ function PaginaListino() {
         </div>
       </div>
 
-      <p style={{ marginTop: 4, fontSize: 12, color: '#9aa7bf' }}>
+      <p style={{ marginTop: 4, fontSize: 12, color: 'var(--ink-muted)' }}>
         I servizi con prezzo 0 o vuoto verranno lasciati in bianco nel preventivo per la compilazione manuale.
       </p>
 
       {/* Checklist Sopralluogo */}
       <div style={{ background: 'white', borderRadius: 12, border: '1px solid #86efac', overflow: 'hidden', marginTop: 28 }}>
-        <div style={{ padding: '14px 20px', background: '#f0fdf4', borderBottom: '2px solid #bbf7d0' }}>
-          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#166534' }}>🔍 Voci Checklist Sopralluogo</h3>
-          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#4ade80' ? '#166534' : '#5f6f8c', opacity: 0.75 }}>
+        <div style={{ padding: '14px 20px', background: 'var(--success-soft)', borderBottom: '2px solid #bbf7d0' }}>
+          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--success)' }}>🔍 Voci Checklist Sopralluogo</h3>
+          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#4ade80' ? 'var(--success)' : 'var(--ink-muted)', opacity: 0.75 }}>
             Queste voci appaiono come checklist da spuntare nel preventivo durante il sopralluogo
           </p>
         </div>
 
         <div style={{
           display: 'grid', gridTemplateColumns: '52px 1fr 36px',
-          padding: '10px 20px', background: '#f6f8fc',
-          borderBottom: '2px solid #dfe5ef',
-          fontSize: 12, fontWeight: 700, color: '#5f6f8c', textTransform: 'uppercase', letterSpacing: '0.05em',
+          padding: '10px 20px', background: 'var(--surface-2)',
+          borderBottom: '2px solid var(--line)',
+          fontSize: 12, fontWeight: 700, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em',
         }}>
           <span />
           <span>Voce</span>
@@ -298,30 +298,30 @@ function PaginaListino() {
           <div key={voce.id} style={{
             display: 'grid', gridTemplateColumns: '52px 1fr 36px',
             alignItems: 'center', padding: '8px 20px',
-            borderBottom: idx < checklistVoci.length - 1 ? '1px solid #eef1f7' : 'none',
+            borderBottom: idx < checklistVoci.length - 1 ? '1px solid var(--surface-2)' : 'none',
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
               <button onClick={() => spostaChecklist(idx, -1)} disabled={idx === 0}
-                style={{ border: 'none', background: 'none', cursor: idx === 0 ? 'default' : 'pointer', color: idx === 0 ? '#dfe5ef' : '#9aa7bf', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}>▲</button>
+                style={{ border: 'none', background: 'none', cursor: idx === 0 ? 'default' : 'pointer', color: idx === 0 ? 'var(--line)' : 'var(--ink-muted)', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}>▲</button>
               <button onClick={() => spostaChecklist(idx, 1)} disabled={idx === checklistVoci.length - 1}
-                style={{ border: 'none', background: 'none', cursor: idx === checklistVoci.length - 1 ? 'default' : 'pointer', color: idx === checklistVoci.length - 1 ? '#dfe5ef' : '#9aa7bf', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}>▼</button>
+                style={{ border: 'none', background: 'none', cursor: idx === checklistVoci.length - 1 ? 'default' : 'pointer', color: idx === checklistVoci.length - 1 ? 'var(--line)' : 'var(--ink-muted)', fontSize: 12, lineHeight: 1, padding: '2px 4px' }}>▼</button>
             </div>
             <input
               type="text"
               value={voce.label}
               onChange={e => setChecklistVoci(prev => prev.map(v => v.id === voce.id ? { ...v, label: e.target.value } : v))}
               placeholder="Nome controllo..."
-              style={{ padding: '7px 10px', border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14, outline: 'none', color: '#1a2540', background: 'white' }}
+              style={{ padding: '7px 10px', border: '1px solid var(--line)', borderRadius: 6, fontSize: 14, outline: 'none', color: 'var(--ink)', background: 'white' }}
             />
             <button onClick={() => setChecklistVoci(prev => prev.filter(v => v.id !== voce.id))}
-              style={{ marginLeft: 8, width: 28, height: 28, border: 'none', borderRadius: 6, background: '#fee2e2', color: '#dc2626', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              style={{ marginLeft: 8, width: 28, height: 28, border: 'none', borderRadius: 6, background: 'var(--danger-soft)', color: 'var(--danger)', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
           </div>
         ))}
 
-        <div style={{ padding: '12px 20px', borderTop: '1px solid #eef1f7' }}>
+        <div style={{ padding: '12px 20px', borderTop: '1px solid var(--surface-2)' }}>
           <button
             onClick={() => setChecklistVoci(prev => [...prev, { id: `cl_${Date.now()}`, label: '' }])}
-            style={{ padding: '8px 16px', border: '1px dashed #16a34a', borderRadius: 8, background: 'transparent', color: '#16a34a', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
+            style={{ padding: '8px 16px', border: '1px dashed var(--success)', borderRadius: 8, background: 'transparent', color: 'var(--success)', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
           >
             + Aggiungi voce
           </button>

@@ -60,7 +60,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -78,7 +78,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -97,7 +97,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -115,7 +115,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -133,7 +133,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -152,7 +152,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               fontFamily: 'inherit',
@@ -166,7 +166,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
             onClick={onClose}
             style={{
               padding: '10px 20px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '8px',
               background: 'white',
               cursor: 'pointer',
@@ -181,7 +181,7 @@ function ModaleDipendente({ onClose, onSave, dipendente }) {
               padding: '10px 20px',
               border: 'none',
               borderRadius: '8px',
-              background: '#2c3e66',
+              background: 'var(--primary)',
               color: 'white',
               cursor: 'pointer',
               fontSize: '14px',

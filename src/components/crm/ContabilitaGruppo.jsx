@@ -17,7 +17,7 @@ export default function ContabilitaGruppo({ utente }) {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
-        <h2 style={{ margin: 0, fontSize: 18, color: '#1e293b' }}>Contabilità {scelta.nome}</h2>
+        <h2 style={{ margin: 0, fontSize: 18, color: 'var(--ink)' }}>Contabilità {scelta.nome}</h2>
         <div role="tablist" aria-label="Azienda" style={{ display: 'flex', gap: 8 }}>
           {AZIENDE.map((az) => {
             const attiva = az.id === scelta.id;
@@ -31,7 +31,7 @@ export default function ContabilitaGruppo({ utente }) {
                 onClick={() => setScelta(az)}
                 style={{
                   padding: 4, background: '#fff', cursor: 'pointer', borderRadius: 8, lineHeight: 0,
-                  border: attiva ? '2px solid #6366f1' : '1px solid #e2e8f0',
+                  border: attiva ? '2px solid var(--primary)' : '1px solid var(--line)',
                   boxShadow: attiva ? '0 0 0 3px rgba(99,102,241,0.15)' : 'none',
                   opacity: attiva ? 1 : 0.55,
                 }}
@@ -49,10 +49,10 @@ export default function ContabilitaGruppo({ utente }) {
           azienda={scelta.id}
           nomeAzienda={scelta.nome}
           utente={utente}
-          style={{ display: 'block', width: '100%', height: ALTEZZA, minHeight: 560, border: '1px solid #e2e8f0', borderRadius: 12, background: '#fff' }}
+          style={{ display: 'block', width: '100%', height: ALTEZZA, minHeight: 560, border: '1px solid var(--line)', borderRadius: 12, background: '#fff' }}
         />
       ) : (
-        <div style={{ height: ALTEZZA, minHeight: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0', borderRadius: 12, background: '#fff', color: '#64748b', fontSize: 15 }}>
+        <div style={{ height: ALTEZZA, minHeight: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--line)', borderRadius: 12, background: '#fff', color: 'var(--ink-muted)', fontSize: 15 }}>
           Contabilità {scelta.nome} in preparazione
         </div>
       )}

@@ -91,7 +91,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -115,7 +115,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 borderRadius: '6px',
                 fontSize: '14px'
               }}
@@ -133,7 +133,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 borderRadius: '6px',
                 fontSize: '14px'
               }}
@@ -153,7 +153,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -171,7 +171,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px'
             }}
@@ -197,7 +197,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '6px',
               fontSize: '14px',
               fontFamily: 'inherit',
@@ -212,7 +212,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             disabled={uploading}
             style={{
               padding: '10px 20px',
-              border: '1px solid #dfe5ef',
+              border: '1px solid var(--line)',
               borderRadius: '8px',
               background: 'white',
               cursor: uploading ? 'not-allowed' : 'pointer',
@@ -229,7 +229,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
               padding: '10px 20px',
               border: 'none',
               borderRadius: '8px',
-              background: uploading ? '#9aa7bf' : '#2c3e66',
+              background: uploading ? 'var(--ink-muted)' : 'var(--primary)',
               color: 'white',
               cursor: uploading ? 'not-allowed' : 'pointer',
               fontSize: '14px',

@@ -17,13 +17,13 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
   };
 
   const getStatoScadenza = (scadenza, completato) => {
-    if (completato) return { label: 'COMPLETATO', color: '#16223b', bg: '#dde3f0' };
+    if (completato) return { label: 'COMPLETATO', color: 'var(--navy-900)', bg: 'var(--primary-soft)' };
     const oggi = new Date();
     const dataScadenza = new Date(scadenza);
     const diff = Math.ceil((dataScadenza - oggi) / (1000 * 60 * 60 * 24));
-    if (diff < 0) return { label: 'SCADUTO', color: '#dc2626', bg: '#fee2e2' };
-    if (diff <= 7) return { label: 'URGENTE', color: '#d97706', bg: '#fef3c7' };
-    return { label: 'OK', color: '#059669', bg: '#d1fae5' };
+    if (diff < 0) return { label: 'SCADUTO', color: 'var(--danger)', bg: 'var(--danger-soft)' };
+    if (diff <= 7) return { label: 'URGENTE', color: 'var(--warning)', bg: 'var(--warning-soft)' };
+    return { label: 'OK', color: 'var(--success)', bg: 'var(--success-soft)' };
   };
 
   const uploadFileControllo = async (file, aziendaId) => {
@@ -106,7 +106,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
           <button
             onClick={() => setMostraModaleControllo(true)}
             style={{
-              background: '#2c3e66',
+              background: 'var(--primary)',
               color: 'white',
               border: 'none',
               padding: '8px 16px',
@@ -123,7 +123,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {azienda.controlli.length === 0 && (
-          <p style={{ textAlign: 'center', color: '#9aa7bf', padding: '30px' }}>Nessun controllo associato</p>
+          <p style={{ textAlign: 'center', color: 'var(--ink-muted)', padding: '30px' }}>Nessun controllo associato</p>
         )}
 
         {azienda.controlli.map((controllo) => {
@@ -138,19 +138,19 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                border: '1px solid #dfe5ef',
+                border: '1px solid var(--line)',
                 gap: 12
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
                 <h4 style={{ marginBottom: '5px' }}>{controllo.tipo}</h4>
-                <p style={{ fontSize: '14px', color: '#5f6f8c' }}>Scadenza: {formatData(controllo.scadenza)}</p>
+                <p style={{ fontSize: '14px', color: 'var(--ink-muted)' }}>Scadenza: {formatData(controllo.scadenza)}</p>
                 {controllo.note && (
-                  <p style={{ fontSize: '13px', color: '#9aa7bf', marginTop: '5px' }}>Note: {controllo.note}</p>
+                  <p style={{ fontSize: '13px', color: 'var(--ink-muted)', marginTop: '5px' }}>Note: {controllo.note}</p>
                 )}
                 {controllo.pdfUrl && (
                   <a href={controllo.pdfUrl} target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: '12px', color: '#2c3e66', fontWeight: 600 }}>
+                    style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: 600 }}>
                     📄 Visualizza documento
                   </a>
                 )}
@@ -173,8 +173,8 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
                     <button
                       onClick={() => setControlloInModifica(controllo)}
                       style={{
-                        background: '#f0fdf4',
-                        color: '#16a34a',
+                        background: 'var(--success-soft)',
+                        color: 'var(--success)',
                         border: '1px solid #bbf7d0',
                         padding: '5px 12px',
                         borderRadius: '8px',
@@ -188,9 +188,9 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
                     <button
                       onClick={() => apriRinnovo(controllo)}
                       style={{
-                        background: '#eef1f8',
-                        color: '#34508a',
-                        border: '1px solid #d5ddee',
+                        background: 'var(--primary-soft)',
+                        color: 'var(--primary-ink)',
+                        border: '1px solid var(--line)',
                         padding: '5px 12px',
                         borderRadius: '8px',
                         cursor: 'pointer',
@@ -229,7 +229,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
             <h3 style={{ margin: '0 0 6px' }}>🔄 Rinnova Controllo</h3>
-            <p style={{ color: '#5f6f8c', fontSize: 14, margin: '0 0 20px' }}>
+            <p style={{ color: 'var(--ink-muted)', fontSize: 14, margin: '0 0 20px' }}>
               <strong>{controlloInRinnovo.tipo}</strong><br />
               Scadenza attuale: {formatData(controlloInRinnovo.scadenza)}
             </p>
@@ -241,20 +241,20 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
               value={nuovaScadenza}
               onChange={e => setNuovaScadenza(e.target.value)}
               min={new Date().toISOString().split('T')[0]}
-              style={{ width: '100%', padding: '9px 12px', border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', marginBottom: 20 }}
+              style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', marginBottom: 20 }}
             />
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button
                 onClick={() => setControlloInRinnovo(null)}
                 disabled={salvandoRinnovo}
-                style={{ padding: '10px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
+                style={{ padding: '10px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
               >
                 Annulla
               </button>
               <button
                 onClick={handleConfermRinnovo}
                 disabled={salvandoRinnovo}
-                style={{ padding: '10px 22px', border: 'none', borderRadius: 8, background: salvandoRinnovo ? '#9aa7bf' : '#34508a', color: 'white', cursor: salvandoRinnovo ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 700 }}
+                style={{ padding: '10px 22px', border: 'none', borderRadius: 8, background: salvandoRinnovo ? 'var(--ink-muted)' : 'var(--primary-ink)', color: 'white', cursor: salvandoRinnovo ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 700 }}
               >
                 {salvandoRinnovo ? 'Salvataggio...' : 'Conferma Rinnovo'}
               </button>

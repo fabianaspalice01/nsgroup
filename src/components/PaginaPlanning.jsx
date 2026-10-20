@@ -6,15 +6,15 @@ import toast from 'react-hot-toast';
 
 /* ── COSTANTI ─────────────────────────────────────────────────────────────── */
 const STATI = [
-  { id: 'da_fare',    label: 'Da fare',    color: '#45536f', bg: '#eef1f7', border: '#c9d1e0', icon: '⬜' },
-  { id: 'in_corso',  label: 'In corso',   color: '#d97706', bg: '#fef3c7', border: '#fde68a', icon: '🟡' },
-  { id: 'completato',label: 'Completato', color: '#059669', bg: '#f0fdf4', border: '#bbf7d0', icon: '✅' },
+  { id: 'da_fare',    label: 'Da fare',    color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: '⬜' },
+  { id: 'in_corso',  label: 'In corso',   color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: '🟡' },
+  { id: 'completato',label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: '✅' },
 ];
 
 const PRIORITA = [
-  { id: 'alta',  label: 'Alta',  color: '#dc2626', bg: '#fef2f2', border: '#fecaca' },
-  { id: 'media', label: 'Media', color: '#d97706', bg: '#fef9c3', border: '#fde68a' },
-  { id: 'bassa', label: 'Bassa', color: '#34508a', bg: '#eef1f8', border: '#c3cde3' },
+  { id: 'alta',  label: 'Alta',  color: 'var(--danger)', bg: 'var(--danger-soft)', border: '#fecaca' },
+  { id: 'media', label: 'Media', color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a' },
+  { id: 'bassa', label: 'Bassa', color: 'var(--primary-ink)', bg: 'var(--primary-soft)', border: '#c3cde3' },
 ];
 
 const GIORNI     = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
@@ -41,7 +41,7 @@ const initials = (nome = '') =>
   nome.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
 
 const avatarColor = (nome = '') => {
-  const colors = ['#2c3e66','#4a90c2','#10b981','#f59e0b','#ec4899','#7a8fc0','#14b8a6'];
+  const colors = ['var(--primary)','#4a90c2','var(--success)','var(--warning)','#ec4899','#7a8fc0','#14b8a6'];
   let hash = 0;
   for (const c of nome) hash = (hash * 31 + c.charCodeAt(0)) % colors.length;
   return colors[hash];
@@ -106,8 +106,8 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
 
   return (
     <div style={{
-      background: isMio ? '#eef1f8' : 'white',
-      border: `1px solid ${isMio ? '#93a7cc' : '#dfe5ef'}`,
+      background: isMio ? 'var(--primary-soft)' : 'white',
+      border: `1px solid ${isMio ? '#93a7cc' : 'var(--line)'}`,
       borderRadius: 10,
       padding: '12px 14px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
       display: 'flex', flexDirection: 'column', gap: 8,
@@ -116,36 +116,36 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
         <BadgePriorita priorita={task.priorita} />
         {(isAdmin || isOperatore) && (
           <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-            <button onClick={() => onEdit(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9aa7bf', fontSize: 14, padding: '0 2px' }}>✏️</button>
-            <button onClick={() => onDelete(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9aa7bf', fontSize: 14, padding: '0 2px' }}>🗑️</button>
+            <button onClick={() => onEdit(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14, padding: '0 2px' }}>✏️</button>
+            <button onClick={() => onDelete(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14, padding: '0 2px' }}>🗑️</button>
           </div>
         )}
       </div>
 
-      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2540', lineHeight: 1.3 }}>{task.titolo}</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.3 }}>{task.titolo}</div>
 
       {task.descrizione && (
-        <div style={{ fontSize: 12, color: '#5f6f8c', lineHeight: 1.4 }}>{task.descrizione}</div>
+        <div style={{ fontSize: 12, color: 'var(--ink-muted)', lineHeight: 1.4 }}>{task.descrizione}</div>
       )}
 
       {task.aziendaNome && (
-        <div style={{ fontSize: 11, color: '#2c3e66', fontWeight: 600 }}>🏢 {task.aziendaNome}</div>
+        <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600 }}>🏢 {task.aziendaNome}</div>
       )}
 
       {task.allegati?.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-            <span style={{ fontSize: 11, color: '#9aa7bf', fontWeight: 600 }}>{task.allegati.length} allegat{task.allegati.length === 1 ? 'o' : 'i'}</span>
+            <span style={{ fontSize: 11, color: 'var(--ink-muted)', fontWeight: 600 }}>{task.allegati.length} allegat{task.allegati.length === 1 ? 'o' : 'i'}</span>
             <button
               onClick={() => scaricaTuttiAllegati(task.allegati)}
-              style={{ fontSize: 11, fontWeight: 700, color: '#2c3e66', background: '#eef1f8', border: '1px solid #c3cde3', borderRadius: 5, padding: '2px 8px', cursor: 'pointer' }}
+              style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 5, padding: '2px 8px', cursor: 'pointer' }}
             >
               ⬇ Scarica tutti
             </button>
           </div>
           {task.allegati.map(a => (
             <a key={a.id} href={a.url} target="_blank" rel="noreferrer"
-              style={{ fontSize: 11, color: '#2c3e66', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              style={{ fontSize: 11, color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               📎 {a.nome}
             </a>
           ))}
@@ -161,7 +161,7 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
                 const op = operatori?.find(o => o.id === e.target.value);
                 onAssegna(task, e.target.value, op?.nome || '');
               }}
-              style={{ fontSize: 12, border: '1px solid #dfe5ef', borderRadius: 6, padding: '3px 6px', background: 'white', color: '#374151', cursor: 'pointer', maxWidth: 150 }}
+              style={{ fontSize: 12, border: '1px solid var(--line)', borderRadius: 6, padding: '3px 6px', background: 'white', color: 'var(--ink)', cursor: 'pointer', maxWidth: 150 }}
             >
               <option value="">— Non assegnato —</option>
               {(operatori || []).map(op => (
@@ -171,14 +171,14 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
           ) : task.assegnatoNome ? (
             <>
               <Avatar nome={task.assegnatoNome} size={20} />
-              <span style={{ fontSize: 11, color: '#45536f', fontWeight: 600 }}>{task.assegnatoNome}</span>
+              <span style={{ fontSize: 11, color: 'var(--ink-muted)', fontWeight: 600 }}>{task.assegnatoNome}</span>
             </>
           ) : (
-            <span style={{ fontSize: 11, color: '#9aa7bf' }}>Non assegnato</span>
+            <span style={{ fontSize: 11, color: 'var(--ink-muted)' }}>Non assegnato</span>
           )}
         </div>
         {task.scadenza && (
-          <span style={{ fontSize: 11, fontWeight: 600, color: scaduta ? '#dc2626' : '#5f6f8c' }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: scaduta ? 'var(--danger)' : 'var(--ink-muted)' }}>
             {scaduta ? '⚠️ ' : '📅 '}{fmt(task.scadenza)}
           </span>
         )}
@@ -191,10 +191,10 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
             onClick={() => onChangeStato(task, s.id)}
             style={{
               flex: 1, padding: '5px 0', fontSize: 10, fontWeight: 700,
-              border: `1px solid ${task.stato === s.id ? s.color : '#dfe5ef'}`,
+              border: `1px solid ${task.stato === s.id ? s.color : 'var(--line)'}`,
               borderRadius: 6, cursor: 'pointer',
               background: task.stato === s.id ? s.bg : 'white',
-              color: task.stato === s.id ? s.color : '#9aa7bf',
+              color: task.stato === s.id ? s.color : 'var(--ink-muted)',
               transition: 'all 0.15s',
             }}
           >{s.icon} {s.label}</button>
@@ -242,8 +242,8 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
     onSave({ ...form, allegatiNuovi, allegatiEsistenti });
   };
 
-  const inputStyle = { width: '100%', padding: '8px 10px', border: '1px solid #dfe5ef', borderRadius: 6, fontSize: 14, boxSizing: 'border-box', outline: 'none' };
-  const labelStyle = { display: 'block', fontWeight: 700, fontSize: 13, marginBottom: 5, color: '#374151' };
+  const inputStyle = { width: '100%', padding: '8px 10px', border: '1px solid var(--line)', borderRadius: 6, fontSize: 14, boxSizing: 'border-box', outline: 'none' };
+  const labelStyle = { display: 'block', fontWeight: 700, fontSize: 13, marginBottom: 5, color: 'var(--ink)' };
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
@@ -304,11 +304,11 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
           {allegatiEsistenti.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 8 }}>
               {allegatiEsistenti.map(a => (
-                <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: '#f6f8fc', border: '1px solid #dfe5ef', borderRadius: 6 }}>
-                  <a href={a.url} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: 13, color: '#2c3e66', textDecoration: 'none', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 6 }}>
+                  <a href={a.url} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: 13, color: 'var(--primary)', textDecoration: 'none', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     📎 {a.nome}
                   </a>
-                  <button type="button" onClick={() => setAllegatiEsistenti(prev => prev.filter(x => x.id !== a.id))} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 16, lineHeight: 1, padding: 0 }}>✕</button>
+                  <button type="button" onClick={() => setAllegatiEsistenti(prev => prev.filter(x => x.id !== a.id))} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: 16, lineHeight: 1, padding: 0 }}>✕</button>
                 </div>
               ))}
             </div>
@@ -317,9 +317,9 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
           {allegatiNuovi.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 8 }}>
               {allegatiNuovi.map((f, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: '#eef1f8', border: '1px solid #c3cde3', borderRadius: 6 }}>
-                  <span style={{ flex: 1, fontSize: 13, color: '#2c3e66', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>📄 {f.name}</span>
-                  <button type="button" onClick={() => setAllegatiNuovi(prev => prev.filter((_, j) => j !== i))} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 16, lineHeight: 1, padding: 0 }}>✕</button>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 6 }}>
+                  <span style={{ flex: 1, fontSize: 13, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>📄 {f.name}</span>
+                  <button type="button" onClick={() => setAllegatiNuovi(prev => prev.filter((_, j) => j !== i))} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: 16, lineHeight: 1, padding: 0 }}>✕</button>
                 </div>
               ))}
             </div>
@@ -332,10 +332,10 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
             style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               gap: 6, padding: '18px 14px',
-              border: `2px dashed ${isDragging ? '#2c3e66' : '#c9d1e0'}`,
+              border: `2px dashed ${isDragging ? 'var(--primary)' : '#c9d1e0'}`,
               borderRadius: 10, cursor: 'pointer',
-              background: isDragging ? '#eef1f8' : '#fafafa',
-              color: isDragging ? '#2c3e66' : '#5f6f8c',
+              background: isDragging ? 'var(--primary-soft)' : 'var(--surface-2)',
+              color: isDragging ? 'var(--primary)' : 'var(--ink-muted)',
               fontSize: 13, fontWeight: 600,
               userSelect: 'none', transition: 'all 0.15s',
             }}
@@ -347,8 +347,8 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
         </div>
 
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ padding: '10px 20px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}>Annulla</button>
-          <button onClick={handleSave} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: '#2c3e66', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>Salva</button>
+          <button onClick={onClose} style={{ padding: '10px 20px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}>Annulla</button>
+          <button onClick={handleSave} style={{ padding: '10px 20px', border: 'none', borderRadius: 8, background: 'var(--primary)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>Salva</button>
         </div>
       </div>
     </div>
@@ -376,7 +376,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
     return (
       <div>
         {/* Selettore colonna */}
-        <div style={{ display: 'flex', borderRadius: 10, overflow: 'hidden', border: '1px solid #dfe5ef', marginBottom: 16 }}>
+        <div style={{ display: 'flex', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--line)', marginBottom: 16 }}>
           {STATI.map((s, i) => {
             const count = tasksFiltrati.filter(t => t.stato === s.id).length;
             const active = colAttiva === s.id;
@@ -386,10 +386,10 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
                 onClick={() => { setColAttiva(s.id); if (s.id === 'completato') setCompletatiAperti(true); }}
                 style={{
                   flex: 1, padding: '11px 4px', border: 'none',
-                  borderRight: i < 2 ? '1px solid #dfe5ef' : 'none',
+                  borderRight: i < 2 ? '1px solid var(--line)' : 'none',
                   cursor: 'pointer', fontSize: 11, fontWeight: 700,
                   background: active ? s.bg : 'white',
-                  color: active ? s.color : '#9aa7bf',
+                  color: active ? s.color : 'var(--ink-muted)',
                   transition: 'all 0.15s',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
                 }}
@@ -397,8 +397,8 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
                 <span style={{ fontSize: 16 }}>{s.icon}</span>
                 <span>{s.label}</span>
                 <span style={{
-                  background: active ? s.color : '#dfe5ef',
-                  color: active ? 'white' : '#9aa7bf',
+                  background: active ? s.color : 'var(--line)',
+                  color: active ? 'white' : 'var(--ink-muted)',
                   borderRadius: 8, padding: '0 6px', fontSize: 10, fontWeight: 800,
                 }}>{count}</span>
               </button>
@@ -410,7 +410,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
         {isCompletato && !completatiAperti ? (
           <div
             onClick={() => setCompletatiAperti(true)}
-            style={{ textAlign: 'center', padding: '22px 0', color: '#059669', fontSize: 13, fontWeight: 600, background: '#f0fdf4', borderRadius: 10, border: '1px dashed #bbf7d0', cursor: 'pointer' }}
+            style={{ textAlign: 'center', padding: '22px 0', color: 'var(--success)', fontSize: 13, fontWeight: 600, background: 'var(--success-soft)', borderRadius: 10, border: '1px dashed #bbf7d0', cursor: 'pointer' }}
           >
             ✅ {col.length} task completati — clicca per espandere
           </div>
@@ -419,7 +419,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
             {isDaFare ? (
               <>
                 {daFareVisibili.length === 0 && daFareFuturi.length === 0 && (
-                  <div style={{ textAlign: 'center', padding: '36px 0', color: '#c9d1e0', fontSize: 13, background: '#f6f8fc', borderRadius: 10, border: '1px dashed #dfe5ef' }}>Nessun task</div>
+                  <div style={{ textAlign: 'center', padding: '36px 0', color: '#c9d1e0', fontSize: 13, background: 'var(--surface-2)', borderRadius: 10, border: '1px dashed var(--line)' }}>Nessun task</div>
                 )}
                 {daFareVisibili.map(task => (
                   <CardTask key={task.id} task={task} isAdmin={isAdmin} onEdit={onEdit} onDelete={onDelete} onChangeStato={onChangeStato} userData={userData} operatori={operatori} onAssegna={onAssegna} />
@@ -428,7 +428,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
                   <>
                     <div
                       onClick={() => setFuturiAperti(v => !v)}
-                      style={{ textAlign: 'center', padding: '14px 0', color: '#34508a', fontSize: 13, fontWeight: 600, background: '#eef1f8', borderRadius: 10, border: '1px dashed #c3cde3', cursor: 'pointer' }}
+                      style={{ textAlign: 'center', padding: '14px 0', color: 'var(--primary-ink)', fontSize: 13, fontWeight: 600, background: 'var(--primary-soft)', borderRadius: 10, border: '1px dashed #c3cde3', cursor: 'pointer' }}
                     >
                       📅 {daFareFuturi.length} task futuri — {futuriAperti ? 'nascondi ▲' : 'mostra ▼'}
                     </div>
@@ -440,7 +440,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
               </>
             ) : (
               col.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '36px 0', color: '#c9d1e0', fontSize: 13, background: '#f6f8fc', borderRadius: 10, border: '1px dashed #dfe5ef' }}>
+                <div style={{ textAlign: 'center', padding: '36px 0', color: '#c9d1e0', fontSize: 13, background: 'var(--surface-2)', borderRadius: 10, border: '1px dashed var(--line)' }}>
                   Nessun task
                 </div>
               ) : col.map(task => (
@@ -481,7 +481,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
             </div>
             {(!isCompletato || completatiAperti) && (
               <div style={{
-                background: '#f6f8fc', border: `1px solid ${stato.border}`, borderTop: 'none',
+                background: 'var(--surface-2)', border: `1px solid ${stato.border}`, borderTop: 'none',
                 borderRadius: '0 0 10px 10px', padding: 10,
                 display: 'flex', flexDirection: 'column', gap: 10, minHeight: 120,
               }}>
@@ -497,7 +497,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
                       <>
                         <div
                           onClick={() => setFuturiAperti(v => !v)}
-                          style={{ textAlign: 'center', padding: '10px 0', color: '#34508a', fontSize: 12, fontWeight: 600, background: '#eef1f8', borderRadius: 8, border: '1px dashed #c3cde3', cursor: 'pointer', userSelect: 'none' }}
+                          style={{ textAlign: 'center', padding: '10px 0', color: 'var(--primary-ink)', fontSize: 12, fontWeight: 600, background: 'var(--primary-soft)', borderRadius: 8, border: '1px dashed #c3cde3', cursor: 'pointer', userSelect: 'none' }}
                         >
                           📅 {daFareFuturi.length} task futuri {futuriAperti ? '▲' : '▼'}
                         </div>
@@ -551,12 +551,12 @@ function PlanningSettimanale({ tasks, operatori }) {
   /* ── NAV SETTIMANA (comune) ── */
   const NavSettimana = () => (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-      <button onClick={prevSettimana} style={{ padding: '7px 14px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>←</button>
-      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2540', flex: 1, textAlign: 'center', minWidth: 160 }}>
+      <button onClick={prevSettimana} style={{ padding: '7px 14px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>←</button>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', flex: 1, textAlign: 'center', minWidth: 160 }}>
         {lunedi.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })} – {giorni[6].toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}
       </div>
-      <button onClick={nextSettimana} style={{ padding: '7px 14px', border: '1px solid #dfe5ef', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>→</button>
-      <button onClick={oggiSettimana} style={{ padding: '7px 14px', border: '1px solid #2c3e66', borderRadius: 8, background: '#2c3e66', color: 'white', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Oggi</button>
+      <button onClick={nextSettimana} style={{ padding: '7px 14px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 700 }}>→</button>
+      <button onClick={oggiSettimana} style={{ padding: '7px 14px', border: '1px solid var(--primary)', borderRadius: 8, background: 'var(--primary)', color: 'white', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Oggi</button>
     </div>
   );
 
@@ -583,15 +583,15 @@ function PlanningSettimanale({ tasks, operatori }) {
                   flexShrink: 0, width: 46,
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
                   padding: '8px 4px 6px', borderRadius: 12,
-                  border: `2px solid ${isSelected ? '#2c3e66' : isOggi ? '#c3cde3' : '#dfe5ef'}`,
-                  background: isSelected ? '#2c3e66' : isOggi ? '#eef1f8' : 'white',
+                  border: `2px solid ${isSelected ? 'var(--primary)' : isOggi ? '#c3cde3' : 'var(--line)'}`,
+                  background: isSelected ? 'var(--primary)' : isOggi ? 'var(--primary-soft)' : 'white',
                   cursor: 'pointer',
                 }}
               >
-                <span style={{ fontSize: 10, fontWeight: 700, color: isSelected ? 'white' : isOggi ? '#2c3e66' : '#9aa7bf', textTransform: 'uppercase' }}>{GIORNI[i]}</span>
-                <span style={{ fontSize: 20, fontWeight: 800, color: isSelected ? 'white' : isOggi ? '#2c3e66' : '#1a2540', lineHeight: 1 }}>{g.getDate()}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: isSelected ? 'white' : isOggi ? 'var(--primary)' : 'var(--ink-muted)', textTransform: 'uppercase' }}>{GIORNI[i]}</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: isSelected ? 'white' : isOggi ? 'var(--primary)' : 'var(--ink)', lineHeight: 1 }}>{g.getDate()}</span>
                 {conta > 0 && (
-                  <span style={{ width: 16, height: 16, borderRadius: '50%', background: isSelected ? 'rgba(255,255,255,0.4)' : '#2c3e66', color: 'white', fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{conta}</span>
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', background: isSelected ? 'rgba(255,255,255,0.4)' : 'var(--primary)', color: 'white', fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{conta}</span>
                 )}
                 {conta === 0 && <span style={{ width: 16, height: 16 }} />}
               </button>
@@ -600,13 +600,13 @@ function PlanningSettimanale({ tasks, operatori }) {
         </div>
 
         {/* Intestazione giorno */}
-        <div style={{ fontSize: 15, fontWeight: 800, color: '#1a2540', marginBottom: 14 }}>
+        <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)', marginBottom: 14 }}>
           {GIORNI_EXT[giornoAttivo]} {fmt(isoDate(gSelezionato))}
         </div>
 
         {/* Task per operatore */}
         {tasksDelGiorno.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: '#c9d1e0', fontSize: 14, background: '#f6f8fc', borderRadius: 12, border: '1px dashed #dfe5ef' }}>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: '#c9d1e0', fontSize: 14, background: 'var(--surface-2)', borderRadius: 12, border: '1px dashed var(--line)' }}>
             Nessun task per questo giorno
           </div>
         ) : (
@@ -619,8 +619,8 @@ function PlanningSettimanale({ tasks, operatori }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                     <Avatar nome={op.nome} size={30} />
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1a2540' }}>{op.nome}</div>
-                      <div style={{ fontSize: 10, color: '#9aa7bf', textTransform: 'capitalize' }}>{op.ruolo}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>{op.nome}</div>
+                      <div style={{ fontSize: 10, color: 'var(--ink-muted)', textTransform: 'capitalize' }}>{op.ruolo}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingLeft: 38 }}>
@@ -638,10 +638,10 @@ function PlanningSettimanale({ tasks, operatori }) {
                               </span>
                             )}
                           </div>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: '#1a2540', marginBottom: t.aziendaNome ? 4 : 0 }}>{t.titolo}</div>
-                          {t.descrizione && <div style={{ fontSize: 11, color: '#5f6f8c', marginBottom: 4 }}>{t.descrizione}</div>}
-                          {t.aziendaNome && <div style={{ fontSize: 11, color: '#2c3e66', fontWeight: 600 }}>🏢 {t.aziendaNome}</div>}
-                          {scaduta && <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 700, marginTop: 4 }}>⚠️ Scaduto</div>}
+                          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', marginBottom: t.aziendaNome ? 4 : 0 }}>{t.titolo}</div>
+                          {t.descrizione && <div style={{ fontSize: 11, color: 'var(--ink-muted)', marginBottom: 4 }}>{t.descrizione}</div>}
+                          {t.aziendaNome && <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600 }}>🏢 {t.aziendaNome}</div>}
+                          {scaduta && <div style={{ fontSize: 10, color: 'var(--danger)', fontWeight: 700, marginTop: 4 }}>⚠️ Scaduto</div>}
                         </div>
                       );
                     })}
@@ -654,11 +654,11 @@ function PlanningSettimanale({ tasks, operatori }) {
             {tasksNonAssegnati(gSelezionato).map(t => {
               const p = PRIORITA.find(x => x.id === t.priorita) || PRIORITA[1];
               return (
-                <div key={t.id} style={{ background: '#f6f8fc', border: '1px solid #dfe5ef', borderRadius: 10, padding: '10px 12px' }}>
-                  <div style={{ fontSize: 10, color: '#9aa7bf', fontWeight: 700, marginBottom: 4, textTransform: 'uppercase' }}>Non assegnato</div>
+                <div key={t.id} style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 12px' }}>
+                  <div style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 700, marginBottom: 4, textTransform: 'uppercase' }}>Non assegnato</div>
                   <BadgePriorita priorita={t.priorita} />
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#45536f', marginTop: 4 }}>{t.titolo}</div>
-                  {t.aziendaNome && <div style={{ fontSize: 11, color: '#2c3e66', fontWeight: 600, marginTop: 2 }}>🏢 {t.aziendaNome}</div>}
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-muted)', marginTop: 4 }}>{t.titolo}</div>
+                  {t.aziendaNome && <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600, marginTop: 2 }}>🏢 {t.aziendaNome}</div>}
                 </div>
               );
             })}
@@ -676,7 +676,7 @@ function PlanningSettimanale({ tasks, operatori }) {
         <table style={{ borderCollapse: 'separate', borderSpacing: 0, width: '100%', minWidth: 700 }}>
           <thead>
             <tr>
-              <th style={{ width: 130, padding: '10px 12px', background: '#f6f8fc', border: '1px solid #dfe5ef', borderRadius: '8px 0 0 0', fontSize: 12, color: '#5f6f8c', textAlign: 'left', fontWeight: 700 }}>
+              <th style={{ width: 130, padding: '10px 12px', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '8px 0 0 0', fontSize: 12, color: 'var(--ink-muted)', textAlign: 'left', fontWeight: 700 }}>
                 Operatore
               </th>
               {giorni.map((g, i) => {
@@ -684,12 +684,12 @@ function PlanningSettimanale({ tasks, operatori }) {
                 return (
                   <th key={i} style={{
                     padding: '10px 6px', textAlign: 'center',
-                    background: isOggi ? '#eef1f8' : '#f6f8fc',
-                    border: '1px solid #dfe5ef', borderLeft: 'none',
+                    background: isOggi ? 'var(--primary-soft)' : 'var(--surface-2)',
+                    border: '1px solid var(--line)', borderLeft: 'none',
                     borderRadius: i === 6 ? '0 8px 0 0' : 0, minWidth: 110,
                   }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: isOggi ? '#2c3e66' : '#9aa7bf', textTransform: 'uppercase' }}>{GIORNI[i]}</div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: isOggi ? '#2c3e66' : '#1a2540' }}>{g.getDate()}</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: isOggi ? 'var(--primary)' : 'var(--ink-muted)', textTransform: 'uppercase' }}>{GIORNI[i]}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: isOggi ? 'var(--primary)' : 'var(--ink)' }}>{g.getDate()}</div>
                   </th>
                 );
               })}
@@ -698,12 +698,12 @@ function PlanningSettimanale({ tasks, operatori }) {
           <tbody>
             {operatori.map((op) => (
               <tr key={op.id}>
-                <td style={{ padding: '10px 12px', border: '1px solid #dfe5ef', borderTop: 'none', background: 'white', verticalAlign: 'top' }}>
+                <td style={{ padding: '10px 12px', border: '1px solid var(--line)', borderTop: 'none', background: 'white', verticalAlign: 'top' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Avatar nome={op.nome} size={28} />
                     <div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: '#1a2540' }}>{op.nome}</div>
-                      <div style={{ fontSize: 10, color: '#9aa7bf', textTransform: 'capitalize' }}>{op.ruolo}</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)' }}>{op.nome}</div>
+                      <div style={{ fontSize: 10, color: 'var(--ink-muted)', textTransform: 'capitalize' }}>{op.ruolo}</div>
                     </div>
                   </div>
                 </td>
@@ -711,14 +711,14 @@ function PlanningSettimanale({ tasks, operatori }) {
                   const cellTasks = tasksPerOp(op.id, g);
                   const isOggi = isoDate(g) === oggi;
                   return (
-                    <td key={gi} style={{ padding: 6, border: '1px solid #dfe5ef', borderTop: 'none', borderLeft: 'none', background: isOggi ? '#f6f8fc' : 'white', verticalAlign: 'top', minHeight: 60 }}>
+                    <td key={gi} style={{ padding: 6, border: '1px solid var(--line)', borderTop: 'none', borderLeft: 'none', background: isOggi ? 'var(--surface-2)' : 'white', verticalAlign: 'top', minHeight: 60 }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {cellTasks.map(t => {
                           const p = PRIORITA.find(x => x.id === t.priorita) || PRIORITA[1];
                           return (
                             <div key={t.id} style={{ background: p.bg, border: `1px solid ${p.border}`, borderRadius: 6, padding: '4px 7px', fontSize: 11, fontWeight: 600, color: p.color, lineHeight: 1.3 }}>
                               {t.titolo}
-                              {t.aziendaNome && <div style={{ fontSize: 10, fontWeight: 400, color: '#2c3e66', marginTop: 2 }}>🏢 {t.aziendaNome}</div>}
+                              {t.aziendaNome && <div style={{ fontSize: 10, fontWeight: 400, color: 'var(--primary)', marginTop: 2 }}>🏢 {t.aziendaNome}</div>}
                             </div>
                           );
                         })}
@@ -731,16 +731,16 @@ function PlanningSettimanale({ tasks, operatori }) {
 
             {tasks.some(t => !t.assegnatoA && t.scadenza) && (
               <tr>
-                <td style={{ padding: '10px 12px', border: '1px solid #dfe5ef', borderTop: 'none', background: '#fafafa' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#9aa7bf' }}>Non assegnati</div>
+                <td style={{ padding: '10px 12px', border: '1px solid var(--line)', borderTop: 'none', background: 'var(--surface-2)' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-muted)' }}>Non assegnati</div>
                 </td>
                 {giorni.map((g, gi) => {
                   const cellTasks = tasksNonAssegnati(g);
                   return (
-                    <td key={gi} style={{ padding: 6, border: '1px solid #dfe5ef', borderTop: 'none', borderLeft: 'none', background: '#fafafa', verticalAlign: 'top' }}>
+                    <td key={gi} style={{ padding: 6, border: '1px solid var(--line)', borderTop: 'none', borderLeft: 'none', background: 'var(--surface-2)', verticalAlign: 'top' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {cellTasks.map(t => (
-                          <div key={t.id} style={{ background: '#eef1f7', border: '1px solid #dfe5ef', borderRadius: 6, padding: '4px 7px', fontSize: 11, color: '#5f6f8c' }}>{t.titolo}</div>
+                          <div key={t.id} style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 6, padding: '4px 7px', fontSize: 11, color: 'var(--ink-muted)' }}>{t.titolo}</div>
                         ))}
                       </div>
                     </td>
@@ -751,7 +751,7 @@ function PlanningSettimanale({ tasks, operatori }) {
 
             {operatori.length === 0 && (
               <tr>
-                <td colSpan={8} style={{ textAlign: 'center', padding: 40, color: '#9aa7bf', border: '1px solid #dfe5ef', borderTop: 'none' }}>
+                <td colSpan={8} style={{ textAlign: 'center', padding: 40, color: 'var(--ink-muted)', border: '1px solid var(--line)', borderTop: 'none' }}>
                   Nessun operatore trovato
                 </td>
               </tr>
@@ -912,13 +912,13 @@ function PaginaPlanning({ operatori = [], userData }) {
       {/* ── HEADER ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: '#1a2540' }}>📋 Planning & Task</h2>
-          {!isMobile && <p style={{ margin: '4px 0 0', fontSize: 13, color: '#5f6f8c' }}>Organizza e monitora il lavoro degli operatori</p>}
+          <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: 'var(--ink)' }}>📋 Planning & Task</h2>
+          {!isMobile && <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-muted)' }}>Organizza e monitora il lavoro degli operatori</p>}
         </div>
         {(isAdmin || isOperatore) && (
           <button
             onClick={handleNew}
-            style={{ padding: isMobile ? '9px 16px' : '10px 20px', background: '#2c3e66', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
+            style={{ padding: isMobile ? '9px 16px' : '10px 20px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
           >
             + Nuovo Task
           </button>
@@ -928,12 +928,12 @@ function PaginaPlanning({ operatori = [], userData }) {
       {/* ── STATS ── */}
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 10 : 12, marginBottom: 20 }}>
         {[
-          { label: 'Da fare',    value: totDaFare,     color: '#45536f', bg: '#eef1f7', icon: '⬜' },
-          { label: 'In corso',   value: totInCorso,    color: '#d97706', bg: '#fef3c7', icon: '🟡' },
-          { label: 'Completati', value: totCompletati, color: '#059669', bg: '#f0fdf4', icon: '✅' },
-          { label: 'Scaduti',    value: totScaduti,    color: '#dc2626', bg: '#fef2f2', icon: '⚠️' },
+          { label: 'Da fare',    value: totDaFare,     color: 'var(--ink-muted)', bg: 'var(--surface-2)', icon: '⬜' },
+          { label: 'In corso',   value: totInCorso,    color: 'var(--warning)', bg: 'var(--warning-soft)', icon: '🟡' },
+          { label: 'Completati', value: totCompletati, color: 'var(--success)', bg: 'var(--success-soft)', icon: '✅' },
+          { label: 'Scaduti',    value: totScaduti,    color: 'var(--danger)', bg: 'var(--danger-soft)', icon: '⚠️' },
         ].map(s => (
-          <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.color}22`, borderRadius: 10, padding: isMobile ? '12px 14px' : '14px 16px' }}>
+          <div key={s.label} style={{ background: s.bg, border: '1px solid var(--line)', borderRadius: 10, padding: isMobile ? '12px 14px' : '14px 16px' }}>
             <div style={{ fontSize: isMobile ? 18 : 22, marginBottom: 2 }}>{s.icon}</div>
             <div style={{ fontSize: isMobile ? 22 : 26, fontWeight: 800, color: s.color }}>{s.value}</div>
             <div style={{ fontSize: 11, color: s.color, fontWeight: 600 }}>{s.label}</div>
@@ -956,8 +956,8 @@ function PaginaPlanning({ operatori = [], userData }) {
                 padding: isMobile ? '9px 8px' : '8px 18px',
                 borderRadius: 8, border: 'none', cursor: 'pointer',
                 fontSize: isMobile ? 12 : 13, fontWeight: 700,
-                background: vistaAttiva === v.id ? '#2c3e66' : '#eef1f7',
-                color: vistaAttiva === v.id ? 'white' : '#45536f',
+                background: vistaAttiva === v.id ? 'var(--primary)' : 'var(--surface-2)',
+                color: vistaAttiva === v.id ? 'white' : 'var(--ink-muted)',
               }}
             >{v.label}</button>
           ))}
@@ -967,7 +967,7 @@ function PaginaPlanning({ operatori = [], userData }) {
           <select
             value={filtroOp}
             onChange={e => setFiltroOp(e.target.value)}
-            style={{ width: isMobile ? '100%' : 'auto', padding: '7px 12px', border: '1px solid #dfe5ef', borderRadius: 8, fontSize: 13, background: 'white', color: '#374151', cursor: 'pointer' }}
+            style={{ width: isMobile ? '100%' : 'auto', padding: '7px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 13, background: 'white', color: 'var(--ink)', cursor: 'pointer' }}
           >
             <option value="">Tutti gli operatori</option>
             {operatori.map(op => <option key={op.id} value={op.id}>{op.nome}</option>)}

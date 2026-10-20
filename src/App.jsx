@@ -8,6 +8,7 @@ import Agenda from './components/Agenda';
 import Login from './components/Login';
 import GestioneUtenti from './components/GestioneUtenti';
 import ConfirmModal from './components/ConfirmModal';
+import Navigazione from './components/Navigazione';
 import { db, storage } from './firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {
@@ -825,6 +826,29 @@ function App({ session }) {
 
   const isAdmin = userData.ruolo === 'admin' || userData.ruolo === 'operatore';
 
+  const vociNav = isAdmin ? [
+    { id: 'dashboard', label: 'Home', icona: 'home' },
+    { id: 'agenda', label: 'Agenda', icona: 'agenda' },
+    { id: 'planning', label: 'Planning', icona: 'planning' },
+    { id: 'utenti', label: 'Utenti', icona: 'utenti' },
+    { id: 'preventivi', label: 'Preventivi', icona: 'preventivi' },
+    ...(userData.ruolo === 'admin' ? [{ id: 'contabilita', label: 'Contabilità', icona: 'contabilita' }] : []),
+    { id: 'listino', label: 'Listino', icona: 'listino' },
+    { id: 'impostazioni', label: 'Impostazioni', icona: 'impostazioni' },
+  ] : userData.ruolo === 'consulente' ? [
+    { id: 'agenda', label: 'Agenda', icona: 'agenda' },
+    { id: 'aziende', label: 'Aziende', icona: 'aziende' },
+    { id: 'preventivi', label: 'Preventivi', icona: 'preventivi' },
+  ] : userData.ruolo === 'azienda' ? [
+    { id: 'portale', label: PORTALE_ESTERNO.label, icona: 'portale', href: PORTALE_ESTERNO.url },
+  ] : [];
+
+  // Dalla scheda di un'azienda, una voce del menu riporta alla vista scelta
+  const handleVoceNav = id => {
+    if (isAdmin) setAziendaSelezionataId(null);
+    setVistaCorrente(id);
+  };
+
   return (
     <>
       <Toaster
@@ -832,7 +856,7 @@ function App({ session }) {
         toastOptions={{
           duration: 3000,
           style: {
-            background: '#0f172a',
+            background: 'var(--ink)',
             color: '#fff',
             borderRadius: '10px',
             fontSize: '14px'
@@ -849,136 +873,30 @@ function App({ session }) {
         />
       )}
 
+      <Navigazione
+        voci={vociNav}
+        attiva={isAdmin && aziendaSelezionata ? 'dashboard' : vistaCorrente}
+        onSeleziona={handleVoceNav}
+        userData={userData}
+        onLogout={logout}
+        isMobile={isMobile}
+        strumenti={isAdmin ? (
+          <>
+            <RicercaGlobale
+              aziende={aziendAttive}
+              appuntamenti={appuntamenti}
+              preventivi={preventivi}
+              onSelectAzienda={handleSelectAzienda}
+              onVistaChange={setVistaCorrente}
+            />
+            <PannelloNotifiche aziende={aziende} onNavigaAzienda={handleNavigaAzienda} />
+          </>
+        ) : null}
+        notificheCompatte={userData.ruolo === 'admin' ? (
+          <PannelloNotifiche aziende={aziende} compact={true} onNavigaAzienda={handleNavigaAzienda} />
+        ) : null}
+      >
       <div className="App">
-        {/* Header */}
-        {isMobile ? (
-          <div style={{ marginBottom: 20, paddingTop: 8 }}>
-            {/* Riga 1 mobile: notifiche a sinistra | utente+esci a destra */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-              {userData.ruolo === 'admin' ? (
-                <PannelloNotifiche aziende={aziende} compact={true} onNavigaAzienda={handleNavigaAzienda} />
-              ) : (
-                <div />
-              )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1e293b' }}>{userData.nome}</div>
-                  <div style={{ fontSize: 11, color: '#64748b', textTransform: 'capitalize' }}>
-                    {userData.ruolo === 'admin' ? 'Amministratore' : userData.ruolo === 'operatore' ? 'Operatore' : userData.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
-                  </div>
-                </div>
-                <button
-                  onClick={logout}
-                  style={{
-                    padding: '8px 10px',
-                    background: '#fee2e2',
-                    color: '#dc2626',
-                    border: '1px solid #fecaca',
-                    borderRadius: 8,
-                    cursor: 'pointer',
-                    fontSize: 13,
-                    fontWeight: 600
-                  }}
-                >
-                  Esci
-                </button>
-              </div>
-            </div>
-            {/* Riga 2 mobile: logo app */}
-            <div style={{ textAlign: 'center', marginBottom: 10 }}>
-              <img src="/logo-nsgroup-completo.jpeg" alt="NSGroup" style={{ display: 'block', width: '100%', maxWidth: 280, height: 'auto', margin: '0 auto', mixBlendMode: 'multiply' }} />
-{/*               <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b' }}>Gestione Sicurezza sul Lavoro</p>
- */}            </div>
-          </div>
-        ) : (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 30,
-            flexWrap: 'wrap',
-            gap: 15
-          }}>
-            <div>
-              <img src="/logo-nsgroup-completo.jpeg" alt="NSGroup" style={{ display: 'block', width: 300, maxWidth: '100%', height: 'auto', mixBlendMode: 'multiply' }} />
-             {/*  <p style={{ margin: '4px 0 0' }}>Gestione Sicurezza sul Lavoro</p> */}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-              {isAdmin && (
-                <RicercaGlobale
-                  aziende={aziendAttive}
-                  appuntamenti={appuntamenti}
-                  preventivi={preventivi}
-                  onSelectAzienda={handleSelectAzienda}
-                  onVistaChange={setVistaCorrente}
-                />
-              )}
-              {isAdmin && (
-                <PannelloNotifiche aziende={aziende} onNavigaAzienda={handleNavigaAzienda} />
-              )}
-              <div style={{ fontSize: 13, color: '#64748b', textAlign: 'right' }}>
-                <div style={{ fontWeight: 600, color: '#1e293b' }}>{userData.nome}</div>
-                <div style={{ textTransform: 'capitalize' }}>
-                  {userData.ruolo === 'admin' ? 'Amministratore' : userData.ruolo === 'operatore' ? 'Operatore' : userData.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
-                </div>
-              </div>
-              <button
-                onClick={logout}
-                style={{
-                  padding: '8px 16px',
-                  background: '#fee2e2',
-                  color: '#dc2626',
-                  border: '1px solid #fecaca',
-                  borderRadius: 8,
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600
-                }}
-              >
-                Esci
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Navigazione - Admin e Operatore */}
-        {isAdmin && !aziendaSelezionata && (
-          <div style={{
-            display: 'flex',
-            gap: 10,
-            marginBottom: 20,
-            flexWrap: 'wrap'
-          }}>
-            {[
-              { id: 'dashboard', label: '🏠 Home' },
-              { id: 'agenda', label: '📅 Agenda' },
-              { id: 'planning', label: '📋 Planning' },
-              { id: 'utenti', label: '👥 Utenti' },
-              { id: 'preventivi', label: '📄 Preventivi' },
-              ...(userData.ruolo === 'admin' ? [{ id: 'contabilita', label: '📒 Contabilità' }] : []),
-              { id: 'listino', label: '💰 Listino' },
-              { id: 'impostazioni', label: '⚙️ Impostazioni' },
-            ].map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => setVistaCorrente(id)}
-                style={{
-                  padding: '8px 20px',
-                  border: vistaCorrente === id ? 'none' : '1.5px solid #e2e8f0',
-                  borderRadius: 8,
-                  background: vistaCorrente === id ? '#6366f1' : '#fff',
-                  color: vistaCorrente === id ? '#fff' : '#475569',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                  fontWeight: 600
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        )}
-
         {/* ADMIN / OPERATORE - Vede tutto */}
         {isAdmin && !aziendaSelezionata && (
           <>
@@ -1118,31 +1036,6 @@ function App({ session }) {
         {/* CONSULENTE - Agenda + Preventivi */}
         {userData.ruolo === 'consulente' && (
           <div>
-            <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-              {[
-                { id: 'agenda', label: '📅 Agenda' },
-                { id: 'aziende', label: '🏢 Aziende' },
-                { id: 'preventivi', label: '📄 Preventivi' },
-              ].map(v => (
-                <button
-                  key={v.id}
-                  onClick={() => setVistaCorrente(v.id)}
-                  style={{
-                    padding: '10px 20px',
-                    borderRadius: 8,
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    fontSize: 14,
-                    background: vistaCorrente === v.id ? '#6366f1' : '#f1f5f9',
-                    color: vistaCorrente === v.id ? 'white' : '#64748b',
-                  }}
-                >
-                  {v.label}
-                </button>
-              ))}
-            </div>
-
             {vistaCorrente === 'agenda' && (
               <Agenda
                 appuntamenti={appuntamenti}
@@ -1217,18 +1110,6 @@ function App({ session }) {
         )}
 
         {/* AZIENDA - Solo visualizzazione propri dati */}
-        {userData.ruolo === 'azienda' && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-            <a
-              href={PORTALE_ESTERNO.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ padding: '9px 18px', background: '#2c3e66', color: 'white', borderRadius: 8, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}
-            >
-              🔗 {PORTALE_ESTERNO.label}
-            </a>
-          </div>
-        )}
         {userData.ruolo === 'azienda' && aziendaSelezionata && (
           <SchedaAzienda
             azienda={aziendaSelezionata}
@@ -1241,7 +1122,7 @@ function App({ session }) {
           />
         )}
         {userData.ruolo === 'azienda' && !aziendaSelezionata && (
-          <p style={{ textAlign: 'center', color: '#64748b', padding: 40 }}>
+          <p style={{ textAlign: 'center', color: 'var(--ink-muted)', padding: 40 }}>
             Nessun dato disponibile per la tua azienda. Contatta NS Consulting.
           </p>
         )}
@@ -1276,20 +1157,20 @@ function App({ session }) {
                 style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 560, maxHeight: isMobile ? '92vh' : '85vh', display: 'flex', flexDirection: 'column' }}>
 
                 {/* Header */}
-                <div style={{ padding: isMobile ? '14px 16px' : '16px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                <div style={{ padding: isMobile ? '14px 16px' : '16px 20px', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                   <div style={{ minWidth: 0, paddingRight: 8 }}>
                     <h3 style={{ margin: 0, fontSize: isMobile ? 15 : 17, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📋 {p.nomeCliente}</h3>
-                    <div style={{ fontSize: 12, color: '#64748b', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
+                    <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
                   </div>
                   <button onClick={() => setPreventivoDettaglio(null)}
-                    style={{ border: 'none', background: '#f1f5f9', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#64748b', flexShrink: 0 }}>✕</button>
+                    style={{ border: 'none', background: 'var(--surface-2)', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: 'var(--ink-muted)', flexShrink: 0 }}>✕</button>
                 </div>
 
                 {/* Body */}
                 <div style={{ overflowY: 'auto', padding: isMobile ? 14 : 20, flex: 1 }}>
 
                   {/* Info generali */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16, padding: 12, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16, padding: 12, background: 'var(--surface-2)', borderRadius: 8, border: '1px solid var(--line)' }}>
                     {[
                       ['Data', p.data ? new Date(p.data + 'T12:00:00').toLocaleDateString('it-IT') : '—'],
                       ['Consulente', p.consulente || '—'],
@@ -1297,8 +1178,8 @@ function App({ session }) {
                       ['Creato il', p.dataCreazione ? new Date(p.dataCreazione).toLocaleDateString('it-IT') : '—'],
                     ].map(([label, value]) => (
                       <div key={label}>
-                        <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>{label}</div>
-                        <div style={{ fontSize: isMobile ? 13 : 14, fontWeight: 600, color: '#1e293b' }}>{value}</div>
+                        <div style={{ fontSize: 11, color: 'var(--ink-muted)', marginBottom: 2 }}>{label}</div>
+                        <div style={{ fontSize: isMobile ? 13 : 14, fontWeight: 600, color: 'var(--ink)' }}>{value}</div>
                       </div>
                     ))}
                   </div>
@@ -1306,7 +1187,7 @@ function App({ session }) {
                   {/* Servizi */}
                   {serviziAttivi.length > 0 && (
                     <div style={{ marginBottom: 16 }}>
-                      <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>📋 Servizi</h4>
+                      <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>📋 Servizi</h4>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {serviziAttivi.map(s => {
                           const qty = parseFloat(s.quantita) || 0;
@@ -1314,16 +1195,16 @@ function App({ session }) {
                           const tot = s.omaggio ? 0 : qty * pu;
                           const hasDip = (s.dipendenti || []).some(d => d.nome?.trim());
                           return (
-                            <div key={s.id} style={{ background: hasDip ? '#f0f9ff' : '#f8fafc', border: `1px solid ${hasDip ? '#bae6fd' : '#e2e8f0'}`, borderRadius: 8, padding: '10px 12px' }}>
+                            <div key={s.id} style={{ background: hasDip ? '#f0f9ff' : 'var(--surface-2)', border: `1px solid ${hasDip ? '#bae6fd' : 'var(--line)'}`, borderRadius: 8, padding: '10px 12px' }}>
                               {/* Riga descrizione + totale */}
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: hasDip || isMobile ? 6 : 0 }}>
-                                <span style={{ fontSize: 13, color: hasDip ? '#0369a1' : '#1e293b', fontWeight: 600, flex: 1 }}>{s.descrizione}</span>
-                                <span style={{ fontSize: 14, color: '#059669', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                                <span style={{ fontSize: 13, color: hasDip ? '#0369a1' : 'var(--ink)', fontWeight: 600, flex: 1 }}>{s.descrizione}</span>
+                                <span style={{ fontSize: 14, color: 'var(--success)', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
                                   {s.omaggio ? 'OMAGGIO' : `€ ${tot.toFixed(2)}`}
                                 </span>
                               </div>
                               {/* Riga qtà + prezzo unit */}
-                              <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#64748b' }}>
+                              <div style={{ display: 'flex', gap: 12, fontSize: 12, color: 'var(--ink-muted)' }}>
                                 <span>× {s.quantita}</span>
                                 <span>{s.omaggio ? 'Gratuito' : `€ ${pu.toFixed(2)} / cad.`}</span>
                               </div>
@@ -1338,64 +1219,64 @@ function App({ session }) {
                           );
                         })}
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginTop: 10, paddingTop: 10, borderTop: '2px solid #e2e8f0' }}>
-                        <span style={{ fontSize: 13, color: '#475569', fontWeight: 600 }}>Totale:</span>
-                        <span style={{ fontSize: 17, color: '#059669', fontWeight: 800 }}>€ {p.totale?.toFixed(2) || '0.00'}</span>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginTop: 10, paddingTop: 10, borderTop: '2px solid var(--line)' }}>
+                        <span style={{ fontSize: 13, color: 'var(--ink-muted)', fontWeight: 600 }}>Totale:</span>
+                        <span style={{ fontSize: 17, color: 'var(--success)', fontWeight: 800 }}>€ {p.totale?.toFixed(2) || '0.00'}</span>
                       </div>
                     </div>
                   )}
 
                   {p.motivazioneModifica && (
-                    <div style={{ marginBottom: 16, padding: 12, background: '#fef9c3', borderRadius: 8, border: '1px solid #fde68a' }}>
-                      <div style={{ fontSize: 12, color: '#92400e', fontWeight: 600, marginBottom: 4 }}>📝 Motivazione modifica</div>
-                      <div style={{ fontSize: 13, color: '#78350f' }}>{p.motivazioneModifica}</div>
+                    <div style={{ marginBottom: 16, padding: 12, background: 'var(--warning-soft)', borderRadius: 8, border: '1px solid #fde68a' }}>
+                      <div style={{ fontSize: 12, color: 'var(--warning)', fontWeight: 600, marginBottom: 4 }}>📝 Motivazione modifica</div>
+                      <div style={{ fontSize: 13, color: 'var(--warning)' }}>{p.motivazioneModifica}</div>
                     </div>
                   )}
 
                   {/* Pagamenti */}
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                      <h4 style={{ margin: 0, fontSize: 13, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>💳 Pagamenti ricevuti</h4>
+                      <h4 style={{ margin: 0, fontSize: 13, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>💳 Pagamenti ricevuti</h4>
                       <button onClick={() => { setPreventivoDettaglio(null); setPreventivoPerPagamento(p); }}
-                        style={{ padding: '5px 12px', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                        style={{ padding: '5px 12px', background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #86efac', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                         + Aggiungi
                       </button>
                     </div>
                     {pagamenti.length === 0 ? (
-                      <p style={{ color: '#94a3b8', fontSize: 13, textAlign: 'center', padding: '12px 0' }}>Nessun pagamento registrato</p>
+                      <p style={{ color: 'var(--ink-muted)', fontSize: 13, textAlign: 'center', padding: '12px 0' }}>Nessun pagamento registrato</p>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {pagamenti.map((pg, i) => (
-                          <div key={pg.id || i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8 }}>
+                          <div key={pg.id || i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: 'var(--success-soft)', border: '1px solid #bbf7d0', borderRadius: 8 }}>
                             <div>
-                              <div style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>€ {parseFloat(pg.importo).toFixed(2)}</div>
-                              <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)' }}>€ {parseFloat(pg.importo).toFixed(2)}</div>
+                              <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2 }}>
                                 {pg.data ? new Date(pg.data + 'T12:00:00').toLocaleDateString('it-IT') : '—'}
                                 {pg.metodoPagamento ? ` · ${pg.metodoPagamento}` : ''}
                                 {pg.numeroFattura ? ` · ${pg.numeroFattura}` : ''}
                               </div>
-                              {pg.descrizione && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 1 }}>{pg.descrizione}</div>}
+                              {pg.descrizione && <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 1 }}>{pg.descrizione}</div>}
                             </div>
                             {pg.pdfUrl && (
                               <a href={pg.pdfUrl} target="_blank" rel="noreferrer"
-                                style={{ fontSize: 12, color: '#6366f1', fontWeight: 600, textDecoration: 'none', flexShrink: 0 }}>📄 Doc</a>
+                                style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', flexShrink: 0 }}>📄 Doc</a>
                             )}
                           </div>
                         ))}
                       </div>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, paddingTop: 10, borderTop: '2px solid #e2e8f0' }}>
-                      <div style={{ fontSize: 13, color: '#059669', fontWeight: 700 }}>Pagato: € {pagato.toFixed(2)}</div>
-                      <div style={{ fontSize: 13, color: residuo > 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, paddingTop: 10, borderTop: '2px solid var(--line)' }}>
+                      <div style={{ fontSize: 13, color: 'var(--success)', fontWeight: 700 }}>Pagato: € {pagato.toFixed(2)}</div>
+                      <div style={{ fontSize: 13, color: residuo > 0 ? 'var(--danger)' : 'var(--success)', fontWeight: 700 }}>
                         {residuo > 0 ? `Residuo: € ${residuo.toFixed(2)}` : '✔ Saldato'}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div style={{ padding: isMobile ? '12px 16px' : '12px 20px', borderTop: '1px solid #e2e8f0', flexShrink: 0 }}>
+                <div style={{ padding: isMobile ? '12px 16px' : '12px 20px', borderTop: '1px solid var(--line)', flexShrink: 0 }}>
                   <button onClick={() => setPreventivoDettaglio(null)}
-                    style={{ width: isMobile ? '100%' : 'auto', float: isMobile ? 'none' : 'right', padding: '11px 20px', border: '1px solid #e2e8f0', borderRadius: 10, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                    style={{ width: isMobile ? '100%' : 'auto', float: isMobile ? 'none' : 'right', padding: '11px 20px', border: '1px solid var(--line)', borderRadius: 10, background: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                     Chiudi
                   </button>
                 </div>
@@ -1408,7 +1289,7 @@ function App({ session }) {
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 20 }}>
             <div style={{ background: 'white', borderRadius: 12, padding: 24, width: '100%', maxWidth: 420 }}>
               <h3 style={{ margin: '0 0 8px', fontSize: 16 }}>✏️ Motivazione modifica</h3>
-              <p style={{ margin: '0 0 14px', fontSize: 13, color: '#64748b' }}>
+              <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--ink-muted)' }}>
                 Stai modificando il preventivo di <strong>{preventivoPerModifica?.nomeCliente}</strong>.<br />
                 Inserisci la motivazione della modifica.
               </p>
@@ -1418,12 +1299,12 @@ function App({ session }) {
                 rows={3}
                 placeholder="Es. Aggiornamento prezzi, correzione servizi richiesti..."
                 autoFocus
-                style={{ width: '100%', padding: 10, border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: 10, border: '1px solid var(--line)', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}
               />
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 16 }}>
                 <button
                   onClick={() => { setMostraPromptMotivazione(false); setPreventivoPerModifica(null); setMotivazioneTemp(''); }}
-                  style={{ padding: '9px 18px', border: '1px solid #e2e8f0', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
+                  style={{ padding: '9px 18px', border: '1px solid var(--line)', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: 14 }}
                 >
                   Annulla
                 </button>
@@ -1435,7 +1316,7 @@ function App({ session }) {
                     setMostraModalePreventivo(true);
                     setMostraPromptMotivazione(false);
                   }}
-                  style={{ padding: '9px 18px', border: 'none', borderRadius: 8, background: '#6366f1', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                  style={{ padding: '9px 18px', border: 'none', borderRadius: 8, background: 'var(--primary)', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
                 >
                   Continua →
                 </button>
@@ -1444,6 +1325,7 @@ function App({ session }) {
           </div>
         )}
       </div>
+      </Navigazione>
     </>
   );
 }
