@@ -3,6 +3,7 @@ import ModaleControllo from './ModaleControllo';
 import toast from 'react-hot-toast';
 import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import BadgeStato, { statoScadenza } from './BadgeStato';
 
 function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo, readOnly }) {
   const [mostraModaleControllo, setMostraModaleControllo] = useState(false);
@@ -17,13 +18,8 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
   };
 
   const getStatoScadenza = (scadenza, completato) => {
-    if (completato) return { label: 'COMPLETATO', color: 'var(--navy-900)', bg: 'var(--primary-soft)' };
-    const oggi = new Date();
-    const dataScadenza = new Date(scadenza);
-    const diff = Math.ceil((dataScadenza - oggi) / (1000 * 60 * 60 * 24));
-    if (diff < 0) return { label: 'SCADUTO', color: 'var(--danger)', bg: 'var(--danger-soft)' };
-    if (diff <= 7) return { label: 'URGENTE', color: 'var(--warning)', bg: 'var(--warning-soft)' };
-    return { label: 'OK', color: 'var(--success)', bg: 'var(--success-soft)' };
+    if (completato) return { tipo: 'brand', testo: 'Completato' };
+    return statoScadenza(scadenza, 7) || { tipo: 'neutral', testo: 'Senza data' };
   };
 
   const uploadFileControllo = async (file, aziendaId) => {
@@ -156,18 +152,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
                 )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                <span
-                  style={{
-                    background: stato.bg,
-                    color: stato.color,
-                    padding: '5px 12px',
-                    borderRadius: '12px',
-                    fontSize: '11px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {stato.label}
-                </span>
+                <BadgeStato tipo={stato.tipo}>{stato.testo}</BadgeStato>
                 {!readOnly && (
                   <>
                     <button

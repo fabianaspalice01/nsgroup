@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import toast from 'react-hot-toast';
+import BadgeStato from './BadgeStato';
 
 function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda, onImportAziende, onArchiviaAzienda, onRipristinaAzienda, ricerca = '', onRicerca = null, isMobile = false }) {
   const [mostraAnteprima, setMostraAnteprima] = useState(false);
@@ -197,19 +198,19 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
       if (diff < 0) hasScaduti = true;
       else if (diff <= 7) hasUrgenti = true;
     });
-    const borderColor = archiviata ? 'var(--line)' : hasScaduti ? '#fca5a5' : hasUrgenti ? '#fcd34d' : 'var(--line)';
-
     return (
       <div
         style={{
-          background: archiviata ? 'var(--surface-2)' : 'white',
-          padding: '18px', borderRadius: '12px',
-          border: `2px solid ${borderColor}`,
+          background: archiviata ? 'var(--surface-2)' : 'var(--surface)',
+          padding: '18px', borderRadius: 'var(--radius-lg)',
+          border: '1px solid var(--line)',
+          boxShadow: archiviata ? 'none' : 'var(--shadow-card)',
           opacity: archiviata ? 0.7 : 1,
           display: 'flex', gap: 12, alignItems: 'flex-start',
+          transition: 'box-shadow .15s, border-color .15s',
         }}
-        onMouseEnter={e => !archiviata && (e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)')}
-        onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+        onMouseEnter={e => { if (!archiviata) { e.currentTarget.style.boxShadow = 'var(--shadow-pop)'; e.currentTarget.style.borderColor = 'var(--line-strong)'; } }}
+        onMouseLeave={e => { e.currentTarget.style.boxShadow = archiviata ? 'none' : 'var(--shadow-card)'; e.currentTarget.style.borderColor = 'var(--line)'; }}
       >
         <div style={{ flex: 1, cursor: archiviata ? 'default' : 'pointer', minWidth: 0 }} onClick={() => !archiviata && onSelectAzienda(az)}>
           <h3 style={{ marginBottom: 5, wordBreak: 'break-word' }}>{az.nome}</h3>
@@ -219,9 +220,9 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
           )}
           <div style={{ fontSize: 13, color: 'var(--ink-muted)', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
             <span>{(az.controlli || []).length} controlli</span>
-            {!archiviata && hasScaduti && <span style={{ background: 'var(--danger-soft)', color: 'var(--danger)', padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 'bold' }}>SCADUTO</span>}
-            {!archiviata && !hasScaduti && hasUrgenti && <span style={{ background: 'var(--warning-soft)', color: 'var(--warning)', padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 'bold' }}>URGENTE</span>}
-            {archiviata && <span style={{ background: 'var(--surface-2)', color: 'var(--ink-muted)', padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 'bold' }}>ARCHIVIATA</span>}
+            {!archiviata && hasScaduti && <BadgeStato tipo="danger">Controlli scaduti</BadgeStato>}
+            {!archiviata && !hasScaduti && hasUrgenti && <BadgeStato tipo="warn">In scadenza</BadgeStato>}
+            {archiviata && <BadgeStato tipo="neutral">Archiviata</BadgeStato>}
           </div>
         </div>
 

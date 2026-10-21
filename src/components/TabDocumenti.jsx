@@ -5,6 +5,7 @@ import { CARTELLE_DOCUMENTI, cartellaDocumento } from '../utils/cartelleDocument
 import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import toast from 'react-hot-toast';
+import BadgeStato, { statoScadenza } from './BadgeStato';
 
 function VisualiizzatorePdf({ pdfUrl, nome, onClose }) {
   return (
@@ -219,19 +220,17 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
           marginBottom: '30px'
         }}>
           {documentiCartella.map((documento) => {
-            const oggi = new Date();
-            const scadenza = documento.dataScadenza ? new Date(documento.dataScadenza) : null;
-            const isScaduto = scadenza && scadenza < oggi;
-            const isUrgente = scadenza && !isScaduto && Math.ceil((scadenza - oggi) / (1000 * 60 * 60 * 24)) <= 30;
+            const stato = statoScadenza(documento.dataScadenza);
 
             return (
               <div
                 key={documento.id}
                 style={{
-                  background: isScaduto ? 'var(--danger-soft)' : isUrgente ? 'var(--warning-soft)' : 'white',
+                  background: 'var(--surface)',
                   padding: '16px',
-                  borderRadius: '10px',
-                  border: `1px solid ${isScaduto ? '#fecaca' : isUrgente ? '#fde68a' : 'var(--line)'}`,
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1px solid var(--line)',
+                  boxShadow: 'var(--shadow-card)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px'
@@ -242,10 +241,9 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                   <div style={{ fontSize: '12px', color: 'var(--primary-ink)', fontWeight: '600', marginBottom: '8px' }}>{documento.tipo}</div>
 
                   {documento.dataScadenza && (
-                    <div style={{ fontSize: '12px', color: isScaduto ? 'var(--danger)' : isUrgente ? 'var(--warning)' : 'var(--ink-muted)', marginBottom: '4px' }}>
-                      📅 Scadenza: {formatData(documento.dataScadenza)}
-                      {isScaduto && ' ⚠️ SCADUTO'}
-                      {isUrgente && !isScaduto && ' ⏰ In scadenza'}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--ink-muted)', marginBottom: '6px' }}>
+                      <span>Scadenza: {formatData(documento.dataScadenza)}</span>
+                      <BadgeStato tipo={stato.tipo}>{stato.testo}</BadgeStato>
                     </div>
                   )}
 

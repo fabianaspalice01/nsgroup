@@ -6,6 +6,7 @@ import ModaleAttestato from './ModaleAttestato';
 import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import toast from 'react-hot-toast';
+import BadgeStato, { statoScadenza } from './BadgeStato';
 
 const COLONNE_MAPPA = {
   nome: ['nome', 'name', 'firstname', 'first name'],
@@ -349,28 +350,24 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {dipendente.attestati.map((attestato) => {
-                    const oggi = new Date();
-                    const scadenza = attestato.dataScadenza ? new Date(attestato.dataScadenza) : null;
-                    const isScaduto = scadenza && scadenza < oggi;
-                    const isUrgente = scadenza && !isScaduto && Math.ceil((scadenza - oggi) / (1000 * 60 * 60 * 24)) <= 30;
+                    const stato = statoScadenza(attestato.dataScadenza);
 
                     return (
                       <div
                         key={attestato.id}
                         style={{
-                          background: isScaduto ? 'var(--danger-soft)' : isUrgente ? 'var(--warning-soft)' : 'var(--surface-2)',
-                          padding: '10px', borderRadius: '6px',
-                          border: `1px solid ${isScaduto ? '#fecaca' : isUrgente ? '#fde68a' : 'var(--line)'}`,
-                          display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                          background: 'var(--surface-2)',
+                          padding: '10px 12px', borderRadius: 'var(--radius-md)',
+                          border: '1px solid var(--line)',
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px'
                         }}
                       >
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--ink)', marginBottom: '3px' }}>{attestato.nome}</div>
-                          {attestato.dataScadenza && (
-                            <div style={{ fontSize: '11px', color: isScaduto ? 'var(--danger)' : isUrgente ? 'var(--warning)' : 'var(--ink-muted)' }}>
-                              Scadenza: {formatData(attestato.dataScadenza)}
-                              {isScaduto && ' ⚠️ SCADUTO'}
-                              {isUrgente && !isScaduto && ' ⏰ In scadenza'}
+                          {stato && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--ink-muted)' }}>
+                              <span>Scadenza: {formatData(attestato.dataScadenza)}</span>
+                              <BadgeStato tipo={stato.tipo}>{stato.testo}</BadgeStato>
                             </div>
                           )}
                           {attestato.numeroAttestato && <div style={{ fontSize: '11px', color: 'var(--ink-muted)' }}>N° {attestato.numeroAttestato}</div>}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, onSnapshot, orderBy, query, updateDoc, doc, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase';
+import BadgeStato from './BadgeStato';
 
 const STORAGE_KEY = 'nsgroup:notifiche_ignorate';
 
@@ -57,7 +58,7 @@ function BlocoScadenze({ notifiche, notificheFiltrate, filtroAttivo, setFiltroAt
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        ⏰ Scadenze {filtroAttivo && (
+        Scadenze {filtroAttivo && (
           <span style={{ textTransform: 'none', fontWeight: 400, color: 'var(--ink-muted)' }}>
             — filtro attivo · <button onClick={() => setFiltroAttivo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', fontSize: 12, padding: 0, fontWeight: 600 }}>Mostra tutte</button>
           </span>
@@ -89,10 +90,10 @@ function BlocoScadenze({ notifiche, notificheFiltrate, filtroAttivo, setFiltroAt
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                  <span style={{ fontSize: 18 }}>{getIcona(notifica.tipo)}</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: colore.text, marginBottom: 2 }}>
-                      {notifica.categoria} - {notifica.azienda}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                      {getIcona(notifica.tipo)}
+                      <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)' }}>{notifica.categoria} · {notifica.azienda}</span>
                     </div>
                     <div style={{ fontSize: 13, color: 'var(--ink)', marginBottom: 4 }}>
                       {notifica.descrizione}
@@ -311,16 +312,13 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
   };
 
   const getIcona = (tipo) => {
-    if (tipo === 'scaduto') return '🔴';
-    if (tipo === 'urgente') return '🟡';
-    return '🔵';
+    if (tipo === 'scaduto') return <BadgeStato tipo="danger">Scaduto</BadgeStato>;
+    if (tipo === 'urgente') return <BadgeStato tipo="warn">In scadenza</BadgeStato>;
+    return <BadgeStato tipo="brand" icona={false}>Promemoria</BadgeStato>;
   };
 
-  const getColore = (tipo) => {
-    if (tipo === 'scaduto') return { bg: 'var(--danger-soft)', border: '#fecaca', text: 'var(--danger)' };
-    if (tipo === 'urgente') return { bg: 'var(--warning-soft)', border: '#fde68a', text: 'var(--warning)' };
-    return { bg: 'var(--primary-soft)', border: 'var(--line)', text: 'var(--primary-ink)' };
-  };
+  // Le card restano neutre: lo stato lo dice il badge
+  const getColore = () => ({ bg: 'var(--surface)', border: 'var(--line)', text: 'var(--ink-muted)' });
 
   const [filtroAttivo, setFiltroAttivo] = useState(null);
 
@@ -441,17 +439,17 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
                     color: 'var(--danger)', fontWeight: 600, background: filtroAttivo === 'scaduto' ? '#fecaca' : 'var(--danger-soft)',
                     border: `1px solid ${filtroAttivo === 'scaduto' ? 'var(--danger)' : '#fecaca'}`,
                     borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontSize: 13
-                  }}>🔴 {scaduti} scadut{scaduti === 1 ? 'o' : 'i'}</button>
+                  }}>{scaduti} scadut{scaduti === 1 ? 'o' : 'i'}</button>
                 )}
                 {urgenti > 0 && (
                   <button onClick={() => toggleFiltro('urgente')} style={{
                     color: 'var(--warning)', fontWeight: 600, background: filtroAttivo === 'urgente' ? '#fde68a' : 'var(--warning-soft)',
                     border: `1px solid ${filtroAttivo === 'urgente' ? 'var(--warning)' : '#fde68a'}`,
                     borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontSize: 13
-                  }}>🟡 {urgenti} urgent{urgenti === 1 ? 'e' : 'i'}</button>
+                  }}>{urgenti} in scadenza</button>
                 )}
-                {nonLette > 0 && <span style={{ color: 'var(--primary)', fontWeight: 600, padding: '3px 0' }}>🔵 {nonLette} attività</span>}
-                {totBadge === 0 && <span style={{ color: 'var(--success)', fontWeight: 600 }}>✅ Tutto ok!</span>}
+                {nonLette > 0 && <span style={{ color: 'var(--primary)', fontWeight: 600, padding: '3px 0' }}>{nonLette} attività</span>}
+                {totBadge === 0 && <BadgeStato tipo="ok">Tutto in regola</BadgeStato>}
               </div>
             </div>
 
@@ -459,7 +457,7 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
             <div style={{ flex: 1, overflowY: 'auto', padding: 12 }}>
               {notifiche.length === 0 && attivita.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: 40, color: 'var(--ink-muted)' }}>
-                  <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
+                  <div style={{ marginBottom: 12 }}><BadgeStato tipo="ok">Tutto in regola</BadgeStato></div>
                   <div style={{ fontSize: 16, fontWeight: 600 }}>Nessuna scadenza imminente</div>
                   <div style={{ fontSize: 13, marginTop: 4 }}>Tutti i documenti sono in regola</div>
                 </div>
