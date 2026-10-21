@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import toast from "react-hot-toast";
+import Icona from './Icona';
 
 function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, aziende, consulenti = [], userRole = 'admin' }) {
     const defaultForm = {
@@ -186,7 +187,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
             style={{
                 position: 'fixed',
                 inset: 0,
-                background: 'rgba(0,0,0,0.4)',
+                background: 'var(--overlay)',
                 backdropFilter: 'blur(4px)',
                 display: 'flex',
                 alignItems: 'center',
@@ -203,7 +204,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                     width: '90%',
                     maxWidth: '600px',
                     maxHeight: '90vh',
-                    overflowY: 'auto'
+                    overflowY: 'auto', boxShadow: 'var(--shadow-pop)'
                 }}
             >
                 <h2 style={{ marginBottom: '20px' }}>
@@ -232,7 +233,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                 fontWeight: '600'
                             }}
                         >
-                            🏢 Cliente Registrato
+                            <Icona nome="aziende" testo />Cliente Registrato
                         </button>
                         <button
                             type="button"
@@ -250,7 +251,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                 fontWeight: '600'
                             }}
                         >
-                            ✨ Nuovo Cliente
+                            <Icona nome="piu" testo />Nuovo Cliente
                         </button>
                     </div>
                 </div>
@@ -268,8 +269,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                             style={{
                                 width: '100%',
                                 padding: '8px',
-                                border: '1px solid var(--line)',
-                                borderRadius: '6px',
+                                border: '1px solid var(--line-strong)',
+                                borderRadius: 'var(--radius-sm)',
                                 fontSize: '14px',
                                 background: 'white'
                             }}
@@ -280,7 +281,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         </select>
                         {aziendaSelezionata && (
                             <p style={{ fontSize: '12px', color: 'var(--ink-muted)', marginTop: '4px' }}>
-                                📍 {aziendaSelezionata.indirizzo} • 📞 {aziendaSelezionata.telefono}
+                                <Icona nome="luogo" testo />{aziendaSelezionata.indirizzo} • <Icona nome="telefono" testo />{aziendaSelezionata.telefono}
                             </p>
                         )}
                     </div>
@@ -312,8 +313,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                 style={{
                                     width: '100%',
                                     padding: '8px',
-                                    border: '1px solid var(--line)',
-                                    borderRadius: '6px',
+                                    border: '1px solid var(--line-strong)',
+                                    borderRadius: 'var(--radius-sm)',
                                     fontSize: '14px'
                                 }}
                             />
@@ -332,8 +333,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                 style={{
                                     width: '100%',
                                     padding: '8px',
-                                    border: '1px solid var(--line)',
-                                    borderRadius: '6px',
+                                    border: '1px solid var(--line-strong)',
+                                    borderRadius: 'var(--radius-sm)',
                                     fontSize: '14px'
                                 }}
                             />
@@ -352,8 +353,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                 style={{
                                     width: '100%',
                                     padding: '8px',
-                                    border: '1px solid var(--line)',
-                                    borderRadius: '6px',
+                                    border: '1px solid var(--line-strong)',
+                                    borderRadius: 'var(--radius-sm)',
                                     fontSize: '14px'
                                 }}
                             />
@@ -372,8 +373,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                 style={{
                                     width: '100%',
                                     padding: '8px',
-                                    border: '1px solid var(--line)',
-                                    borderRadius: '6px',
+                                    border: '1px solid var(--line-strong)',
+                                    borderRadius: 'var(--radius-sm)',
                                     fontSize: '14px'
                                 }}
                             />
@@ -398,8 +399,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                             style={{
                                 width: '100%',
                                 padding: '8px',
-                                border: '1px solid var(--line)',
-                                borderRadius: '6px',
+                                border: '1px solid var(--line-strong)',
+                                borderRadius: 'var(--radius-sm)',
                                 fontSize: '14px'
                             }}
                         />
@@ -416,8 +417,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                             style={{
                                 width: '100%',
                                 padding: '8px',
-                                border: '1px solid var(--line)',
-                                borderRadius: '6px',
+                                border: '1px solid var(--line-strong)',
+                                borderRadius: 'var(--radius-sm)',
                                 fontSize: '14px'
                             }}
                         />
@@ -434,8 +435,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         style={{
                             width: '100%',
                             padding: '8px',
-                            border: '1px solid var(--line)',
-                            borderRadius: '6px',
+                            border: '1px solid var(--line-strong)',
+                            borderRadius: 'var(--radius-sm)',
                             fontSize: '14px',
                             background: 'white'
                         }}
@@ -461,8 +462,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         style={{
                             width: '100%',
                             padding: '8px',
-                            border: '1px solid var(--line)',
-                            borderRadius: '6px',
+                            border: '1px solid var(--line-strong)',
+                            borderRadius: 'var(--radius-sm)',
                             fontSize: '14px',
                             background: 'white'
                         }}
@@ -485,8 +486,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                 style={{
                                     flex: 1,
                                     padding: 8,
-                                    border: '1px solid var(--line)',
-                                    borderRadius: 6,
+                                    border: '1px solid var(--line-strong)',
+                                    borderRadius: 'var(--radius-sm)',
                                     fontSize: 13
                                 }}
                             />
@@ -522,8 +523,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         style={{
                             width: '100%',
                             padding: '8px',
-                            border: '1px solid var(--line)',
-                            borderRadius: '6px',
+                            border: '1px solid var(--line-strong)',
+                            borderRadius: 'var(--radius-sm)',
                             fontSize: '14px',
                             background: 'white'
                         }}
@@ -555,8 +556,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                             style={{
                                 width: '100%',
                                 padding: '8px',
-                                border: '1px solid #fde68a',
-                                borderRadius: '6px',
+                                border: '1px solid var(--line-strong)',
+                                borderRadius: 'var(--radius-sm)',
                                 fontSize: '14px',
                                 fontFamily: 'inherit',
                                 resize: 'vertical'
@@ -578,8 +579,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         style={{
                             width: '100%',
                             padding: '8px',
-                            border: '1px solid var(--line)',
-                            borderRadius: '6px',
+                            border: '1px solid var(--line-strong)',
+                            borderRadius: 'var(--radius-sm)',
                             fontSize: '14px',
                             background: 'white'
                         }}
@@ -603,8 +604,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                             style={{
                                 width: '100%',
                                 padding: '8px',
-                                border: '1px solid #fecaca',
-                                borderRadius: '6px',
+                                border: '1px solid var(--line-strong)',
+                                borderRadius: 'var(--radius-sm)',
                                 fontSize: '14px',
                                 fontFamily: 'inherit',
                                 resize: 'vertical'
@@ -625,8 +626,8 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         style={{
                             width: '100%',
                             padding: '8px',
-                            border: '1px solid var(--line)',
-                            borderRadius: '6px',
+                            border: '1px solid var(--line-strong)',
+                            borderRadius: 'var(--radius-sm)',
                             fontSize: '14px',
                             fontFamily: 'inherit',
                             resize: 'vertical'
@@ -644,7 +645,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                         padding: '15px'
                     }}>
                         <h4 style={{ margin: '0 0 12px', fontSize: '14px', color: 'var(--primary)', fontWeight: 'bold' }}>
-                            📋 Storico Modifiche
+                            <Icona nome="elenco" testo />Storico Modifiche
                         </h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {appuntamento.logModifiche.map((log, index) => (
@@ -671,7 +672,7 @@ function ModaleAppuntamento({ appuntamento, defaultValues, onClose, onSave, azie
                                             paddingLeft: '12px',
                                             borderLeft: '3px solid var(--primary-ink)'
                                         }}>
-                                            💬 Motivazione: {log.motivazione}
+                                            <Icona nome="messaggio" testo />Motivazione: {log.motivazione}
                                         </div>
                                     )}
                                 </div>

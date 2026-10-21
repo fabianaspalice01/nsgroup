@@ -6,10 +6,11 @@ import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import toast from 'react-hot-toast';
 import BadgeStato, { statoScadenza } from './BadgeStato';
+import Icona from './Icona';
 
 function VisualiizzatorePdf({ pdfUrl, nome, onClose }) {
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', zIndex: 1000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: '90%', maxWidth: 900, height: '90vh', display: 'flex', flexDirection: 'column', background: 'var(--ink)', borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', background: 'var(--ink)', color: 'white', flexShrink: 0 }}>
           <span style={{ fontWeight: 700, fontSize: 15 }}>{nome}</span>
@@ -150,7 +151,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap', gap: 12 }}>
-        <h3>📁 Documenti Azienda ({(azienda.documenti || []).length})</h3>
+        <h3><Icona nome="cartella" testo />Documenti Azienda ({(azienda.documenti || []).length})</h3>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
         {canDownload && documentiScaricabili.length > 0 && (
           <button
@@ -202,7 +203,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                 fontWeight: 600
               }}
             >
-              {attiva ? '📂' : '📁'} {cartella.label} ({numero})
+              {attiva ? <Icona nome="cartella" /> : <Icona nome="cartella" />} {cartella.label} ({numero})
             </button>
           );
         })}
@@ -273,7 +274,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                         textAlign: 'center'
                       }}
                     >
-                      📄 Visualizza
+                      <Icona nome="documento" testo />Visualizza
                     </button>
                   )}
                   {documento.pdfUrl && canDownload && (
@@ -294,7 +295,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                         textAlign: 'center'
                       }}
                     >
-                      ⬇️ Scarica
+                      <Icona nome="scarica" testo />Scarica
                     </a>
                   )}
                   {!readOnly && (
@@ -303,7 +304,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                       onChange={(e) => handleSpostaDocumento(documento.id, e.target.value)}
                       aria-label="Sposta in cartella"
                       title="Sposta in cartella"
-                      style={{ border: '1px solid var(--line)', borderRadius: '6px', padding: '6px 8px', fontSize: '12px', color: 'var(--ink-muted)', background: 'white', cursor: 'pointer' }}
+                      style={{ border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', padding: '6px 8px', fontSize: '12px', color: 'var(--ink-muted)', background: 'white', cursor: 'pointer' }}
                     >
                       {CARTELLE_DOCUMENTI.map((c) => (
                         <option key={c.id} value={c.id}>{c.label}</option>
@@ -324,7 +325,7 @@ function TabDocumenti({ azienda, onUpdateAzienda, readOnly, canDownload = false 
                         fontWeight: 'bold'
                       }}
                     >
-                      🗑️
+                      <Icona nome="cestino" />
                     </button>
                   )}
                 </div>

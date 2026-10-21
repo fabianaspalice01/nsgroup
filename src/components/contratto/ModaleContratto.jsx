@@ -6,12 +6,13 @@ import { AREE, TUTTE_LE_VOCI, vociDaPreventivo } from './vociContratto';
 import { generaPdfContratto } from './pdfContratto';
 import SelettoreSocieta from '../SelettoreSocieta';
 import { societaDi } from '../../utils/societa';
+import Icona from '../Icona';
 
 const oggi = () => new Date().toISOString().split('T')[0];
 const num = (v) => { const n = parseFloat(String(v ?? '').replace(/\./g, '').replace(',', '.')); return Number.isFinite(n) ? n : 0; };
 const eur = (v) => (Number(v) || 0).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const stileInput = { width: '100%', padding: '8px 10px', border: '1px solid var(--line)', borderRadius: 7, fontSize: 13, boxSizing: 'border-box' };
+const stileInput = { width: '100%', padding: '8px 10px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 13, boxSizing: 'border-box' };
 const stileLabel = { display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--ink-muted)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' };
 
 function clienteDaAzienda(az) {
@@ -140,10 +141,10 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
   const griglia = { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 1000, padding: isMobile ? 0 : 20 }}>
-      <div style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 900, maxHeight: isMobile ? '96vh' : '92vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 1000, padding: isMobile ? 0 : 20 }}>
+      <div style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 900, maxHeight: isMobile ? '96vh' : '92vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-pop)' }}>
         <div style={{ padding: isMobile ? '14px 14px 10px' : '16px 20px', borderBottom: '1px solid var(--line)' }}>
-          <h2 style={{ margin: '0 0 12px', fontSize: isMobile ? 16 : 18 }}>{isEdit ? '✏️ Modifica contratto' : '📝 Nuovo contratto di consulenza'}</h2>
+          <h2 style={{ margin: '0 0 12px', fontSize: isMobile ? 16 : 18 }}>{isEdit ? 'Modifica contratto' : 'Nuovo contratto di consulenza'}</h2>
           <div style={{ display: 'flex', gap: 6 }}>
             {['1. Cliente', '2. Servizi', '3. Condizioni', '4. Firme'].map((t, i) => (
               <div key={t} style={{ flex: 1, textAlign: 'center', padding: '6px 4px', borderRadius: 6, fontSize: 12, fontWeight: 700,
@@ -157,7 +158,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
             <div style={{ display: 'grid', gap: 12 }}>
               {preventivo && (
                 <div style={{ padding: 10, background: 'var(--primary-soft)', borderRadius: 8, fontSize: 13, color: 'var(--primary)' }}>
-                  ℹ️ Dati e servizi presi dal preventivo del {new Date(preventivo.dataCreazione || preventivo.data).toLocaleDateString('it-IT')}: controllali e completali.
+                  <Icona nome="info" testo />Dati e servizi presi dal preventivo del {new Date(preventivo.dataCreazione || preventivo.data).toLocaleDateString('it-IT')}: controllali e completali.
                 </div>
               )}
               <SelettoreSocieta
@@ -286,7 +287,7 @@ function ModaleContratto({ onClose, onSave, aziende, preventivo, contrattoInModi
 
           {step === 4 && (
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
-              {isEdit && <div style={{ gridColumn: '1 / -1', padding: 10, background: 'var(--primary-soft)', borderRadius: 8, fontSize: 13, color: 'var(--primary)' }}>ℹ️ Lascia vuoto un riquadro per mantenere la firma già presente.</div>}
+              {isEdit && <div style={{ gridColumn: '1 / -1', padding: 10, background: 'var(--primary-soft)', borderRadius: 8, fontSize: 13, color: 'var(--primary)' }}><Icona nome="info" testo />Lascia vuoto un riquadro per mantenere la firma già presente.</div>}
               {[['Contraente (cliente)', sigCliente], ['Contrattore (consulente)', sigConsulente]].map(([t, r]) => (
                 <div key={t}>
                   <label style={{ display: 'block', marginBottom: 8, fontWeight: 700, fontSize: 14 }}>Firma {t}</label>

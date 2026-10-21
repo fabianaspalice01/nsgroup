@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import SelettoreSocieta from './SelettoreSocieta';
 import { societaDi } from '../utils/societa';
+import Icona from './Icona';
 
 async function cercaComuni(q) {
   if (q.length < 2) return [];
@@ -135,7 +136,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
+      background: 'var(--overlay)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -148,7 +149,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
         width: '90%',
         maxWidth: '500px',
         maxHeight: '90vh',
-        overflowY: 'auto'
+        overflowY: 'auto', boxShadow: 'var(--shadow-pop)'
       }}>
         <h2 style={{ marginBottom: '20px' }}>
           {azienda ? 'Modifica Azienda' : 'Nuova Azienda'}
@@ -171,8 +172,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -189,8 +190,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -207,8 +208,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -225,7 +226,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             onChange={(e) => handleComuneChange(e.target.value)}
             placeholder="Inizia a digitare..."
             autoComplete="off"
-            style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px' }}
+            style={{ width: '100%', padding: '8px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: '14px' }}
           />
           {cercando && (
             <div style={{ position: 'absolute', right: 10, top: 34, fontSize: 12, color: 'var(--ink-muted)' }}>Ricerca...</div>
@@ -267,7 +268,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
               onChange={(e) => handleChange('provincia', e.target.value.toUpperCase().slice(0, 2))}
               placeholder="Es. LE"
               maxLength={2}
-              style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px', textTransform: 'uppercase' }}
+              style={{ width: '100%', padding: '8px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: '14px', textTransform: 'uppercase' }}
             />
           </div>
           <div style={{ flex: 1 }}>
@@ -280,7 +281,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
               onChange={(e) => handleChange('cap', e.target.value.replace(/\D/g, '').slice(0, 5))}
               placeholder="Es. 73100"
               maxLength={5}
-              style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px' }}
+              style={{ width: '100%', padding: '8px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: '14px' }}
             />
           </div>
         </div>
@@ -296,8 +297,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -314,8 +315,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -333,8 +334,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -351,8 +352,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -371,8 +372,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -389,8 +390,8 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px',
               fontFamily: 'inherit',
               resize: 'vertical'
@@ -405,7 +406,7 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
           <select
             value={form.assegnatoA}
             onChange={e => handleReferente(e.target.value)}
-            style={{ width: '100%', padding: '8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '14px', background: 'white' }}
+            style={{ width: '100%', padding: '8px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: '14px', background: 'white' }}
           >
             <option value="">— Nessuno —</option>
             {referenti.map(r => (
@@ -449,9 +450,9 @@ function ModaleAzienda({ onClose, onSave, azienda, saving = false, aziende = [],
 
       {/* Dialog conferma cambio assegnazione */}
       {confirmRiassegna && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16 }}>⚠️ Azienda già assegnata</h3>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
+          <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '90%', maxWidth: 420, boxShadow: 'var(--shadow-pop)' }}>
+            <h3 style={{ margin: '0 0 12px', fontSize: 16 }}><Icona nome="avviso" testo />Azienda già assegnata</h3>
             <p style={{ margin: '0 0 8px', fontSize: 14, color: 'var(--ink-muted)' }}>
               Questa azienda è già assegnata a <strong>{form.assegnatoNome}</strong>.
             </p>

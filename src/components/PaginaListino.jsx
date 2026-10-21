@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import toast from 'react-hot-toast';
+import Icona from './Icona';
 
 const SERVIZI_PREDEFINITI = [
   // Documentazione
@@ -158,7 +159,7 @@ function PaginaListino() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>💰 Listino Prezzi</h2>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}><Icona nome="listino" testo />Listino Prezzi</h2>
           <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-muted)' }}>
             I prezzi impostati qui vengono pre-compilati automaticamente nei nuovi preventivi
           </p>
@@ -173,7 +174,7 @@ function PaginaListino() {
             fontSize: 14, fontWeight: 700,
           }}
         >
-          {salvando ? 'Salvataggio...' : '💾 Salva listino'}
+          {salvando ? 'Salvataggio...' : 'Salva listino'}
         </button>
       </div>
 
@@ -224,7 +225,7 @@ function PaginaListino() {
                 onChange={e => handleChange(s.id, 'descrizione', e.target.value)}
                 placeholder="Nome servizio..."
                 style={{
-                  padding: '7px 10px', border: '1px solid var(--line)', borderRadius: 6,
+                  padding: '7px 10px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)',
                   fontSize: 14, outline: 'none', marginRight: 12, color: 'var(--ink)',
                   background: 'white',
                 }}
@@ -238,7 +239,7 @@ function PaginaListino() {
                   style={{
                     width: 110, padding: '7px 10px', textAlign: 'right',
                     border: `1px solid ${haPrezzo ? '#93a7cc' : 'var(--line)'}`,
-                    borderRadius: 6, fontSize: 14, outline: 'none',
+                    borderRadius: 'var(--radius-sm)', fontSize: 14, outline: 'none',
                     background: haPrezzo ? 'var(--primary-soft)' : 'white', color: 'var(--ink)',
                   }}
                 />
@@ -277,7 +278,7 @@ function PaginaListino() {
       {/* Checklist Sopralluogo */}
       <div style={{ background: 'white', borderRadius: 12, border: '1px solid #86efac', overflow: 'hidden', marginTop: 28 }}>
         <div style={{ padding: '14px 20px', background: 'var(--success-soft)', borderBottom: '2px solid #bbf7d0' }}>
-          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--success)' }}>🔍 Voci Checklist Sopralluogo</h3>
+          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--success)' }}><Icona nome="cerca" testo />Voci Checklist Sopralluogo</h3>
           <p style={{ margin: '4px 0 0', fontSize: 12, color: '#4ade80' ? 'var(--success)' : 'var(--ink-muted)', opacity: 0.75 }}>
             Queste voci appaiono come checklist da spuntare nel preventivo durante il sopralluogo
           </p>
@@ -311,7 +312,7 @@ function PaginaListino() {
               value={voce.label}
               onChange={e => setChecklistVoci(prev => prev.map(v => v.id === voce.id ? { ...v, label: e.target.value } : v))}
               placeholder="Nome controllo..."
-              style={{ padding: '7px 10px', border: '1px solid var(--line)', borderRadius: 6, fontSize: 14, outline: 'none', color: 'var(--ink)', background: 'white' }}
+              style={{ padding: '7px 10px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, outline: 'none', color: 'var(--ink)', background: 'white' }}
             />
             <button onClick={() => setChecklistVoci(prev => prev.filter(v => v.id !== voce.id))}
               style={{ marginLeft: 8, width: 28, height: 28, border: 'none', borderRadius: 6, background: 'var(--danger-soft)', color: 'var(--danger)', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>

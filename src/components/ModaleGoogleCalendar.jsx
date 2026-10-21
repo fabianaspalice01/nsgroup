@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase';
+import Icona from './Icona';
 
 const chiama = (dati) => httpsCallable(functions, 'googleCalendar', { timeout: 540000 })(dati).then((r) => r.data);
 
@@ -9,7 +10,7 @@ const toYMD = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, 
 
 const sezione = { background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 10, padding: 14, marginBottom: 14 };
 const titoloSezione = { margin: '0 0 8px', fontSize: 14, fontWeight: 800, color: 'var(--ink)' };
-const input = { width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 6, fontSize: 14, background: 'white' };
+const input = { width: '100%', padding: 8, border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, background: 'white' };
 const bottone = (attivo = true) => ({
     padding: '9px 16px', border: 'none', borderRadius: 8, background: attivo ? 'var(--primary)' : 'var(--ink-muted)',
     color: 'white', cursor: attivo ? 'pointer' : 'default', fontSize: 13, fontWeight: 700
@@ -73,10 +74,10 @@ function ModaleGoogleCalendar({ onClose }) {
     const ultima = stato?.ultimaImportazione;
 
     return (
-        <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-            <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', padding: 24, borderRadius: 12, width: '92%', maxWidth: 560, maxHeight: '90vh', overflowY: 'auto' }}>
+        <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', padding: 24, borderRadius: 'var(--radius-xl)', width: '92%', maxWidth: 560, maxHeight: '90vh', overflowY: 'auto', boxShadow: 'var(--shadow-pop)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                    <h2 style={{ margin: 0, fontSize: 20, color: 'var(--ink)' }}>🔗 Google Calendar</h2>
+                    <h2 style={{ margin: 0, fontSize: 20, color: 'var(--ink)' }}><Icona nome="link" testo />Google Calendar</h2>
                     <button onClick={onClose} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 18, color: 'var(--ink-muted)' }}>✕</button>
                 </div>
 
@@ -139,7 +140,7 @@ function ModaleGoogleCalendar({ onClose }) {
                                 </label>
                             </div>
                             <button onClick={importa} disabled={!collegato || !!occupato} style={bottone(collegato && !occupato)}>
-                                {occupato === 'importa' ? 'Importazione in corso…' : '⬇️ Importa eventi'}
+                                {occupato === 'importa' ? 'Importazione in corso…' : 'Importa eventi'}
                             </button>
                             {ultima && (
                                 <p style={{ margin: '8px 0 0', fontSize: 11, color: 'var(--ink-muted)' }}>
@@ -155,7 +156,7 @@ function ModaleGoogleCalendar({ onClose }) {
                                 Da fare una volta dopo il collegamento: copia su Google gli appuntamenti già presenti in agenda.
                             </p>
                             <button onClick={esporta} disabled={!collegato || !!occupato} style={bottone(collegato && !occupato)}>
-                                {occupato === 'esporta' ? 'Invio in corso…' : '⬆️ Invia appuntamenti'}
+                                {occupato === 'esporta' ? 'Invio in corso…' : 'Invia appuntamenti'}
                             </button>
                         </div>
 

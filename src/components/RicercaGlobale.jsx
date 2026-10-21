@@ -82,11 +82,11 @@ export default function RicercaGlobale({ aziende, appuntamenti, preventivi, onSe
     <div ref={ref} style={{ position: 'relative', width: 260 }}>
       <input
         type="text"
-        placeholder="🔍 Cerca ovunque..."
+        placeholder="Cerca ovunque..."
         value={query}
         onChange={e => { setQuery(e.target.value); setAperto(true); }}
         onFocus={() => setAperto(true)}
-        style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 14, boxSizing: 'border-box' }}
+        style={{ width: '100%', padding: '8px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line-strong)', fontSize: 14, boxSizing: 'border-box' }}
       />
 
       {aperto && risultati && (

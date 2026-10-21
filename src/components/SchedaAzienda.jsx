@@ -6,21 +6,22 @@ import TabDipendenti from './TabDipendenti';
 import TabDocumenti from './TabDocumenti';
 import TabPagamenti from './TabPagamenti';
 import * as XLSX from 'xlsx';
+import Icona from './Icona';
 
 const TABS = [
-  { id: 'controlli', label: '🔒 Controlli' },
-  { id: 'dipendenti', label: '👤 Dipendenti' },
-  { id: 'documenti', label: '📁 Documenti' },
-  { id: 'pagamenti', label: '💰 Pagamenti' },
-  { id: 'preventivi', label: '📄 Preventivi' },
-  { id: 'note', label: '📝 Note' },
+  { id: 'controlli', label: 'Controlli' },
+  { id: 'dipendenti', label: 'Dipendenti' },
+  { id: 'documenti', label: 'Documenti' },
+  { id: 'pagamenti', label: 'Pagamenti' },
+  { id: 'preventivi', label: 'Preventivi' },
+  { id: 'note', label: 'Note' },
 ];
 
 // L'account azienda vede solo controlli antincendio, documenti e pagamenti
 const TABS_AZIENDA = [
-  { id: 'controlli', label: '🧯 Controlli antincendio' },
-  { id: 'documenti', label: '📁 Documenti' },
-  { id: 'pagamenti', label: '💰 Pagamenti' },
+  { id: 'controlli', label: 'Controlli antincendio' },
+  { id: 'documenti', label: 'Documenti' },
+  { id: 'pagamenti', label: 'Pagamenti' },
 ];
 
 const isAntincendio = (controllo) => /antincendio/i.test(controllo.tipo || '');
@@ -216,19 +217,19 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                   padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '600'
                 }}
               >
-                {azienda.puoScaricare ? '🔓 Download azienda ✓' : '🔒 Download azienda'}
+                {azienda.puoScaricare ? 'Download azienda ✓' : 'Download azienda'}
               </button>
               <button
                 onClick={handleExportExcel}
                 style={{ flex: isMobile ? 1 : 'none', background: 'var(--success)', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
               >
-                📊 Export Excel
+                <Icona nome="grafico" testo />Export Excel
               </button>
               <button
                 onClick={() => setMostraModaleModifica(true)}
                 style={{ flex: isMobile ? 1 : 'none', background: 'var(--primary)', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
               >
-                ✏️ Modifica
+                <Icona nome="modifica" testo />Modifica
               </button>
             </div>
           )}
@@ -250,7 +251,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
           {azienda.codiceUnivoco && <p><strong>Codice Univoco:</strong> {azienda.codiceUnivoco}</p>}
           {azienda.note && !isAccountAzienda && <p><strong>Note:</strong> {azienda.note}</p>}
           {azienda.assegnatoNome && !isAccountAzienda && (
-            <p><strong>Assegnato a:</strong> <span style={{ color: 'var(--primary)', fontWeight: 600 }}>👤 {azienda.assegnatoNome}</span></p>
+            <p><strong>Assegnato a:</strong> <span style={{ color: 'var(--primary)', fontWeight: 600 }}><Icona nome="utente" testo />{azienda.assegnatoNome}</span></p>
           )}
         </div>
       </div>
@@ -342,8 +343,8 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                           Preventivo del {new Date(prev.dataCreazione).toLocaleDateString('it-IT')}
                         </div>
                         <div style={{ fontSize: 13, color: 'var(--ink-muted)' }}>
-                          {prev.dataSopralluogo && `📅 Sopralluogo: ${prev.dataSopralluogo.split('-').reverse().join('/')}`}
-                          {prev.consulente && ` • 👤 ${prev.consulente}`}
+                          {prev.dataSopralluogo && `Sopralluogo: ${prev.dataSopralluogo.split('-').reverse().join('/')}`}
+                          {prev.consulente && ` • ${prev.consulente}`}
                         </div>
                         {prev.totale > 0 && (
                           <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)', marginTop: 4 }}>
@@ -356,7 +357,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                           onClick={() => setPreventivoDettaglio(prev)}
                           style={{ background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 8, padding: '8px 14px', fontSize: 13, color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
                         >
-                          ℹ️ Dettagli
+                          <Icona nome="info" testo />Dettagli
                         </button>
                         {prev.pdfUrl && (
                           <a
@@ -365,7 +366,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                             rel="noopener noreferrer"
                             style={{ background: 'var(--primary-soft)', border: '1px solid var(--line)', borderRadius: 8, padding: '8px 16px', fontSize: 13, color: 'var(--primary-ink)', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}
                           >
-                            📄 Apri PDF
+                            <Icona nome="documento" testo />Apri PDF
                           </a>
                         )}
                         {userData?.ruolo === 'admin' && onDeletePreventivo && (
@@ -373,7 +374,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                             onClick={() => onDeletePreventivo(prev.id)}
                             style={{ background: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 14px', fontSize: 13, color: 'var(--danger)', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
                           >
-                            🗑️ Elimina
+                            <Icona nome="cestino" testo />Elimina
                           </button>
                         )}
                       </div>
@@ -394,8 +395,8 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
               style={{
                 width: '100%',
                 padding: '14px',
-                borderRadius: 8,
-                border: '1px solid var(--line)',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--line-strong)',
                 fontSize: 14,
                 resize: 'vertical',
                 boxSizing: 'border-box',
@@ -421,7 +422,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                     cursor: noteModificate ? 'pointer' : 'default',
                   }}
                 >
-                  {salvandoNote ? 'Salvo...' : '💾 Salva note'}
+                  {salvandoNote ? 'Salvo...' : 'Salva note'}
                 </button>
               </div>
             )}
@@ -449,13 +450,13 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
         const senzaDipendenti = serviziAttivi.filter(s => !(s.dipendenti || []).some(d => d.nome?.trim()));
         return (
           <div onClick={() => setPreventivoDettaglio(null)}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 20 }}>
+            style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 20 }}>
             <div onClick={e => e.stopPropagation()}
-              style={{ background: 'white', borderRadius: 12, width: '100%', maxWidth: 560, maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+              style={{ background: 'white', borderRadius: 'var(--radius-xl)', width: '100%', maxWidth: 560, maxHeight: '85vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-pop)' }}>
 
               <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: 17 }}>📋 {p.nomeCliente || azienda.nome}</h3>
+                  <h3 style={{ margin: 0, fontSize: 17 }}><Icona nome="elenco" testo />{p.nomeCliente || azienda.nome}</h3>
                   <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
                 </div>
                 <button onClick={() => setPreventivoDettaglio(null)}
@@ -483,7 +484,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
 
                 {serviziAttivi.length > 0 && (
                   <div style={{ marginBottom: 16 }}>
-                    <h4 style={{ margin: '0 0 10px', fontSize: 14, color: 'var(--ink-muted)' }}>📋 Servizi</h4>
+                    <h4 style={{ margin: '0 0 10px', fontSize: 14, color: 'var(--ink-muted)' }}><Icona nome="elenco" testo />Servizi</h4>
 
                     {/* intestazione colonne */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto auto', gap: '4px 10px', padding: '5px 10px', fontSize: 11, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
@@ -510,7 +511,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
                             {hasDip && (
                               <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 2, paddingLeft: 4 }}>
                                 {(s.dipendenti || []).filter(d => d.nome?.trim()).map((dip, i) => (
-                                  <div key={i} style={{ fontSize: 12, color: 'var(--primary)' }}>👤 {dip.nome}</div>
+                                  <div key={i} style={{ fontSize: 12, color: 'var(--primary)' }}><Icona nome="utente" testo />{dip.nome}</div>
                                 ))}
                               </div>
                             )}
@@ -529,7 +530,7 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
 
                 {p.motivazioneModifica && (
                   <div style={{ marginTop: 16, padding: 12, background: 'var(--warning-soft)', borderRadius: 8, border: '1px solid #fde68a' }}>
-                    <div style={{ fontSize: 12, color: 'var(--warning)', fontWeight: 600, marginBottom: 4 }}>📝 Motivazione ultima modifica</div>
+                    <div style={{ fontSize: 12, color: 'var(--warning)', fontWeight: 600, marginBottom: 4 }}><Icona nome="nota" testo />Motivazione ultima modifica</div>
                     <div style={{ fontSize: 13, color: 'var(--warning)' }}>{p.motivazioneModifica}</div>
                   </div>
                 )}

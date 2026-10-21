@@ -60,7 +60,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
+      background: 'var(--overlay)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -73,7 +73,7 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
         width: '90%',
         maxWidth: '500px',
         maxHeight: '90vh',
-        overflowY: 'auto'
+        overflowY: 'auto', boxShadow: 'var(--shadow-pop)'
       }}>
         <h2 style={{ marginBottom: '20px' }}>
           {attestato ? 'Modifica Attestato' : 'Nuovo Attestato'}
@@ -91,8 +91,8 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -115,8 +115,8 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid var(--line)',
-                borderRadius: '6px',
+                border: '1px solid var(--line-strong)',
+                borderRadius: 'var(--radius-sm)',
                 fontSize: '14px'
               }}
             />
@@ -133,8 +133,8 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
               style={{
                 width: '100%',
                 padding: '8px',
-                border: '1px solid var(--line)',
-                borderRadius: '6px',
+                border: '1px solid var(--line-strong)',
+                borderRadius: 'var(--radius-sm)',
                 fontSize: '14px'
               }}
             />
@@ -153,8 +153,8 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -171,8 +171,8 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -197,8 +197,8 @@ function ModaleAttestato({ onClose, onSave, attestato }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px',
               fontFamily: 'inherit',
               resize: 'vertical'

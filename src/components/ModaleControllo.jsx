@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import DropZone from './DropZone';
+import Icona from './Icona';
 
 function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
   const dataOggi = new Date().toISOString().split('T')[0];
@@ -58,7 +59,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'rgba(0,0,0,0.5)',
+        background: 'var(--overlay)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -71,7 +72,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
           padding: '30px',
           borderRadius: '12px',
           width: '90%',
-          maxWidth: '500px'
+          maxWidth: '500px', boxShadow: 'var(--shadow-pop)'
         }}
       >
         <h2 style={{ marginBottom: '20px' }}>
@@ -89,8 +90,8 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           >
@@ -115,8 +116,8 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
                 style={{
                   flex: 1,
                   padding: 8,
-                  border: '1px solid var(--line)',
-                  borderRadius: 6,
+                  border: '1px solid var(--line-strong)',
+                  borderRadius: 'var(--radius-sm)',
                   fontSize: 13
                 }}
               />
@@ -152,8 +153,8 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -187,7 +188,7 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 8 }}>
               <a href={controllo.pdfUrl} target="_blank" rel="noopener noreferrer"
                 style={{ flex: 1, fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>
-                📄 Documento attuale
+                <Icona nome="documento" testo />Documento attuale
               </a>
               <button type="button" onClick={() => setRimuoviDoc(true)}
                 style={{ padding: '4px 10px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
@@ -219,8 +220,8 @@ function ModaleControllo({ onClose, onSave, controllo, tipiControllo = [] }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px',
               fontFamily: 'inherit',
               resize: 'vertical'

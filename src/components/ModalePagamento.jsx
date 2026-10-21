@@ -62,7 +62,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
+      background: 'var(--overlay)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -75,7 +75,7 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
         width: '90%',
         maxWidth: '500px',
         maxHeight: '90vh',
-        overflowY: 'auto'
+        overflowY: 'auto', boxShadow: 'var(--shadow-pop)'
       }}>
         <h2 style={{ marginBottom: '20px' }}>
           {pagamento ? 'Modifica Pagamento' : 'Nuovo Pagamento'}
@@ -92,8 +92,8 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -113,8 +113,8 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -130,8 +130,8 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px',
               background: 'white'
             }}
@@ -154,8 +154,8 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -173,8 +173,8 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px'
             }}
           />
@@ -199,8 +199,8 @@ function ModalePagamento({ onClose, onSave, pagamento }) {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid var(--line)',
-              borderRadius: '6px',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '14px',
               fontFamily: 'inherit',
               resize: 'vertical'

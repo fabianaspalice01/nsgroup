@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, onSnapshot, orderBy, query, updateDoc, doc, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase';
 import BadgeStato from './BadgeStato';
+import Icona from './Icona';
 
 const STORAGE_KEY = 'nsgroup:notifiche_ignorate';
 
@@ -18,24 +19,24 @@ function BlocoAttivita({ attivita, segnaAttivitaLetta }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--primary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        👤 Attività
+        <Icona nome="utente" testo />Attività
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {attivita.map(a => (
           <div key={a.id} style={{ background: a.letta ? 'var(--surface-2)' : 'var(--primary-soft)', border: `1px solid ${a.letta ? 'var(--line)' : '#c3cde3'}`, borderRadius: 8, padding: 10, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
             <span style={{ fontSize: 16 }}>
-              {a.tipo === 'modifica_appuntamento' ? '✏️'
-                : a.tipo === 'nuovo_appuntamento' ? '📅'
-                : a.tipo === 'elimina_appuntamento' ? '🗑️'
-                : a.tipo === 'nuovo_preventivo' ? '📄'
-                : a.tipo === 'modifica_preventivo' ? '✏️'
-                : a.tipo === 'nuova_azienda' ? '🏢'
-                : a.tipo === 'modifica_azienda' ? '✏️'
-                : a.tipo === 'elimina_azienda' ? '🗑️'
-                : a.tipo === 'archivia_azienda' ? '📦'
-                : a.tipo === 'ripristina_azienda' ? '♻️'
-                : a.tipo === 'cambio_stato_task' ? '📋'
-                : '🔔'}
+              {a.tipo === 'modifica_appuntamento' ? <Icona nome="modifica" />
+                : a.tipo === 'nuovo_appuntamento' ? <Icona nome="agenda" />
+                : a.tipo === 'elimina_appuntamento' ? <Icona nome="cestino" />
+                : a.tipo === 'nuovo_preventivo' ? <Icona nome="documento" />
+                : a.tipo === 'modifica_preventivo' ? <Icona nome="modifica" />
+                : a.tipo === 'nuova_azienda' ? <Icona nome="aziende" />
+                : a.tipo === 'modifica_azienda' ? <Icona nome="modifica" />
+                : a.tipo === 'elimina_azienda' ? <Icona nome="cestino" />
+                : a.tipo === 'archivia_azienda' ? <Icona nome="archivio" />
+                : a.tipo === 'ripristina_azienda' ? <Icona nome="ripristina" />
+                : a.tipo === 'cambio_stato_task' ? <Icona nome="elenco" />
+                : <Icona nome="campanella" />}
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 13, color: 'var(--ink)', marginBottom: 2 }}>{a.messaggio}</div>
@@ -352,7 +353,7 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
           gap: compact ? 4 : 8
         }}
       >
-        🔔
+        <Icona nome="campanella" />
         {!compact && ' Notifiche'}
         {totBadge > 0 && (
           <span style={{
@@ -413,7 +414,7 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
             {/* Header */}
             <div style={{ padding: 20, borderBottom: '1px solid var(--line)', flexShrink: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>🔔 Notifiche Scadenze</h3>
+                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}><Icona nome="campanella" testo />Notifiche Scadenze</h3>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                   {notifiche.length > 0 && (
                     <button

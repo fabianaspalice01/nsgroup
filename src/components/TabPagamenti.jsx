@@ -4,6 +4,7 @@ import ModalePagamento from './ModalePagamento';
 import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import toast from 'react-hot-toast';
+import Icona from './Icona';
 
 function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false }) {
   const [mostraModalePagamento, setMostraModalePagamento] = useState(false);
@@ -82,9 +83,9 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
   };
 
   const iconaMetodo = {
-    'Bonifico': '🏦',
-    'Contanti': '💵',
-    'Assegno': '📝'
+    'Bonifico': <Icona nome="banca" />,
+    'Contanti': <Icona nome="contanti" />,
+    'Assegno': <Icona nome="nota" />
   };
 
   return (
@@ -100,7 +101,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
         <div>
-          <h3 style={{ margin: 0 }}>💰 Storico Pagamenti ({(azienda.pagamenti || []).length})</h3>
+          <h3 style={{ margin: 0 }}><Icona nome="listino" testo />Storico Pagamenti ({(azienda.pagamenti || []).length})</h3>
           <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-muted)' }}>
             {vistaCliente ? 'Totale versato' : 'Totale incassato'}: €{' '}
             {(azienda.pagamenti || [])
@@ -149,7 +150,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
             >
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                  <span style={{ fontSize: 24 }}>{iconaMetodo[pagamento.metodoPagamento] || '💳'}</span>
+                  <span style={{ fontSize: 24 }}>{iconaMetodo[pagamento.metodoPagamento] || <Icona nome="carta" />}</span>
                   <div>
                     <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--success)' }}>
                       € {parseFloat(pagamento.importo).toFixed(2).replace('.', ',')}
@@ -162,7 +163,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
 
                 {pagamento.numeroFattura && (
                   <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 4 }}>
-                    📄 Fattura: {pagamento.numeroFattura}
+                    <Icona nome="documento" testo />Fattura: {pagamento.numeroFattura}
                   </div>
                 )}
 
@@ -196,7 +197,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
                       fontWeight: 'bold'
                     }}
                   >
-                    📄 Contabile
+                    <Icona nome="documento" testo />Contabile
                   </a>
                 )}
                 {!readOnly && (
@@ -213,7 +214,7 @@ function TabPagamenti({ azienda, onUpdateAzienda, readOnly, vistaCliente = false
                       fontWeight: 'bold'
                     }}
                   >
-                    🗑️
+                    <Icona nome="cestino" />
                   </button>
                 )}
               </div>

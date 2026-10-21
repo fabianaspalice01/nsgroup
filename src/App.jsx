@@ -39,6 +39,7 @@ import PaginaAziendeAssegnate from './components/PaginaAziendeAssegnate';
 import PaginaListino from './components/PaginaListino';
 import ContabilitaGruppo from './components/crm/ContabilitaGruppo';
 import ModaleContratto from './components/contratto/ModaleContratto';
+import Icona from './components/Icona';
 
 // Portale esterno mostrato all'account azienda (link provvisorio, da sostituire con quello vero)
 const PORTALE_ESTERNO = { url: 'https://www.esempio.it', label: 'Vai al portale' };
@@ -784,7 +785,7 @@ function App({ session }) {
           const messaggio = `${userData.nome} ti ha ${azione} un appuntamento con ${nomeCliente}${dataF ? ` per il ${dataF}` : ''}`;
           await addDoc(collection(db, 'notifiche_operatori'), {
             operatoreId: assegnatario.id,
-            titolo: isModifica ? '📅 Appuntamento modificato' : '📅 Nuovo appuntamento',
+            titolo: isModifica ? 'Appuntamento modificato' : 'Nuovo appuntamento',
             messaggio,
             createdAt: new Date().toISOString(),
           });
@@ -814,7 +815,7 @@ function App({ session }) {
   if (loading) {
     return (
       <div className="App">
-        <h1>🛡️ NSGroup</h1>
+        <h1><Icona nome="scudo" testo />NSGroup</h1>
         <p>Caricamento in corso...</p>
       </div>
     );
@@ -959,7 +960,7 @@ function App({ session }) {
             {vistaCorrente === 'preventivi' && (
               <PaginaPreventivi
                 preventivi={preventivi}
-                titolo="📄 Preventivi"
+                titolo="Preventivi"
                 showNuovo
                 onNuovo={() => setMostraModalePreventivo(true)}
                 contratti={contratti}
@@ -1096,7 +1097,7 @@ function App({ session }) {
             {vistaCorrente === 'preventivi' && (
               <PaginaPreventivi
                 preventivi={preventivi}
-                titolo="📄 I miei preventivi"
+                titolo="I miei preventivi"
                 contratti={contratti}
                 onContratto={(prev, contratto) => setModaleContratto({ preventivo: prev, contratto })}
                 onDettaglio={setPreventivoDettaglio}
@@ -1152,14 +1153,14 @@ function App({ session }) {
           const residuo = Math.max(0, (p.totale || 0) - pagato);
           return (
             <div onClick={() => setPreventivoDettaglio(null)}
-              style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 1100, padding: isMobile ? 0 : 20 }}>
+              style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 1100, padding: isMobile ? 0 : 20 }}>
               <div onClick={e => e.stopPropagation()}
-                style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 560, maxHeight: isMobile ? '92vh' : '85vh', display: 'flex', flexDirection: 'column' }}>
+                style={{ background: 'white', borderRadius: isMobile ? '16px 16px 0 0' : 12, width: '100%', maxWidth: isMobile ? '100%' : 560, maxHeight: isMobile ? '92vh' : '85vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-pop)' }}>
 
                 {/* Header */}
                 <div style={{ padding: isMobile ? '14px 16px' : '16px 20px', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                   <div style={{ minWidth: 0, paddingRight: 8 }}>
-                    <h3 style={{ margin: 0, fontSize: isMobile ? 15 : 17, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📋 {p.nomeCliente}</h3>
+                    <h3 style={{ margin: 0, fontSize: isMobile ? 15 : 17, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}><Icona nome="elenco" testo />{p.nomeCliente}</h3>
                     <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2, textTransform: 'capitalize' }}>{p.tipoDocumento || 'preventivo'}</div>
                   </div>
                   <button onClick={() => setPreventivoDettaglio(null)}
@@ -1187,7 +1188,7 @@ function App({ session }) {
                   {/* Servizi */}
                   {serviziAttivi.length > 0 && (
                     <div style={{ marginBottom: 16 }}>
-                      <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>📋 Servizi</h4>
+                      <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}><Icona nome="elenco" testo />Servizi</h4>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {serviziAttivi.map(s => {
                           const qty = parseFloat(s.quantita) || 0;
@@ -1211,7 +1212,7 @@ function App({ session }) {
                               {hasDip && (
                                 <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 2, paddingLeft: 4, borderTop: '1px dashed #bae6fd', paddingTop: 6 }}>
                                   {(s.dipendenti || []).filter(d => d.nome?.trim()).map((dip, i) => (
-                                    <div key={i} style={{ fontSize: 12, color: '#0369a1' }}>👤 {dip.nome}</div>
+                                    <div key={i} style={{ fontSize: 12, color: '#0369a1' }}><Icona nome="utente" testo />{dip.nome}</div>
                                   ))}
                                 </div>
                               )}
@@ -1228,7 +1229,7 @@ function App({ session }) {
 
                   {p.motivazioneModifica && (
                     <div style={{ marginBottom: 16, padding: 12, background: 'var(--warning-soft)', borderRadius: 8, border: '1px solid #fde68a' }}>
-                      <div style={{ fontSize: 12, color: 'var(--warning)', fontWeight: 600, marginBottom: 4 }}>📝 Motivazione modifica</div>
+                      <div style={{ fontSize: 12, color: 'var(--warning)', fontWeight: 600, marginBottom: 4 }}><Icona nome="nota" testo />Motivazione modifica</div>
                       <div style={{ fontSize: 13, color: 'var(--warning)' }}>{p.motivazioneModifica}</div>
                     </div>
                   )}
@@ -1236,7 +1237,7 @@ function App({ session }) {
                   {/* Pagamenti */}
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                      <h4 style={{ margin: 0, fontSize: 13, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>💳 Pagamenti ricevuti</h4>
+                      <h4 style={{ margin: 0, fontSize: 13, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}><Icona nome="carta" testo />Pagamenti ricevuti</h4>
                       <button onClick={() => { setPreventivoDettaglio(null); setPreventivoPerPagamento(p); }}
                         style={{ padding: '5px 12px', background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #86efac', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                         + Aggiungi
@@ -1259,7 +1260,7 @@ function App({ session }) {
                             </div>
                             {pg.pdfUrl && (
                               <a href={pg.pdfUrl} target="_blank" rel="noreferrer"
-                                style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', flexShrink: 0 }}>📄 Doc</a>
+                                style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', flexShrink: 0 }}><Icona nome="documento" testo />Doc</a>
                             )}
                           </div>
                         ))}
@@ -1268,7 +1269,7 @@ function App({ session }) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, paddingTop: 10, borderTop: '2px solid var(--line)' }}>
                       <div style={{ fontSize: 13, color: 'var(--success)', fontWeight: 700 }}>Pagato: € {pagato.toFixed(2)}</div>
                       <div style={{ fontSize: 13, color: residuo > 0 ? 'var(--danger)' : 'var(--success)', fontWeight: 700 }}>
-                        {residuo > 0 ? `Residuo: € ${residuo.toFixed(2)}` : '✔ Saldato'}
+                        {residuo > 0 ? `Residuo: € ${residuo.toFixed(2)}` : 'Saldato'}
                       </div>
                     </div>
                   </div>
@@ -1286,9 +1287,9 @@ function App({ session }) {
         })()}
 
         {mostraPromptMotivazione && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 20 }}>
-            <div style={{ background: 'white', borderRadius: 12, padding: 24, width: '100%', maxWidth: 420 }}>
-              <h3 style={{ margin: '0 0 8px', fontSize: 16 }}>✏️ Motivazione modifica</h3>
+          <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 20 }}>
+            <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 24, width: '100%', maxWidth: 420, boxShadow: 'var(--shadow-pop)' }}>
+              <h3 style={{ margin: '0 0 8px', fontSize: 16 }}><Icona nome="modifica" testo />Motivazione modifica</h3>
               <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--ink-muted)' }}>
                 Stai modificando il preventivo di <strong>{preventivoPerModifica?.nomeCliente}</strong>.<br />
                 Inserisci la motivazione della modifica.
@@ -1299,7 +1300,7 @@ function App({ session }) {
                 rows={3}
                 placeholder="Es. Aggiornamento prezzi, correzione servizi richiesti..."
                 autoFocus
-                style={{ width: '100%', padding: 10, border: '1px solid var(--line)', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: 10, border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}
               />
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 16 }}>
                 <button

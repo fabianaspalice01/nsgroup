@@ -3,12 +3,13 @@ import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimest
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebase';
 import toast from 'react-hot-toast';
+import Icona from './Icona';
 
 /* ── COSTANTI ─────────────────────────────────────────────────────────────── */
 const STATI = [
-  { id: 'da_fare',    label: 'Da fare',    color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: '⬜' },
-  { id: 'in_corso',  label: 'In corso',   color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: '🟡' },
-  { id: 'completato',label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: '✅' },
+  { id: 'da_fare',    label: 'Da fare',    color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: <Icona nome="cerchio" /> },
+  { id: 'in_corso',  label: 'In corso',   color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: <Icona nome="metà" /> },
+  { id: 'completato',label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: <Icona nome="check" /> },
 ];
 
 const PRIORITA = [
@@ -116,8 +117,8 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
         <BadgePriorita priorita={task.priorita} />
         {(isAdmin || isOperatore) && (
           <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-            <button onClick={() => onEdit(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14, padding: '0 2px' }}>✏️</button>
-            <button onClick={() => onDelete(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14, padding: '0 2px' }}>🗑️</button>
+            <button onClick={() => onEdit(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14, padding: '0 2px' }}><Icona nome="modifica" /></button>
+            <button onClick={() => onDelete(task)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14, padding: '0 2px' }}><Icona nome="cestino" /></button>
           </div>
         )}
       </div>
@@ -129,7 +130,7 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
       )}
 
       {task.aziendaNome && (
-        <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600 }}>🏢 {task.aziendaNome}</div>
+        <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600 }}><Icona nome="aziende" testo />{task.aziendaNome}</div>
       )}
 
       {task.allegati?.length > 0 && (
@@ -140,13 +141,13 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
               onClick={() => scaricaTuttiAllegati(task.allegati)}
               style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 5, padding: '2px 8px', cursor: 'pointer' }}
             >
-              ⬇ Scarica tutti
+              <Icona nome="scarica" testo />Scarica tutti
             </button>
           </div>
           {task.allegati.map(a => (
             <a key={a.id} href={a.url} target="_blank" rel="noreferrer"
               style={{ fontSize: 11, color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              📎 {a.nome}
+              <Icona nome="allegato" testo />{a.nome}
             </a>
           ))}
         </div>
@@ -161,7 +162,7 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
                 const op = operatori?.find(o => o.id === e.target.value);
                 onAssegna(task, e.target.value, op?.nome || '');
               }}
-              style={{ fontSize: 12, border: '1px solid var(--line)', borderRadius: 6, padding: '3px 6px', background: 'white', color: 'var(--ink)', cursor: 'pointer', maxWidth: 150 }}
+              style={{ fontSize: 12, border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', padding: '3px 6px', background: 'white', color: 'var(--ink)', cursor: 'pointer', maxWidth: 150 }}
             >
               <option value="">— Non assegnato —</option>
               {(operatori || []).map(op => (
@@ -179,7 +180,7 @@ function CardTask({ task, isAdmin, onEdit, onDelete, onChangeStato, userData, op
         </div>
         {task.scadenza && (
           <span style={{ fontSize: 11, fontWeight: 600, color: scaduta ? 'var(--danger)' : 'var(--ink-muted)' }}>
-            {scaduta ? '⚠️ ' : '📅 '}{fmt(task.scadenza)}
+            {scaduta ? <Icona nome="avviso" testo /> : <Icona nome="agenda" testo />}{fmt(task.scadenza)}
           </span>
         )}
       </div>
@@ -242,13 +243,13 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
     onSave({ ...form, allegatiNuovi, allegatiEsistenti });
   };
 
-  const inputStyle = { width: '100%', padding: '8px 10px', border: '1px solid var(--line)', borderRadius: 6, fontSize: 14, boxSizing: 'border-box', outline: 'none' };
+  const inputStyle = { width: '100%', padding: '8px 10px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, boxSizing: 'border-box', outline: 'none' };
   const labelStyle = { display: 'block', fontWeight: 700, fontSize: 13, marginBottom: 5, color: 'var(--ink)' };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto' }}>
-        <h2 style={{ margin: '0 0 22px', fontSize: 18 }}>{task ? '✏️ Modifica Task' : '➕ Nuovo Task'}</h2>
+    <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+      <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '90%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto', boxShadow: 'var(--shadow-pop)' }}>
+        <h2 style={{ margin: '0 0 22px', fontSize: 18 }}>{task ? 'Modifica Task' : 'Nuovo Task'}</h2>
 
         <div style={{ marginBottom: 14 }}>
           <label style={labelStyle}>Titolo *</label>
@@ -306,7 +307,7 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
               {allegatiEsistenti.map(a => (
                 <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 6 }}>
                   <a href={a.url} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: 13, color: 'var(--primary)', textDecoration: 'none', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    📎 {a.nome}
+                    <Icona nome="allegato" testo />{a.nome}
                   </a>
                   <button type="button" onClick={() => setAllegatiEsistenti(prev => prev.filter(x => x.id !== a.id))} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: 16, lineHeight: 1, padding: 0 }}>✕</button>
                 </div>
@@ -318,7 +319,7 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 8 }}>
               {allegatiNuovi.map((f, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--primary-soft)', border: '1px solid #c3cde3', borderRadius: 6 }}>
-                  <span style={{ flex: 1, fontSize: 13, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>📄 {f.name}</span>
+                  <span style={{ flex: 1, fontSize: 13, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><Icona nome="documento" testo />{f.name}</span>
                   <button type="button" onClick={() => setAllegatiNuovi(prev => prev.filter((_, j) => j !== i))} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: 16, lineHeight: 1, padding: 0 }}>✕</button>
                 </div>
               ))}
@@ -340,7 +341,7 @@ function ModaleTask({ task, operatori, onClose, onSave, isAdmin, isOperatore }) 
               userSelect: 'none', transition: 'all 0.15s',
             }}
           >
-            <span style={{ fontSize: 22 }}>📎</span>
+            <span style={{ fontSize: 22 }}><Icona nome="allegato" /></span>
             <span>{isDragging ? 'Rilascia qui' : 'Trascina file qui oppure clicca per scegliere'}</span>
             <input type="file" multiple onChange={handleAddFiles} style={{ display: 'none' }} />
           </label>
@@ -412,7 +413,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
             onClick={() => setCompletatiAperti(true)}
             style={{ textAlign: 'center', padding: '22px 0', color: 'var(--success)', fontSize: 13, fontWeight: 600, background: 'var(--success-soft)', borderRadius: 10, border: '1px dashed #bbf7d0', cursor: 'pointer' }}
           >
-            ✅ {col.length} task completati — clicca per espandere
+            <Icona nome="check" testo />{col.length} task completati — clicca per espandere
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -430,7 +431,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
                       onClick={() => setFuturiAperti(v => !v)}
                       style={{ textAlign: 'center', padding: '14px 0', color: 'var(--primary-ink)', fontSize: 13, fontWeight: 600, background: 'var(--primary-soft)', borderRadius: 10, border: '1px dashed #c3cde3', cursor: 'pointer' }}
                     >
-                      📅 {daFareFuturi.length} task futuri — {futuriAperti ? 'nascondi ▲' : 'mostra ▼'}
+                      <Icona nome="agenda" testo />{daFareFuturi.length} task futuri — {futuriAperti ? 'nascondi ▲' : 'mostra ▼'}
                     </div>
                     {futuriAperti && daFareFuturi.map(task => (
                       <CardTask key={task.id} task={task} isAdmin={isAdmin} onEdit={onEdit} onDelete={onDelete} onChangeStato={onChangeStato} userData={userData} operatori={operatori} onAssegna={onAssegna} />
@@ -499,7 +500,7 @@ function KanbanBoard({ tasks, operatori, isAdmin, onEdit, onDelete, onChangeStat
                           onClick={() => setFuturiAperti(v => !v)}
                           style={{ textAlign: 'center', padding: '10px 0', color: 'var(--primary-ink)', fontSize: 12, fontWeight: 600, background: 'var(--primary-soft)', borderRadius: 8, border: '1px dashed #c3cde3', cursor: 'pointer', userSelect: 'none' }}
                         >
-                          📅 {daFareFuturi.length} task futuri {futuriAperti ? '▲' : '▼'}
+                          <Icona nome="agenda" testo />{daFareFuturi.length} task futuri {futuriAperti ? '▲' : '▼'}
                         </div>
                         {futuriAperti && daFareFuturi.map(task => (
                           <CardTask key={task.id} task={task} isAdmin={isAdmin} onEdit={onEdit} onDelete={onDelete} onChangeStato={onChangeStato} userData={userData} operatori={operatori} onAssegna={onAssegna} />
@@ -640,8 +641,8 @@ function PlanningSettimanale({ tasks, operatori }) {
                           </div>
                           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', marginBottom: t.aziendaNome ? 4 : 0 }}>{t.titolo}</div>
                           {t.descrizione && <div style={{ fontSize: 11, color: 'var(--ink-muted)', marginBottom: 4 }}>{t.descrizione}</div>}
-                          {t.aziendaNome && <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600 }}>🏢 {t.aziendaNome}</div>}
-                          {scaduta && <div style={{ fontSize: 10, color: 'var(--danger)', fontWeight: 700, marginTop: 4 }}>⚠️ Scaduto</div>}
+                          {t.aziendaNome && <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600 }}><Icona nome="aziende" testo />{t.aziendaNome}</div>}
+                          {scaduta && <div style={{ fontSize: 10, color: 'var(--danger)', fontWeight: 700, marginTop: 4 }}><Icona nome="avviso" testo />Scaduto</div>}
                         </div>
                       );
                     })}
@@ -658,7 +659,7 @@ function PlanningSettimanale({ tasks, operatori }) {
                   <div style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 700, marginBottom: 4, textTransform: 'uppercase' }}>Non assegnato</div>
                   <BadgePriorita priorita={t.priorita} />
                   <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-muted)', marginTop: 4 }}>{t.titolo}</div>
-                  {t.aziendaNome && <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600, marginTop: 2 }}>🏢 {t.aziendaNome}</div>}
+                  {t.aziendaNome && <div style={{ fontSize: 11, color: 'var(--primary)', fontWeight: 600, marginTop: 2 }}><Icona nome="aziende" testo />{t.aziendaNome}</div>}
                 </div>
               );
             })}
@@ -676,7 +677,7 @@ function PlanningSettimanale({ tasks, operatori }) {
         <table style={{ borderCollapse: 'separate', borderSpacing: 0, width: '100%', minWidth: 700 }}>
           <thead>
             <tr>
-              <th style={{ width: 130, padding: '10px 12px', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '8px 0 0 0', fontSize: 12, color: 'var(--ink-muted)', textAlign: 'left', fontWeight: 700 }}>
+              <th style={{ width: 130, padding: '10px 12px', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '8px 0 0 0', fontSize: 12, color: 'var(--ink-muted)', textAlign: 'left', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>
                 Operatore
               </th>
               {giorni.map((g, i) => {
@@ -686,7 +687,7 @@ function PlanningSettimanale({ tasks, operatori }) {
                     padding: '10px 6px', textAlign: 'center',
                     background: isOggi ? 'var(--primary-soft)' : 'var(--surface-2)',
                     border: '1px solid var(--line)', borderLeft: 'none',
-                    borderRadius: i === 6 ? '0 8px 0 0' : 0, minWidth: 110,
+                    borderRadius: i === 6 ? '0 8px 0 0' : 0, minWidth: 110, color: 'var(--ink-muted)', fontWeight: 600, fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)',
                   }}>
                     <div style={{ fontSize: 11, fontWeight: 600, color: isOggi ? 'var(--primary)' : 'var(--ink-muted)', textTransform: 'uppercase' }}>{GIORNI[i]}</div>
                     <div style={{ fontSize: 15, fontWeight: 700, color: isOggi ? 'var(--primary)' : 'var(--ink)' }}>{g.getDate()}</div>
@@ -718,7 +719,7 @@ function PlanningSettimanale({ tasks, operatori }) {
                           return (
                             <div key={t.id} style={{ background: p.bg, border: `1px solid ${p.border}`, borderRadius: 6, padding: '4px 7px', fontSize: 11, fontWeight: 600, color: p.color, lineHeight: 1.3 }}>
                               {t.titolo}
-                              {t.aziendaNome && <div style={{ fontSize: 10, fontWeight: 400, color: 'var(--primary)', marginTop: 2 }}>🏢 {t.aziendaNome}</div>}
+                              {t.aziendaNome && <div style={{ fontSize: 10, fontWeight: 400, color: 'var(--primary)', marginTop: 2 }}><Icona nome="aziende" testo />{t.aziendaNome}</div>}
                             </div>
                           );
                         })}
@@ -832,7 +833,7 @@ function PaginaPlanning({ operatori = [], userData }) {
         try {
           await addDoc(collection(db, 'notifiche_operatori'), {
             operatoreId: nuovoOp,
-            titolo: '📋 Task assegnato',
+            titolo: 'Task assegnato',
             messaggio: payload.titolo || 'Hai un nuovo task',
             createdAt: serverTimestamp(),
           });
@@ -890,7 +891,7 @@ function PaginaPlanning({ operatori = [], userData }) {
         try {
           await addDoc(collection(db, 'notifiche_operatori'), {
             operatoreId: userId,
-            titolo: '📋 Task assegnato',
+            titolo: 'Task assegnato',
             messaggio: task.titolo || 'Hai un nuovo task',
             createdAt: serverTimestamp(),
           });
@@ -912,7 +913,7 @@ function PaginaPlanning({ operatori = [], userData }) {
       {/* ── HEADER ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: 'var(--ink)' }}>📋 Planning & Task</h2>
+          <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: 'var(--ink)' }}><Icona nome="elenco" testo />Planning & Task</h2>
           {!isMobile && <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-muted)' }}>Organizza e monitora il lavoro degli operatori</p>}
         </div>
         {(isAdmin || isOperatore) && (
@@ -928,10 +929,10 @@ function PaginaPlanning({ operatori = [], userData }) {
       {/* ── STATS ── */}
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 10 : 12, marginBottom: 20 }}>
         {[
-          { label: 'Da fare',    value: totDaFare,     color: 'var(--ink-muted)', bg: 'var(--surface-2)', icon: '⬜' },
-          { label: 'In corso',   value: totInCorso,    color: 'var(--warning)', bg: 'var(--warning-soft)', icon: '🟡' },
-          { label: 'Completati', value: totCompletati, color: 'var(--success)', bg: 'var(--success-soft)', icon: '✅' },
-          { label: 'Scaduti',    value: totScaduti,    color: 'var(--danger)', bg: 'var(--danger-soft)', icon: '⚠️' },
+          { label: 'Da fare',    value: totDaFare,     color: 'var(--ink-muted)', bg: 'var(--surface-2)', icon: <Icona nome="cerchio" /> },
+          { label: 'In corso',   value: totInCorso,    color: 'var(--warning)', bg: 'var(--warning-soft)', icon: <Icona nome="metà" /> },
+          { label: 'Completati', value: totCompletati, color: 'var(--success)', bg: 'var(--success-soft)', icon: <Icona nome="check" /> },
+          { label: 'Scaduti',    value: totScaduti,    color: 'var(--danger)', bg: 'var(--danger-soft)', icon: <Icona nome="avviso" /> },
         ].map(s => (
           <div key={s.label} style={{ background: s.bg, border: '1px solid var(--line)', borderRadius: 10, padding: isMobile ? '12px 14px' : '14px 16px' }}>
             <div style={{ fontSize: isMobile ? 18 : 22, marginBottom: 2 }}>{s.icon}</div>
@@ -945,8 +946,8 @@ function PaginaPlanning({ operatori = [], userData }) {
       <div style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', gap: 6, marginBottom: vistaAttiva === 'board' && isAdmin && operatori.length > 0 ? 10 : 0 }}>
           {[
-            { id: 'board',    label: isMobile ? '📋 Board'      : '📋 Board' },
-            { id: 'planning', label: isMobile ? '📅 Settimanale' : '📅 Planning settimanale' },
+            { id: 'board',    label: isMobile ? 'Board'      : 'Board' },
+            { id: 'planning', label: isMobile ? 'Settimanale' : 'Planning settimanale' },
           ].map(v => (
             <button
               key={v.id}
@@ -967,7 +968,7 @@ function PaginaPlanning({ operatori = [], userData }) {
           <select
             value={filtroOp}
             onChange={e => setFiltroOp(e.target.value)}
-            style={{ width: isMobile ? '100%' : 'auto', padding: '7px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 13, background: 'white', color: 'var(--ink)', cursor: 'pointer' }}
+            style={{ width: isMobile ? '100%' : 'auto', padding: '7px 12px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 13, background: 'white', color: 'var(--ink)', cursor: 'pointer' }}
           >
             <option value="">Tutti gli operatori</option>
             {operatori.map(op => <option key={op.id} value={op.id}>{op.nome}</option>)}

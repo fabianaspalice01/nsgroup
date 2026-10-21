@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import Icona from './Icona';
 
 const STATI_PREVENTIVO = [
-  { value: 'da_fare', label: 'Da fare', color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: '⬜' },
-  { value: 'in_corso', label: 'In corso', color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: '🟡' },
-  { value: 'completato', label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: '✅' },
+  { value: 'da_fare', label: 'Da fare', color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: <Icona nome="cerchio" /> },
+  { value: 'in_corso', label: 'In corso', color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: <Icona nome="metà" /> },
+  { value: 'completato', label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: <Icona nome="check" /> },
 ];
 
 function normalizzaStato(stato) {
@@ -21,17 +22,17 @@ function ElencoContratti({ contratti, onContratto, isMobile }) {
   const ordinati = [...contratti].sort((a, b) => String(b.data).localeCompare(String(a.data)));
   return (
     <div style={{ marginTop: 28 }}>
-      <h3 style={{ margin: '0 0 12px' }}>📝 Contratti ({contratti.length})</h3>
+      <h3 style={{ margin: '0 0 12px' }}><Icona nome="nota" testo />Contratti ({contratti.length})</h3>
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
         {ordinati.map((c) => (
           <div key={c.id} style={{ padding: 14, border: '1px solid var(--line)', borderRadius: 10, background: '#fff' }}>
             <div style={{ fontWeight: 700, fontSize: 14 }}>{c.cliente?.ragioneSociale || 'Cliente'}</div>
-            <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2 }}>📅 {fdata(c.data)} · scade il {fdata(c.scadenza)}</div>
-            <div style={{ fontSize: 12, marginTop: 4 }}>💰 <strong>€ {eur(c.importoTotale)}</strong> + IVA {c.periodicita === 'annuale' ? 'annuale' : 'mensile'}</div>
-            {c.consulente && <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}>👤 {c.consulente}</div>}
+            <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2 }}><Icona nome="agenda" testo />{fdata(c.data)} · scade il {fdata(c.scadenza)}</div>
+            <div style={{ fontSize: 12, marginTop: 4 }}><Icona nome="listino" testo /><strong>€ {eur(c.importoTotale)}</strong> + IVA {c.periodicita === 'annuale' ? 'annuale' : 'mensile'}</div>
+            {c.consulente && <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}><Icona nome="utente" testo />{c.consulente}</div>}
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
-              {c.pdfUrl && <a href={c.pdfUrl} target="_blank" rel="noreferrer" style={stileBtn('var(--primary)', 'white', 'var(--primary)')}>📄 PDF</a>}
-              <button onClick={() => onContratto(null, c)} style={stileBtn('var(--warning-soft)', 'var(--warning)', '#fde68a')}>✏️ Modifica</button>
+              {c.pdfUrl && <a href={c.pdfUrl} target="_blank" rel="noreferrer" style={stileBtn('var(--primary)', 'white', 'var(--primary)')}><Icona nome="documento" testo />PDF</a>}
+              <button onClick={() => onContratto(null, c)} style={stileBtn('var(--warning-soft)', 'var(--warning)', '#fde68a')}><Icona nome="modifica" testo />Modifica</button>
             </div>
           </div>
         ))}
@@ -48,44 +49,44 @@ function CardPreventivo({ prev, contratto, onContratto, onDettaglio, onPagamento
   return (
     <div style={{ padding: 14, border: '1px solid var(--line)', borderRadius: 10, background: '#fff' }}>
       <div style={{ fontWeight: 700, fontSize: 14 }}>{prev.nomeCliente || 'Cliente sconosciuto'}</div>
-      <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2 }}>📅 {new Date(prev.dataCreazione).toLocaleDateString()}</div>
-      <div style={{ fontSize: 12, marginTop: 4 }}>💰 Totale: <strong>€ {(prev.totale || 0).toFixed(2)}</strong></div>
-      {pagato > 0 && <div style={{ fontSize: 12, color: 'var(--success)' }}>✅ Pagato: € {pagato.toFixed(2)}</div>}
+      <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginTop: 2 }}><Icona nome="agenda" testo />{new Date(prev.dataCreazione).toLocaleDateString()}</div>
+      <div style={{ fontSize: 12, marginTop: 4 }}><Icona nome="listino" testo />Totale: <strong>€ {(prev.totale || 0).toFixed(2)}</strong></div>
+      {pagato > 0 && <div style={{ fontSize: 12, color: 'var(--success)' }}><Icona nome="check" testo />Pagato: € {pagato.toFixed(2)}</div>}
       {residuo > 0
-        ? <div style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>⏳ Residuo: € {residuo.toFixed(2)}</div>
-        : pagato > 0 && <div style={{ fontSize: 12, color: 'var(--success)', fontWeight: 700 }}>✔ Saldato</div>
+        ? <div style={{ fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}><Icona nome="orologio" testo />Residuo: € {residuo.toFixed(2)}</div>
+        : pagato > 0 && <div style={{ fontSize: 12, color: 'var(--success)', fontWeight: 700 }}><Icona nome="check" testo />Saldato</div>
       }
       {prev.motivazioneModifica && (
-        <div style={{ fontSize: 11, color: 'var(--primary)', marginTop: 4, fontStyle: 'italic' }}>📝 {prev.motivazioneModifica}</div>
+        <div style={{ fontSize: 11, color: 'var(--primary)', marginTop: 4, fontStyle: 'italic' }}><Icona nome="nota" testo />{prev.motivazioneModifica}</div>
       )}
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
         <button onClick={() => onDettaglio(prev)}
           style={{ padding: '6px 10px', background: 'var(--primary-soft)', color: 'var(--primary)', border: '1px solid #c3cde3', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-          ℹ️ Dettagli
+          <Icona nome="info" testo />Dettagli
         </button>
         <button onClick={() => onPagamento(prev)}
           style={{ padding: '6px 10px', background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #86efac', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-          💳 Pagamento
+          <Icona nome="carta" testo />Pagamento
         </button>
         <button onClick={() => onModifica(prev)}
           style={{ padding: '6px 10px', background: 'var(--warning-soft)', color: 'var(--warning)', border: '1px solid #fde68a', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-          ✏️ Modifica
+          <Icona nome="modifica" testo />Modifica
         </button>
         {onContratto && (contratto
           ? <button onClick={() => (contratto.pdfUrl ? window.open(contratto.pdfUrl, '_blank') : onContratto(prev, contratto))}
-              title="Contratto già firmato per questo preventivo" style={stileBtn('var(--success-soft)', 'var(--success)', '#6ee7b7')}>📝 Contratto ✓</button>
-          : <button onClick={() => onContratto(prev, null)} style={stileBtn('var(--primary-soft)', 'var(--primary)', 'var(--primary)')}>📝 Crea contratto</button>)}
+              title="Contratto già firmato per questo preventivo" style={stileBtn('var(--success-soft)', 'var(--success)', '#6ee7b7')}><Icona nome="nota" testo />Contratto ✓</button>
+          : <button onClick={() => onContratto(prev, null)} style={stileBtn('var(--primary-soft)', 'var(--primary)', 'var(--primary)')}><Icona nome="nota" testo />Crea contratto</button>)}
         {prev.pdfUrl && (
           <a href={prev.pdfUrl} target="_blank" rel="noreferrer"
             style={{ padding: '6px 10px', background: 'var(--primary)', color: 'white', borderRadius: 6, textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>
-            📄 PDF
+            <Icona nome="documento" testo />PDF
           </a>
         )}
         {onElimina && (
           <button onClick={() => onElimina(prev.id)}
             style={{ padding: '6px 10px', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-            🗑️ Elimina
+            <Icona nome="cestino" testo />Elimina
           </button>
         )}
       </div>
@@ -123,7 +124,7 @@ function CardPreventivo({ prev, contratto, onContratto, onDettaglio, onPagamento
 
 function PaginaPreventivi({
   preventivi,
-  titolo = '📄 Preventivi',
+  titolo = 'Preventivi',
   showNuovo = false,
   onNuovo,
   onDettaglio,
@@ -170,10 +171,10 @@ function PaginaPreventivi({
 
       <input
         type="text"
-        placeholder="🔍 Cerca per cliente..."
+        placeholder="Cerca per cliente..."
         value={ricerca}
         onChange={e => setRicerca(e.target.value)}
-        style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 14, marginBottom: 16, boxSizing: 'border-box' }}
+        style={{ width: '100%', padding: '10px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line-strong)', fontSize: 14, marginBottom: 16, boxSizing: 'border-box' }}
       />
 
       {preventivi.length === 0 ? (
@@ -220,7 +221,7 @@ function PaginaPreventivi({
               onClick={() => setCompletatiAperti(true)}
               style={{ textAlign: 'center', padding: '22px 0', color: 'var(--success)', fontSize: 13, fontWeight: 600, background: 'var(--success-soft)', borderRadius: 10, border: '1px dashed #bbf7d0', cursor: 'pointer' }}
             >
-              ✅ {perColonna('completato').length} completati — clicca per espandere
+              <Icona nome="check" testo />{perColonna('completato').length} completati — clicca per espandere
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

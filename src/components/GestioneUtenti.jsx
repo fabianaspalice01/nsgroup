@@ -4,6 +4,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp, deleteApp } from 'firebase/app';
 import { db, firebaseConfig } from '../firebase';
 import toast from "react-hot-toast";
+import Icona from './Icona';
 
 // Le regole di Firebase riconoscono gli amministratori dalla raccolta admins (una voce per email):
 // solo loro possono leggere la contabilità (crm_*). Va tenuta allineata a ruolo e stato degli utenti.
@@ -187,7 +188,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
           : `Ti sono state assegnate ${nomi.length} aziende: ${nomi.join(', ')}`;
         await addDoc(collection(db, 'notifiche_operatori'), {
           operatoreId: utentePerAziende.id,
-          titolo: '🏢 Nuove aziende assegnate',
+          titolo: 'Nuove aziende assegnate',
           messaggio,
           createdAt: new Date().toISOString(),
         });
@@ -227,7 +228,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <div>
-          <h2 style={{ margin: 0 }}>👥 Gestione Utenti</h2>
+          <h2 style={{ margin: 0 }}><Icona nome="utenti" testo />Gestione Utenti</h2>
           <p style={{ color: 'var(--ink-muted)', fontSize: 14, margin: '4px 0 0' }}>
             {utenti.length} utenti totali
           </p>
@@ -301,7 +302,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         onClick={() => apriModificaRuolo(utente)}
                         style={{ background: 'var(--primary-soft)', color: 'var(--primary)', border: '1px solid #c3cde3', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
-                        ✏️ Ruolo
+                        <Icona nome="modifica" testo />Ruolo
                       </button>
                     )}
                     {utente.ruolo !== 'azienda' && (
@@ -309,7 +310,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         onClick={() => apriAssegnazioneAziende(utente)}
                         style={{ background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #bbf7d0', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
-                        🏢 Aziende{aziende.filter(a => a.assegnatoA === utente.id).length > 0 && ` (${aziende.filter(a => a.assegnatoA === utente.id).length})`}
+                        <Icona nome="aziende" testo />Aziende{aziende.filter(a => a.assegnatoA === utente.id).length > 0 && ` (${aziende.filter(a => a.assegnatoA === utente.id).length})`}
                       </button>
                     )}
                     {puoGestireMobile && (
@@ -322,7 +323,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                           fontSize: 12, fontWeight: 600
                         }}
                       >
-                        🗑️ Elimina
+                        <Icona nome="cestino" testo />Elimina
                       </button>
                     )}
                   </div>
@@ -336,15 +337,15 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--surface-2)', borderBottom: '2px solid var(--line)' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Nome</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Email</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Ruolo</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Azienda</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Stato</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Attiva/Disattiva</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Ruolo</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Aziende</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--ink-muted)' }}>Elimina</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Nome</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Email</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Ruolo</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Azienda</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Stato</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Attiva/Disattiva</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Ruolo</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Aziende</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--ink-muted)', letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>Elimina</th>
               </tr>
             </thead>
             <tbody>
@@ -400,7 +401,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         onClick={() => apriModificaRuolo(utente)}
                         style={{ background: 'var(--primary-soft)', color: 'var(--primary)', border: '1px solid #c3cde3', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
-                        ✏️ Ruolo
+                        <Icona nome="modifica" testo />Ruolo
                       </button>
                     ) : <span style={{ color: '#c9d1e0', fontSize: 12 }}>—</span>}
                   </td>
@@ -410,7 +411,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         onClick={() => apriAssegnazioneAziende(utente)}
                         style={{ background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #bbf7d0', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
-                        🏢{aziende.filter(a => a.assegnatoA === utente.id).length > 0 ? ` ${aziende.filter(a => a.assegnatoA === utente.id).length}` : ''}
+                        <Icona nome="aziende" />{aziende.filter(a => a.assegnatoA === utente.id).length > 0 ? ` ${aziende.filter(a => a.assegnatoA === utente.id).length}` : ''}
                       </button>
                     ) : <span style={{ color: '#c9d1e0', fontSize: 12 }}>—</span>}
                   </td>
@@ -420,7 +421,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         onClick={() => setUtentePerElimina(utente)}
                         style={{ background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecdd3', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                       >
-                        🗑️
+                        <Icona nome="cestino" />
                       </button>
                     ) : <span style={{ color: '#c9d1e0', fontSize: 12 }}>—</span>}
                   </td>
@@ -442,14 +443,14 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
       )}
 
       {utentePerElimina && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
-            <h3 style={{ margin: '0 0 10px', fontSize: 17 }}>🗑️ Elimina utente</h3>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '90%', maxWidth: 420, boxShadow: 'var(--shadow-pop)' }}>
+            <h3 style={{ margin: '0 0 10px', fontSize: 17 }}><Icona nome="cestino" testo />Elimina utente</h3>
             <p style={{ margin: '0 0 6px', fontSize: 14, color: 'var(--ink-muted)' }}>
               Stai per eliminare <strong>{utentePerElimina.nome}</strong> ({utentePerElimina.email}).
             </p>
             <p style={{ margin: '0 0 22px', fontSize: 13, color: 'var(--danger)', background: 'var(--danger-soft)', padding: '10px 14px', borderRadius: 8, border: '1px solid #fecdd3' }}>
-              ⚠️ L'account verrà rimosso definitivamente e non potrà più accedere all'app.
+              <Icona nome="avviso" testo />L'account verrà rimosso definitivamente e non potrà più accedere all'app.
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button
@@ -470,9 +471,9 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
       )}
 
       {utentePerRuolo && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
-            <h3 style={{ margin: '0 0 4px', fontSize: 17 }}>✏️ Modifica ruolo</h3>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '90%', maxWidth: 420, boxShadow: 'var(--shadow-pop)' }}>
+            <h3 style={{ margin: '0 0 4px', fontSize: 17 }}><Icona nome="modifica" testo />Modifica ruolo</h3>
             <p style={{ margin: '0 0 20px', fontSize: 13, color: 'var(--ink-muted)' }}>{utentePerRuolo.nome} — {utentePerRuolo.email}</p>
 
             <div style={{ marginBottom: 16 }}>
@@ -480,7 +481,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
               <select
                 value={nuovoRuolo}
                 onChange={e => setNuovoRuolo(e.target.value)}
-                style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 14 }}
+                style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14 }}
               >
                 {utenteCorrente?.ruolo === 'admin' && <option value="admin">Admin</option>}
                 <option value="consulente">Consulente</option>
@@ -495,7 +496,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                 <select
                   value={nuovoAziendaId}
                   onChange={e => setNuovoAziendaId(e.target.value)}
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 14 }}
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14 }}
                 >
                   <option value="">-- Seleziona azienda --</option>
                   {aziende.map(az => (
@@ -525,9 +526,9 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
 
       {/* ── MODAL ASSEGNAZIONE AZIENDE ── */}
       {utentePerAziende && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 480, maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
-            <h3 style={{ margin: '0 0 4px', fontSize: 17 }}>🏢 Aziende assegnate</h3>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '90%', maxWidth: 480, maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-pop)' }}>
+            <h3 style={{ margin: '0 0 4px', fontSize: 17 }}><Icona nome="aziende" testo />Aziende assegnate</h3>
             <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--ink-muted)' }}>{utentePerAziende.nome} — {utentePerAziende.ruolo}</p>
 
             {/* Cerca */}
@@ -535,7 +536,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
               type="text"
               id="ricercaAziendeModal"
               placeholder="Cerca azienda..."
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 13, marginBottom: 10, boxSizing: 'border-box', outline: 'none' }}
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 13, marginBottom: 10, boxSizing: 'border-box', outline: 'none' }}
             />
 
             {/* Lista con scroll */}
@@ -560,7 +561,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)' }}>{az.nome}</div>
                         {az.comune && <div style={{ fontSize: 11, color: 'var(--ink-muted)' }}>{[az.comune, az.provincia ? `(${az.provincia})` : ''].filter(Boolean).join(' ')}</div>}
                         {altroAssegnato && !assegnata && (
-                          <div style={{ fontSize: 11, color: 'var(--warning)', fontWeight: 600 }}>👤 Assegnata a {az.assegnatoNome}</div>
+                          <div style={{ fontSize: 11, color: 'var(--warning)', fontWeight: 600 }}><Icona nome="utente" testo />Assegnata a {az.assegnatoNome}</div>
                         )}
                       </div>
                     </label>
@@ -576,7 +577,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                           borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 11, fontWeight: 600,
                         }}
                       >
-                        {downloadOn ? '📥 Download ✓' : '📥 Download'}
+                        {downloadOn ? 'Download ✓' : 'Download'}
                       </button>
                     )}
                   </div>
@@ -606,9 +607,9 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
 
       {/* Dialog conflitto assegnazione azienda */}
       {confirmAssegna && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16 }}>⚠️ Azienda già assegnata</h3>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
+          <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '90%', maxWidth: 420, boxShadow: 'var(--shadow-pop)' }}>
+            <h3 style={{ margin: '0 0 12px', fontSize: 16 }}><Icona nome="avviso" testo />Azienda già assegnata</h3>
             <p style={{ margin: '0 0 8px', fontSize: 14, color: 'var(--ink-muted)' }}>
               <strong>{confirmAssegna.az.nome}</strong> è già assegnata a <strong>{confirmAssegna.assegnatoNome}</strong>.
             </p>
@@ -728,7 +729,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
+      background: 'var(--overlay)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -737,9 +738,9 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
       <div style={{
         background: 'white',
         padding: 30,
-        borderRadius: 12,
+        borderRadius: 'var(--radius-xl)',
         width: '90%',
-        maxWidth: 500
+        maxWidth: 500, boxShadow: 'var(--shadow-pop)'
       }}>
         <h2 style={{ marginBottom: 20 }}>Crea Nuovo Utente</h2>
 
@@ -753,8 +754,8 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid var(--line)',
-              borderRadius: 6,
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: 14
             }}
           >
@@ -777,8 +778,8 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid var(--line)',
-              borderRadius: 6,
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: 14
             }}
           />
@@ -796,8 +797,8 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid var(--line)',
-              borderRadius: 6,
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: 14
             }}
           />
@@ -815,8 +816,8 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             style={{
               width: '100%',
               padding: 10,
-              border: '1px solid var(--line)',
-              borderRadius: 6,
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: 14
             }}
           />
@@ -833,8 +834,8 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
               style={{
                 width: '100%',
                 padding: 10,
-                border: '1px solid var(--line)',
-                borderRadius: 6,
+                border: '1px solid var(--line-strong)',
+                borderRadius: 'var(--radius-sm)',
                 fontSize: 14
               }}
             >

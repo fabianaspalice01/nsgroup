@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import Icona from './Icona';
 
 const SCHEMES = {
     blue:   { color: 'var(--primary)', bg: 'var(--primary-soft)', border: '#c3cde3', dragBg: '#c3cde3' },
@@ -54,9 +55,9 @@ function DropZone({ accept, onFile, onRemove, file, label, compact = false, colo
             <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center', position: 'relative' }} {...dragProps}>
                 {fileInput}
                 {camInput}
-                <label htmlFor={id} style={baseStyle}>📎 {label ?? 'Allega'}</label>
+                <label htmlFor={id} style={baseStyle}><Icona nome="allegato" testo />{label ?? 'Allega'}</label>
                 {hasCamera && (
-                    <label htmlFor={camId} style={{ ...baseStyle, background: dragging ? s.dragBg : s.bg }}>📷 Foto</label>
+                    <label htmlFor={camId} style={{ ...baseStyle, background: dragging ? s.dragBg : s.bg }}><Icona nome="foto" testo />Foto</label>
                 )}
             </span>
         );
@@ -92,7 +93,7 @@ function DropZone({ accept, onFile, onRemove, file, label, compact = false, colo
                 cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
                 boxSizing: 'border-box', userSelect: 'none',
             }}>
-                <div style={{ fontSize: 22, marginBottom: 6 }}>📂</div>
+                <div style={{ fontSize: 22, marginBottom: 6 }}><Icona nome="cartella" /></div>
                 <div style={{ fontSize: 13, color: dragging ? 'var(--primary)' : 'var(--ink-muted)', fontWeight: dragging ? 700 : 400 }}>
                     {dragging ? 'Rilascia il file qui' : (label ?? 'Trascina qui o clicca per selezionare')}
                 </div>
@@ -105,7 +106,7 @@ function DropZone({ accept, onFile, onRemove, file, label, compact = false, colo
                     cursor: 'pointer', textAlign: 'center', fontSize: 13,
                     color: 'var(--primary)', fontWeight: 600, userSelect: 'none', boxSizing: 'border-box',
                 }}>
-                    📷 Scatta foto
+                    <Icona nome="foto" testo />Scatta foto
                 </label>
             )}
         </div>

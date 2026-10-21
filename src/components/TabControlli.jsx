@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import BadgeStato, { statoScadenza } from './BadgeStato';
+import Icona from './Icona';
 
 function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo, readOnly }) {
   const [mostraModaleControllo, setMostraModaleControllo] = useState(false);
@@ -147,7 +148,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
                 {controllo.pdfUrl && (
                   <a href={controllo.pdfUrl} target="_blank" rel="noopener noreferrer"
                     style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: 600 }}>
-                    📄 Visualizza documento
+                    <Icona nome="documento" testo />Visualizza documento
                   </a>
                 )}
               </div>
@@ -168,7 +169,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
                         fontWeight: '600'
                       }}
                     >
-                      ✏️ Modifica
+                      <Icona nome="modifica" testo />Modifica
                     </button>
                     <button
                       onClick={() => apriRinnovo(controllo)}
@@ -183,7 +184,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
                         fontWeight: '600'
                       }}
                     >
-                      🔄 Rinnova
+                      <Icona nome="ripristina" testo />Rinnova
                     </button>
                   </>
                 )}
@@ -211,9 +212,9 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
       )}
 
       {controlloInRinnovo && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '90%', maxWidth: 420 }}>
-            <h3 style={{ margin: '0 0 6px' }}>🔄 Rinnova Controllo</h3>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '90%', maxWidth: 420, boxShadow: 'var(--shadow-pop)' }}>
+            <h3 style={{ margin: '0 0 6px' }}><Icona nome="ripristina" testo />Rinnova Controllo</h3>
             <p style={{ color: 'var(--ink-muted)', fontSize: 14, margin: '0 0 20px' }}>
               <strong>{controlloInRinnovo.tipo}</strong><br />
               Scadenza attuale: {formatData(controlloInRinnovo.scadenza)}
@@ -226,7 +227,7 @@ function TabControlli({ azienda, onUpdateAzienda, onAddControllo, tipiControllo,
               value={nuovaScadenza}
               onChange={e => setNuovaScadenza(e.target.value)}
               min={new Date().toISOString().split('T')[0]}
-              style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', marginBottom: 20 }}
+              style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--line-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, boxSizing: 'border-box', marginBottom: 20 }}
             />
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button

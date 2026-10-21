@@ -3,7 +3,7 @@ function ConfirmModal({ message, onConfirm, onCancel, confirmLabel = 'Conferma',
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(0,0,0,0.45)',
+      background: 'var(--overlay)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -11,7 +11,7 @@ function ConfirmModal({ message, onConfirm, onCancel, confirmLabel = 'Conferma',
     }}>
       <div style={{
         background: 'white',
-        borderRadius: 12,
+        borderRadius: 'var(--radius-xl)',
         padding: '28px 32px',
         maxWidth: 420,
         width: '90%',

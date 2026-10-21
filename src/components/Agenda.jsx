@@ -11,6 +11,7 @@ import ModaleGoogleCalendar from './ModaleGoogleCalendar';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage, db, auth } from '../firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import Icona from './Icona';
 
 function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, onDeleteAppuntamento, canDelete = true, userRole = 'admin', userData, listino = {}, serviziExtra = [], tuttiIServizi = [], checklistVoci = [] }) {
     const [mostraModale, setMostraModale] = useState(false);
@@ -605,8 +606,8 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                         <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginBottom: 6 }}>{getDettagliCliente(app)}</div>
 
                         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: app.note ? 6 : 0 }}>
-                            <span style={{ fontSize: 12, color: 'var(--primary-ink)', fontWeight: 600 }}>📋 {app.tipo}</span>
-                            {app.consulente && <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>👤 {app.consulente}</span>}
+                            <span style={{ fontSize: 12, color: 'var(--primary-ink)', fontWeight: 600 }}><Icona nome="elenco" testo />{app.tipo}</span>
+                            {app.consulente && <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}><Icona nome="utente" testo />{app.consulente}</span>}
                         </div>
 
                         {app.note && <p style={{ fontSize: 12, color: 'var(--ink-muted)', margin: '4px 0 0', fontStyle: 'italic' }}>{app.note}</p>}
@@ -620,14 +621,14 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
 
                         {userRole === 'admin' && app.logModifiche?.length > 0 && (
                             <div style={{ marginTop: 8, padding: '8px 10px', background: 'var(--primary-soft)', borderRadius: 6, border: '1px solid #c3cde3' }}>
-                                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', marginBottom: 4 }}>📋 Storico modifiche</div>
+                                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', marginBottom: 4 }}><Icona nome="elenco" testo />Storico modifiche</div>
                                 {app.logModifiche.map((log, idx) => (
                                     <div key={idx} style={{ fontSize: 10, color: 'var(--navy-900)', paddingLeft: 6, borderLeft: '2px solid var(--primary-ink)', marginBottom: 4 }}>
                                         <div style={{ fontWeight: 700 }}>
                                             {new Date(log.timestamp).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} — {log.consulente}
                                         </div>
                                         {log.modifiche.map((mod, i) => <div key={i}>• {mod}</div>)}
-                                        {log.motivazione && <div style={{ fontStyle: 'italic' }}>💬 {log.motivazione}</div>}
+                                        {log.motivazione && <div style={{ fontStyle: 'italic' }}><Icona nome="messaggio" testo />{log.motivazione}</div>}
                                     </div>
                                 ))}
                             </div>
@@ -637,14 +638,14 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     {/* Azioni in fondo */}
                     <div style={{ display: 'flex', gap: 8, padding: '10px 14px', borderTop: '1px solid var(--surface-2)' }}>
                         <button onClick={() => handleCreaPreventivo(app)} style={{ flex: 1, background: 'var(--success-soft)', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 0', cursor: 'pointer', fontSize: 12, color: 'var(--success)', fontWeight: 700 }}>
-                            📋 Preventivo
+                            <Icona nome="elenco" testo />Preventivo
                         </button>
                         <button onClick={() => handleEditAppuntamento(app)} style={{ flex: 1, background: 'var(--primary-soft)', border: '1px solid var(--line)', borderRadius: 8, padding: '8px 0', cursor: 'pointer', fontSize: 12, color: 'var(--primary-ink)', fontWeight: 700 }}>
-                            ✏️ Modifica
+                            <Icona nome="modifica" testo />Modifica
                         </button>
                         {canDelete && (
                             <button onClick={() => handleDelete(app.id)} style={{ background: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 12px', cursor: 'pointer', fontSize: 12, color: 'var(--danger)', fontWeight: 700 }}>
-                                🗑️
+                                <Icona nome="cestino" />
                             </button>
                         )}
                     </div>
@@ -670,8 +671,8 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     </div>
                     <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 6 }}>{getDettagliCliente(app)}</div>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 6 }}>
-                        <span style={{ fontSize: 13, color: 'var(--primary-ink)', fontWeight: 600 }}>📋 {app.tipo}</span>
-                        {app.consulente && <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}>👤 {app.consulente}</span>}
+                        <span style={{ fontSize: 13, color: 'var(--primary-ink)', fontWeight: 600 }}><Icona nome="elenco" testo />{app.tipo}</span>
+                        {app.consulente && <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}><Icona nome="utente" testo />{app.consulente}</span>}
                     </div>
                     {app.note && <p style={{ fontSize: 13, color: 'var(--ink-muted)', margin: '6px 0 0', fontStyle: 'italic' }}>{app.note}</p>}
                     {app.stato === 'Disdetto' && app.motivazioneDisdetta && (
@@ -682,7 +683,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     )}
                     {userRole === 'admin' && app.logModifiche?.length > 0 && (
                         <div style={{ marginTop: 8, padding: 10, background: 'var(--primary-soft)', borderRadius: 6, border: '1px solid #c3cde3' }}>
-                            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--primary)', marginBottom: 6 }}>📋 Storico Modifiche:</div>
+                            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--primary)', marginBottom: 6 }}><Icona nome="elenco" testo />Storico Modifiche:</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                                 {app.logModifiche.map((log, idx) => (
                                     <div key={idx} style={{ fontSize: 11, color: 'var(--navy-900)', paddingLeft: 8, borderLeft: '2px solid var(--primary-ink)' }}>
@@ -690,7 +691,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                                             {new Date(log.timestamp).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} - {log.consulente}
                                         </div>
                                         {log.modifiche.map((mod, i) => <div key={i}>• {mod}</div>)}
-                                        {log.motivazione && <div style={{ fontStyle: 'italic', marginTop: 2 }}>💬 {log.motivazione}</div>}
+                                        {log.motivazione && <div style={{ fontStyle: 'italic', marginTop: 2 }}><Icona nome="messaggio" testo />{log.motivazione}</div>}
                                     </div>
                                 ))}
                             </div>
@@ -702,10 +703,10 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     <span style={{ background: colore.bg, color: colore.color, padding: '4px 10px', borderRadius: 12, fontSize: 11, fontWeight: 700, textAlign: 'center' }}>
                         {app.stato.toUpperCase()}
                     </span>
-                    <button onClick={() => handleCreaPreventivo(app)} style={{ background: 'var(--success-soft)', border: '1px solid #bbf7d0', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 12, color: 'var(--success)', fontWeight: 'bold' }}>📋</button>
-                    <button onClick={() => handleEditAppuntamento(app)} style={{ background: 'var(--primary-soft)', border: '1px solid var(--line)', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 12, color: 'var(--primary-ink)', fontWeight: 'bold' }}>✏️</button>
+                    <button onClick={() => handleCreaPreventivo(app)} style={{ background: 'var(--success-soft)', border: '1px solid #bbf7d0', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 12, color: 'var(--success)', fontWeight: 'bold' }}><Icona nome="elenco" /></button>
+                    <button onClick={() => handleEditAppuntamento(app)} style={{ background: 'var(--primary-soft)', border: '1px solid var(--line)', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 12, color: 'var(--primary-ink)', fontWeight: 'bold' }}><Icona nome="modifica" /></button>
                     {canDelete && (
-                        <button onClick={() => handleDelete(app.id)} style={{ background: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '12px', color: 'var(--danger)', fontWeight: 'bold' }}>🗑️</button>
+                        <button onClick={() => handleDelete(app.id)} style={{ background: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '12px', color: 'var(--danger)', fontWeight: 'bold' }}><Icona nome="cestino" /></button>
                     )}
                 </div>
             </div>
@@ -737,7 +738,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
             <div style={{ marginBottom: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 10 : 0 }}>
                     <div>
-                        <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, color: 'var(--ink)', fontWeight: 700 }}>📅 Agenda</h2>
+                        <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, color: 'var(--ink)', fontWeight: 700 }}><Icona nome="agenda" testo />Agenda</h2>
                         {!isMobile && <p style={{ margin: '4px 0 0', color: 'var(--ink-muted)', fontSize: 13 }}>{appuntamenti.length} appuntamenti totali</p>}
                     </div>
 
@@ -745,10 +746,10 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                         {!isMobile && (
                             <>
                                 <button onClick={() => setVistaCorrente('lista')} style={{ padding: '10px 14px', borderRadius: 8, border: vistaCorrente === 'lista' ? 'none' : '1.5px solid var(--line)', background: vistaCorrente === 'lista' ? 'var(--navy-900)' : '#fff', color: vistaCorrente === 'lista' ? '#fff' : 'var(--ink-muted)', cursor: 'pointer', fontWeight: 700 }}>
-                                    📋 Lista
+                                    <Icona nome="elenco" testo />Lista
                                 </button>
                                 <button onClick={() => setVistaCorrente('calendario')} style={{ padding: '10px 14px', borderRadius: 8, border: vistaCorrente === 'calendario' ? 'none' : '1.5px solid var(--line)', background: vistaCorrente === 'calendario' ? 'var(--navy-900)' : '#fff', color: vistaCorrente === 'calendario' ? '#fff' : 'var(--ink-muted)', cursor: 'pointer', fontWeight: 700 }}>
-                                    🗓️ Calendario
+                                    <Icona nome="agenda" testo />Calendario
                                 </button>
                             </>
                         )}
@@ -758,14 +759,14 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                                 title="Collega l'agenda a Google Calendar e importa lo storico"
                                 style={{ padding: isMobile ? '9px 12px' : '10px 14px', borderRadius: 8, border: '1.5px solid var(--line)', background: '#fff', color: 'var(--primary-ink)', cursor: 'pointer', fontSize: isMobile ? 13 : 14, fontWeight: 700 }}
                             >
-                                {isMobile ? '🔗 Google' : '🔗 Google Calendar'}
+                                {isMobile ? 'Google' : 'Google Calendar'}
                             </button>
                         )}
                         <button
                             onClick={() => { setAppuntamentoPerPreventivo(null); setMostraModalePreventivo(true); }}
                             style={{ padding: isMobile ? '9px 12px' : '10px 20px', border: '2px solid var(--success)', borderRadius: 8, background: 'white', color: 'var(--success)', cursor: 'pointer', fontSize: isMobile ? 13 : 14, fontWeight: 'bold' }}
                         >
-                            {isMobile ? '📋 Preventivo' : '📋 Nuovo Preventivo'}
+                            {isMobile ? 'Preventivo' : 'Nuovo Preventivo'}
                         </button>
                         <button
                             onClick={handleAddAppuntamento}
@@ -799,7 +800,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
 
             {/* Cerca */}
             <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}>🔍</span>
+                <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}><Icona nome="cerca" /></span>
                 <input
                     type="text"
                     value={searchTerm}
@@ -808,7 +809,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     style={{
                         flex: 1,
                         maxWidth: isMobile ? '100%' : 240,
-                        padding: '7px 10px', borderRadius: 8,
+                        padding: '7px 10px', borderRadius: 'var(--radius-sm)',
                         border: searchTerm ? '1.5px solid var(--primary)' : '1.5px solid var(--line)',
                         boxShadow: searchTerm ? '0 0 0 3px rgba(44,62,102,0.10)' : 'none',
                         fontSize: 13, outline: 'none', background: '#fff'
@@ -891,8 +892,8 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                                         }}
                                     >
                                         {mostraPrecedenti
-                                            ? '🔽 Nascondi giorni precedenti'
-                                            : `▶️ Mostra giorni precedenti (${datePrecedenti.length})`}
+                                            ? 'Nascondi giorni precedenti'
+                                            : `Mostra giorni precedenti (${datePrecedenti.length})`}
                                     </button>
 
                                     {mostraPrecedenti && (
@@ -936,7 +937,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                     style={{
                         position: 'fixed',
                         inset: 0,
-                        background: 'rgba(0,0,0,0.4)',  // leggermente più soft
+                        background: 'var(--overlay)',  // leggermente più soft
                         backdropFilter: 'blur(3px)',   // ✅ BONUS PROFESSIONALE
                         transition: 'all 0.2s ease',
                         display: 'flex',
@@ -952,7 +953,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                             width: '92%',
                             maxWidth: 440,
                             background: 'white',
-                            borderRadius: 16,
+                            borderRadius: 'var(--radius-xl)',
                             padding: 18,
                             boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
                             border: '1px solid var(--line)'
@@ -973,7 +974,7 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                                             border: '1px solid var(--line)'
                                         }}
                                     >
-                                        📅
+                                        <Icona nome="agenda" />
                                     </div>
                                     <div style={{ fontSize: 16, fontWeight: 900, color: 'var(--navy-900)' }}>Sposta appuntamento</div>
                                 </div>
@@ -1071,8 +1072,8 @@ function Agenda({ appuntamenti, aziende, consulenti = [], onSaveAppuntamento, on
                                     style={{
                                         width: '100%',
                                         padding: '10px 12px',
-                                        borderRadius: 12,
-                                        border: '1px solid var(--line)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        border: '1px solid var(--line-strong)',
                                         fontWeight: 800
                                     }}
                                 />

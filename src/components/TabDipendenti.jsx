@@ -7,6 +7,7 @@ import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import toast from 'react-hot-toast';
 import BadgeStato, { statoScadenza } from './BadgeStato';
+import Icona from './Icona';
 
 const COLONNE_MAPPA = {
   nome: ['nome', 'name', 'firstname', 'first name'],
@@ -306,9 +307,9 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
                 <h4 style={{ marginBottom: '5px', color: 'var(--ink)' }}>{dipendente.nome} {dipendente.cognome}</h4>
                 {dipendente.mansione && <p style={{ fontSize: '14px', color: 'var(--primary)', marginBottom: '5px', fontWeight: '600' }}>{dipendente.mansione}</p>}
                 <div style={{ fontSize: '13px', color: 'var(--ink-muted)' }}>
-                  {dipendente.telefono && <span>📱 {dipendente.telefono}</span>}
+                  {dipendente.telefono && <span><Icona nome="telefono" testo />{dipendente.telefono}</span>}
                   {dipendente.telefono && dipendente.email && <span> • </span>}
-                  {dipendente.email && <span>✉️ {dipendente.email}</span>}
+                  {dipendente.email && <span><Icona nome="email" testo />{dipendente.email}</span>}
                 </div>
                 {dipendente.note && <p style={{ fontSize: '12px', color: 'var(--ink-muted)', marginTop: '5px', fontStyle: 'italic' }}>{dipendente.note}</p>}
               </div>
@@ -318,13 +319,13 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
                     onClick={() => { setDipendenteInModifica(dipendente); setMostraModaleDipendente(true); }}
                     style={{ background: 'var(--primary-soft)', border: '1px solid var(--line)', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '12px', color: 'var(--primary-ink)', fontWeight: 'bold' }}
                   >
-                    ✏️ Modifica
+                    <Icona nome="modifica" testo />Modifica
                   </button>
                   <button
                     onClick={() => handleDeleteDipendente(dipendente.id)}
                     style={{ background: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '12px', color: 'var(--danger)', fontWeight: 'bold' }}
                   >
-                    🗑️
+                    <Icona nome="cestino" />
                   </button>
                 </div>
               )}
@@ -333,7 +334,7 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
             <div style={{ borderTop: '1px solid var(--surface-2)', paddingTop: '12px', marginTop: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <h5 style={{ margin: 0, fontSize: '13px', color: 'var(--ink-muted)', fontWeight: '600' }}>
-                  📜 Attestati ({(dipendente.attestati || []).length})
+                  <Icona nome="documento" testo />Attestati ({(dipendente.attestati || []).length})
                 </h5>
                 {!readOnly && (
                   <button
@@ -376,7 +377,7 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
                           {attestato.pdfUrl && (
                             <a href={attestato.pdfUrl} target="_blank" rel="noopener noreferrer"
                               style={{ background: 'var(--primary-soft)', border: '1px solid var(--line)', borderRadius: '4px', padding: '4px 8px', fontSize: '11px', color: 'var(--primary-ink)', textDecoration: 'none', fontWeight: 'bold' }}>
-                              📄 PDF
+                              <Icona nome="documento" testo />PDF
                             </a>
                           )}
                           {!readOnly && (
@@ -385,13 +386,13 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
                                 onClick={() => handleEditAttestato(dipendente, attestato)}
                                 style={{ background: 'var(--success-soft)', border: '1px solid #bbf7d0', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', fontSize: '11px', color: 'var(--success)', fontWeight: 'bold' }}
                               >
-                                ✏️
+                                <Icona nome="modifica" />
                               </button>
                               <button
                                 onClick={() => handleDeleteAttestato(dipendente, attestato.id)}
                                 style={{ background: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', fontSize: '11px', color: 'var(--danger)', fontWeight: 'bold' }}
                               >
-                                🗑️
+                                <Icona nome="cestino" />
                               </button>
                             </>
                           )}
@@ -423,8 +424,8 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
       )}
 
       {anteprima && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', borderRadius: '12px', padding: '30px', width: '90%', maxWidth: '700px', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: '12px', padding: '30px', width: '90%', maxWidth: '700px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-pop)' }}>
             <h2 style={{ margin: '0 0 6px' }}>Anteprima importazione</h2>
             <p style={{ margin: '0 0 16px', color: 'var(--ink-muted)', fontSize: '14px' }}>
               {anteprima.length} dipendenti trovati. Verifica i dati prima di confermare.
@@ -434,7 +435,7 @@ function TabDipendenti({ azienda, onUpdateAzienda, readOnly, canDownload = false
                 <thead>
                   <tr style={{ background: 'var(--surface-2)', position: 'sticky', top: 0 }}>
                     {['Nome', 'Cognome', 'Mansione', 'Telefono', 'Email', 'Note'].map((h) => (
-                      <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--ink-muted)', fontWeight: 600, borderBottom: '2px solid var(--line)' }}>{h}</th>
+                      <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--ink-muted)', fontWeight: 600, borderBottom: '2px solid var(--line)', fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>

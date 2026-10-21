@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import toast from 'react-hot-toast';
+import Icona from './Icona';
 
 export default function Impostazioni({ giorniPreavviso, onUpdate }) {
   const [giorni, setGiorni] = useState(giorniPreavviso);
@@ -27,7 +28,7 @@ export default function Impostazioni({ giorniPreavviso, onUpdate }) {
 
   return (
     <div style={{ maxWidth: 500 }}>
-      <h2 style={{ marginBottom: 24 }}>⚙️ Impostazioni</h2>
+      <h2 style={{ marginBottom: 24 }}><Icona nome="impostazioni" testo />Impostazioni</h2>
 
       <div style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: 12, padding: 24 }}>
         <h3 style={{ margin: '0 0 8px', fontSize: 16, color: 'var(--ink)' }}>Notifiche scadenze</h3>
@@ -45,7 +46,7 @@ export default function Impostazioni({ giorniPreavviso, onUpdate }) {
             max={365}
             value={giorni}
             onChange={e => setGiorni(e.target.value)}
-            style={{ width: 80, padding: '8px 12px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 15, textAlign: 'center' }}
+            style={{ width: 80, padding: '8px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line-strong)', fontSize: 15, textAlign: 'center' }}
           />
           <button
             onClick={salva}

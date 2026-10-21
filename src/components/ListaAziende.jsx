@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import toast from 'react-hot-toast';
 import BadgeStato from './BadgeStato';
+import Icona from './Icona';
 
 function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda, onImportAziende, onArchiviaAzienda, onRipristinaAzienda, ricerca = '', onRicerca = null, isMobile = false }) {
   const [mostraAnteprima, setMostraAnteprima] = useState(false);
@@ -216,7 +217,7 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
           <h3 style={{ marginBottom: 5, wordBreak: 'break-word' }}>{az.nome}</h3>
           <p style={{ fontSize: 14, color: 'var(--ink-muted)', marginBottom: 8 }}>{az.contatto} • {az.indirizzo}</p>
           {az.assegnatoNome && (
-            <p style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600, marginBottom: 6 }}>👤 {az.assegnatoNome}</p>
+            <p style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600, marginBottom: 6 }}><Icona nome="utente" testo />{az.assegnatoNome}</p>
           )}
           <div style={{ fontSize: 13, color: 'var(--ink-muted)', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
             <span>{(az.controlli || []).length} controlli</span>
@@ -233,13 +234,13 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
                 onClick={e => { e.stopPropagation(); onRipristinaAzienda(az.id); }}
                 style={{ background: 'var(--success-soft)', border: 'none', borderRadius: 6, padding: '6px 10px', cursor: 'pointer', fontSize: 12, color: 'var(--success)', fontWeight: 'bold' }}
               >
-                ♻️ Ripristina
+                <Icona nome="ripristina" testo />Ripristina
               </button>
               <button
                 onClick={e => { e.stopPropagation(); onDeleteAzienda(az.id); }}
                 style={{ background: 'var(--danger-soft)', border: 'none', borderRadius: 6, padding: '6px 10px', cursor: 'pointer', fontSize: 12, color: 'var(--danger)', fontWeight: 'bold' }}
               >
-                🗑️ Elimina
+                <Icona nome="cestino" testo />Elimina
               </button>
             </>
           ) : (
@@ -248,13 +249,13 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
                 onClick={e => { e.stopPropagation(); onArchiviaAzienda(az.id); }}
                 style={{ background: 'var(--warning-soft)', border: 'none', borderRadius: 6, padding: '6px 10px', cursor: 'pointer', fontSize: 12, color: 'var(--warning)', fontWeight: 'bold' }}
               >
-                📦 Archivia
+                <Icona nome="archivio" testo />Archivia
               </button>
               <button
                 onClick={e => { e.stopPropagation(); onDeleteAzienda(az.id); }}
                 style={{ background: 'var(--danger-soft)', border: 'none', borderRadius: 6, padding: '6px 10px', cursor: 'pointer', fontSize: 12, color: 'var(--danger)', fontWeight: 'bold' }}
               >
-                🗑️ Elimina
+                <Icona nome="cestino" testo />Elimina
               </button>
             </>
           )}
@@ -274,7 +275,7 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
               placeholder="Cerca azienda..."
               value={ricerca}
               onChange={e => onRicerca(e.target.value)}
-              style={{ padding: '7px 11px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 14, width: 160 }}
+              style={{ padding: '7px 11px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line-strong)', fontSize: 14, width: 160 }}
             />
           )}
         </div>
@@ -290,13 +291,13 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
             onClick={() => fileInputRef.current.click()}
             style={{ background: 'white', color: 'var(--primary)', border: '2px solid var(--primary)', padding: '10px 20px', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14 }}
           >
-            📥 Importa Excel
+            <Icona nome="scarica" testo />Importa Excel
           </button>
           <button
             onClick={esportaExcel}
             style={{ background: 'white', color: 'var(--success)', border: '2px solid var(--success)', padding: '10px 20px', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14 }}
           >
-            📤 Esporta Excel
+            <Icona nome="carica" testo />Esporta Excel
           </button>
           <button
             onClick={onAddAzienda}
@@ -323,7 +324,7 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
             style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'none', border: 'none', cursor: 'pointer', fontSize: 15, fontWeight: 600, color: 'var(--ink-muted)', padding: 0, marginBottom: 12 }}
           >
             <span style={{ fontSize: 18, transition: 'transform 0.2s', display: 'inline-block', transform: mostraArchivio ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
-            📦 Archivio ({archiviate.length})
+            <Icona nome="archivio" testo />Archivio ({archiviate.length})
           </button>
           {mostraArchivio && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -335,16 +336,16 @@ function ListaAziende({ aziende, onSelectAzienda, onAddAzienda, onDeleteAzienda,
 
       {/* Modale anteprima importazione */}
       {mostraAnteprima && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, width: '95%', maxWidth: 800, maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
-            <h2 style={{ margin: '0 0 8px' }}>📥 Anteprima importazione</h2>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', padding: 28, width: '95%', maxWidth: 800, maxHeight: '85vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-pop)' }}>
+            <h2 style={{ margin: '0 0 8px' }}><Icona nome="scarica" testo />Anteprima importazione</h2>
             <p style={{ color: 'var(--ink-muted)', fontSize: 14, margin: '0 0 16px' }}>{aziendeImport.length} aziende trovate. Verifica i dati prima di confermare.</p>
             <div style={{ overflowY: 'auto', flex: 1, border: '1px solid var(--line)', borderRadius: 8 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: 'var(--surface-2)', position: 'sticky', top: 0 }}>
                     {['Nome', 'Indirizzo', 'Telefono', 'Email', 'P.IVA', 'Amministratore', 'Scad. DVR', 'Scad. HACCP'].map(h => (
-                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', color: 'var(--ink-muted)', fontWeight: 600, borderBottom: '2px solid var(--line)', whiteSpace: 'nowrap' }}>{h}</th>
+                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', color: 'var(--ink-muted)', fontWeight: 600, borderBottom: '2px solid var(--line)', whiteSpace: 'nowrap', fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', fontFamily: 'var(--font-condensed)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import SchedaAzienda from './SchedaAzienda';
+import Icona from './Icona';
 
 const STATI_AZIENDA = [
-  { value: 'da_fare', label: 'Da fare', color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: '⬜' },
-  { value: 'in_corso', label: 'In corso', color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: '🟡' },
-  { value: 'completato', label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: '✅' },
+  { value: 'da_fare', label: 'Da fare', color: 'var(--ink-muted)', bg: 'var(--surface-2)', border: '#c9d1e0', icon: <Icona nome="cerchio" /> },
+  { value: 'in_corso', label: 'In corso', color: 'var(--warning)', bg: 'var(--warning-soft)', border: '#fde68a', icon: <Icona nome="metà" /> },
+  { value: 'completato', label: 'Completato', color: 'var(--success)', bg: 'var(--success-soft)', border: '#bbf7d0', icon: <Icona nome="check" /> },
 ];
 
 function normalizzaStato(stato) {
@@ -43,7 +44,7 @@ function CardAzienda({ az, onOpen, onCambiaStato }) {
         </div>
         {scadenzeProssime > 0 && (
           <span style={{ background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid #fecaca', borderRadius: 8, padding: '3px 8px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
-            ⚠️ {scadenzeProssime}
+            <Icona nome="avviso" testo />{scadenzeProssime}
           </span>
         )}
       </div>
@@ -51,31 +52,31 @@ function CardAzienda({ az, onOpen, onCambiaStato }) {
       {/* Indirizzo / comune */}
       {(az.comune || az.indirizzo) && (
         <div style={{ fontSize: 12, color: 'var(--ink-muted)', marginBottom: 8 }}>
-          📍 {[az.indirizzo, az.comune, az.provincia ? `(${az.provincia})` : ''].filter(Boolean).join(', ')}
+          <Icona nome="luogo" testo />{[az.indirizzo, az.comune, az.provincia ? `(${az.provincia})` : ''].filter(Boolean).join(', ')}
         </div>
       )}
 
       {/* Contatti */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
-        {az.telefono && <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>📞 {az.telefono}</span>}
-        {az.email && <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>✉️ {az.email}</span>}
+        {az.telefono && <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}><Icona nome="telefono" testo />{az.telefono}</span>}
+        {az.email && <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}><Icona nome="email" testo />{az.email}</span>}
       </div>
 
       {/* Contatori */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', borderTop: '1px solid var(--surface-2)', paddingTop: 10, marginBottom: 10 }}>
         {(az.dipendenti?.length > 0) && (
           <span style={{ fontSize: 11, color: 'var(--primary)', background: 'var(--primary-soft)', borderRadius: 6, padding: '2px 8px', fontWeight: 600 }}>
-            👥 {az.dipendenti.length} dipendenti
+            <Icona nome="utenti" testo />{az.dipendenti.length} dipendenti
           </span>
         )}
         {(az.controlli?.filter(c => !c.completato).length > 0) && (
           <span style={{ fontSize: 11, color: 'var(--warning)', background: 'var(--warning-soft)', borderRadius: 6, padding: '2px 8px', fontWeight: 600 }}>
-            🔒 {az.controlli.filter(c => !c.completato).length} controlli
+            <Icona nome="lucchetto" testo />{az.controlli.filter(c => !c.completato).length} controlli
           </span>
         )}
         {(az.documenti?.length > 0) && (
           <span style={{ fontSize: 11, color: 'var(--ink-muted)', background: 'var(--surface-2)', borderRadius: 6, padding: '2px 8px', fontWeight: 600 }}>
-            📄 {az.documenti.length} doc
+            <Icona nome="documento" testo />{az.documenti.length} doc
           </span>
         )}
       </div>
@@ -149,7 +150,7 @@ function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiContro
     <div>
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
-        <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: 'var(--ink)' }}>{tutteLeAziende ? '🏢 Aziende' : '🏢 Le mie aziende'}</h2>
+        <h2 style={{ margin: 0, fontSize: isMobile ? 18 : 22, fontWeight: 800, color: 'var(--ink)' }}>{tutteLeAziende ? 'Aziende' : 'Le mie aziende'}</h2>
         <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-muted)' }}>
           {tutteLeAziende
             ? `${aziendeAssegnate.length} aziend${aziendeAssegnate.length === 1 ? 'a' : 'e'}`
@@ -160,13 +161,13 @@ function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiContro
       {/* Cerca */}
       {aziendeAssegnate.length > 3 && (
         <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}>🔍</span>
+          <span style={{ fontSize: 13, color: 'var(--ink-muted)' }}><Icona nome="cerca" /></span>
           <input
             type="text"
             value={ricerca}
             onChange={e => setRicerca(e.target.value)}
             placeholder="Cerca azienda..."
-            style={{ flex: 1, maxWidth: isMobile ? '100%' : 280, padding: '8px 12px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 13, outline: 'none' }}
+            style={{ flex: 1, maxWidth: isMobile ? '100%' : 280, padding: '8px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line-strong)', fontSize: 13, outline: 'none' }}
           />
           {ricerca && (
             <button onClick={() => setRicerca('')} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--ink-muted)', fontSize: 14 }}>✕</button>
@@ -177,7 +178,7 @@ function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiContro
       {/* Stato vuoto */}
       {aziendeAssegnate.length === 0 && (
         <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: 16, border: '1px dashed var(--line)' }}>
-          <div style={{ fontSize: 44, marginBottom: 12 }}>🏢</div>
+          <div style={{ fontSize: 44, marginBottom: 12 }}><Icona nome="aziende" /></div>
           <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)', marginBottom: 6 }}>{tutteLeAziende ? 'Nessuna azienda' : 'Nessuna azienda assegnata'}</div>
           {!tutteLeAziende && <div style={{ fontSize: 13, color: 'var(--ink-muted)' }}>Contatta l'amministratore per ottenere l'accesso alle aziende</div>}
         </div>
@@ -231,7 +232,7 @@ function PaginaAziendeAssegnate({ aziende, userData, preventivi = [], tipiContro
                 onClick={() => setCompletatiAperti(true)}
                 style={{ textAlign: 'center', padding: '22px 0', color: 'var(--success)', fontSize: 13, fontWeight: 600, background: 'var(--success-soft)', borderRadius: 10, border: '1px dashed #bbf7d0', cursor: 'pointer' }}
               >
-                ✅ {perColonna('completato').length} completate — clicca per espandere
+                <Icona nome="check" testo />{perColonna('completato').length} completate — clicca per espandere
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
