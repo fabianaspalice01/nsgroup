@@ -1,0 +1,95 @@
+/* Login: pannello del marchio con l'orbita del logo + modulo */
+.login { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); min-height: 100vh; min-height: 100dvh; background: var(--bg); }
+
+/* Pannello del marchio */
+.login-brand { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-6); padding: var(--space-7); overflow: hidden; background: var(--navy-950); color: var(--nav-ink); isolation: isolate; }
+.login-orbit { position: absolute; inset: 50% auto auto 50%; z-index: -1; width: 140%; max-width: 1100px; aspect-ratio: 1; transform: translate(-50%, -50%) rotate(-18deg); pointer-events: none; }
+.login-orbit ellipse { fill: none; stroke-linecap: round; }
+.login-ring { transform-box: view-box; transform-origin: 50% 50%; }
+.login-ring--1 { animation: login-spin 80s linear infinite; }
+.login-ring--2 { animation: login-spin 120s linear infinite reverse; }
+.login-ring--3 { animation: login-spin 60s linear infinite; }
+.login-ring--1 ellipse { stroke: var(--steel-400); stroke-width: 3; opacity: .55; }
+.login-ring--2 ellipse { stroke: var(--steel-200); stroke-width: 1.5; opacity: .35; }
+.login-ring--3 ellipse { stroke: var(--navy-700); stroke-width: 10; opacity: .9; }
+.login-ring ellipse { stroke-dasharray: .62 1; stroke-dashoffset: .62; animation: login-draw 1.8s cubic-bezier(.6, 0, .2, 1) forwards; }
+.login-ring--2 ellipse { animation-delay: .25s; }
+.login-ring--3 ellipse { animation-delay: .5s; }
+.login-satellite { fill: var(--steel-200); }
+
+.login-logo { width: min(440px, 90%); height: auto; opacity: 0; animation: login-rise .9s .35s cubic-bezier(.2, .7, .2, 1) forwards; }
+.login-claim { max-width: 34ch; margin: 0; font: 600 13px/20px var(--font-condensed); letter-spacing: .14em; text-transform: uppercase; text-align: center; color: var(--nav-ink); opacity: 0; animation: login-rise .9s .55s cubic-bezier(.2, .7, .2, 1) forwards; }
+
+/* Modulo */
+.login-main { display: flex; align-items: center; justify-content: center; padding: var(--space-7) var(--space-5); }
+.login-card { width: 100%; max-width: 400px; }
+.login-panel { display: flex; flex-direction: column; gap: var(--space-5); animation: login-in .5s cubic-bezier(.2, .7, .2, 1) both; }
+.login-panel > * { opacity: 0; animation: login-rise .6s cubic-bezier(.2, .7, .2, 1) forwards; }
+.login-panel > *:nth-child(1) { animation-delay: .15s; }
+.login-panel > *:nth-child(2) { animation-delay: .22s; }
+.login-panel > *:nth-child(3) { animation-delay: .29s; }
+.login-panel > *:nth-child(4) { animation-delay: .36s; }
+.login-panel > *:nth-child(5) { animation-delay: .43s; }
+.login-panel > *:nth-child(6) { animation-delay: .5s; }
+
+.login-head h1 { margin: 0 0 var(--space-1); font: 600 30px/36px var(--font-display); color: var(--ink); }
+.login-head p { margin: 0; font-size: 15px; line-height: 22px; color: var(--ink-muted); }
+
+.login-field { display: flex; flex-direction: column; gap: 6px; }
+.login-field-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.login-input-wrap { position: relative; }
+.login-input { width: 100%; height: 46px; padding: 0 var(--space-4); box-sizing: border-box; border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: 400 15px/20px var(--font-sans); transition: border-color .15s, box-shadow .15s; }
+.login-input--pw { padding-right: 48px; }
+.login-input::placeholder { color: var(--ink-muted); }
+.login-input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent); }
+.login-input:disabled { background: var(--surface-2); }
+.login-eye { position: absolute; top: 50%; right: 6px; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink-muted); cursor: pointer; transform: translateY(-50%); }
+.login-eye:hover { background: var(--surface-2); color: var(--ink); border-color: transparent; }
+.login-eye svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.login-link { padding: 0; border: 0; background: none; color: var(--primary-ink); font: 600 13px/18px var(--font-sans); cursor: pointer; }
+.login-link:hover { text-decoration: underline; border-color: transparent; }
+
+.login-submit { position: relative; display: flex; align-items: center; justify-content: center; gap: var(--space-2); width: 100%; height: 48px; padding: 0 var(--space-5); border: 0; border-radius: var(--radius-md); background: var(--primary); color: var(--on-primary); font: 600 16px/20px var(--font-sans); cursor: pointer; overflow: hidden; transition: background-color .15s, transform .15s; }
+.login-submit:hover:not(:disabled) { background: var(--primary-hover); }
+.login-submit:active:not(:disabled) { transform: scale(.985); }
+.login-submit:disabled { cursor: progress; }
+.login-submit svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+.login-submit:hover:not(:disabled) svg { transform: translateX(3px); }
+.login-spinner { width: 18px; height: 18px; border: 2px solid color-mix(in srgb, var(--on-primary) 35%, transparent); border-top-color: var(--on-primary); border-radius: 50%; animation: login-spin .7s linear infinite; }
+
+.login-secondary { width: 100%; height: 44px; border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: 600 14px/20px var(--font-sans); cursor: pointer; }
+.login-secondary:hover { background: var(--surface-2); border-color: var(--line-strong); }
+
+.login-alert { display: flex; align-items: flex-start; gap: var(--space-2); padding: 12px var(--space-4); border-radius: var(--radius-md); font-size: 14px; line-height: 20px; }
+.login-alert svg { flex: none; width: 18px; height: 18px; margin-top: 1px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.login-panel > .login-alert { opacity: 1; }
+.login-alert--error { background: var(--danger-soft); color: var(--danger); animation: login-shake .4s cubic-bezier(.36, .07, .19, .97); }
+.login-alert--ok { background: var(--success-soft); color: var(--success); animation: login-rise .4s ease-out; }
+
+.login-foot { margin: 0; font-size: 12px; line-height: 16px; text-align: center; color: var(--ink-muted); }
+
+@keyframes login-draw { to { stroke-dashoffset: 0; } }
+@keyframes login-spin { to { transform: rotate(360deg); } }
+@keyframes login-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes login-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes login-shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(3px); } 30%, 50%, 70% { transform: translateX(-5px); } 40%, 60% { transform: translateX(5px); } }
+
+/* Telefono e tablet stretti: marchio sopra, modulo sotto */
+@media (max-width: 900px) {
+  .login { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .login-brand { gap: var(--space-4); padding: calc(env(safe-area-inset-top, 0px) + 40px) var(--space-5) 72px; }
+  .login-orbit { width: 220%; }
+  .login-logo { width: min(320px, 85%); }
+  .login-claim { font-size: 11px; line-height: 16px; }
+  .login-main { align-items: flex-start; margin-top: -40px; padding: 0 var(--space-4) var(--space-6); }
+  .login-card { padding: var(--space-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-xl); box-shadow: var(--shadow-pop); }
+  .login-head h1 { font-size: 26px !important; line-height: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login *, .login *::before, .login *::after { animation: none !important; transition: none !important; }
+  .login-logo, .login-claim, .login-panel > * { opacity: 1; }
+  .login-ring ellipse { stroke-dashoffset: 0; }
+  .login-spinner { border-top-color: var(--on-primary); }
+}
