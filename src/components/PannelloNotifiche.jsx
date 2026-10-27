@@ -271,6 +271,24 @@ function PannelloNotifiche({ aziende, compact = false, onNavigaAzienda }) {
           }
         }
       });
+
+      // 4. Manutenzioni in scadenza
+      azienda.manutenzioni?.forEach(manutenzione => {
+        if (!manutenzione.scadenza) return;
+        const giorni = Math.ceil((new Date(manutenzione.scadenza) - oggi) / (1000 * 60 * 60 * 24));
+        if (giorni > 30) return;
+        notificheArray.push({
+          tipo: giorni < 0 ? 'scaduto' : giorni <= 7 ? 'urgente' : 'avviso',
+          categoria: 'Manutenzione',
+          aziendaId: azienda.id,
+          tabDestinazione: 'manutenzioni',
+          azienda: azienda.nome,
+          descrizione: [manutenzione.tipo, manutenzione.ubicazione].filter(Boolean).join(' · '),
+          scadenza: manutenzione.scadenza,
+          giorni: Math.abs(giorni),
+          priorita: giorni < 0 ? 3 : giorni <= 7 ? 2 : 1
+        });
+      });
     });
 
     // Filtra le ignorate e ordina per priorità

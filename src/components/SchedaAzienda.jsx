@@ -5,6 +5,7 @@ import TabControlli from './TabControlli';
 import TabDipendenti from './TabDipendenti';
 import TabDocumenti from './TabDocumenti';
 import TabPagamenti from './TabPagamenti';
+import PaginaManutenzioni from './PaginaManutenzioni';
 import * as XLSX from 'xlsx';
 import Icona from './Icona';
 
@@ -12,6 +13,7 @@ const TABS = [
   { id: 'controlli', label: 'Controlli' },
   { id: 'dipendenti', label: 'Dipendenti' },
   { id: 'documenti', label: 'Documenti' },
+  { id: 'manutenzioni', label: 'Manutenzioni' },
   { id: 'pagamenti', label: 'Pagamenti' },
   { id: 'preventivi', label: 'Preventivi' },
   { id: 'note', label: 'Note' },
@@ -253,6 +255,22 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
           {azienda.assegnatoNome && !isAccountAzienda && (
             <p><strong>Assegnato a:</strong> <span style={{ color: 'var(--primary)', fontWeight: 600 }}><Icona nome="utente" testo />{azienda.assegnatoNome}</span></p>
           )}
+          {/* Cosa vede il manutentore: solo morosa sì/no, mai gli importi */}
+          {!readOnly && !isAccountAzienda && (
+            <p style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+              <strong>Morosità per il manutentore:</strong>
+              <select
+                className="ns-input"
+                style={{ height: 30, fontSize: 13 }}
+                value={azienda.morosita || 'auto'}
+                onChange={e => onUpdateAzienda(azienda.id, { morosita: e.target.value })}
+              >
+                <option value="auto">Automatica (preventivi completati con residuo)</option>
+                <option value="morosa">Morosa</option>
+                <option value="in_regola">In regola</option>
+              </select>
+            </p>
+          )}
         </div>
       </div>
 
@@ -317,6 +335,10 @@ function SchedaAzienda({ azienda, onBack, onAddControllo, onUpdateAzienda, tipiC
               (userData?.ruolo === 'consulente' && (userData?.downloadAbilitato || []).includes(azienda.id))
             }
           />
+        )}
+        {/* Solo personale interno: l'account azienda non ha questa scheda */}
+        {tabAttiva === 'manutenzioni' && !isAccountAzienda && (
+          <PaginaManutenzioni aziendaFissa={azienda} utente={userData?.nome} readOnly={readOnly} />
         )}
         {tabAttiva === 'pagamenti' && (
           <TabPagamenti

@@ -14,6 +14,13 @@ service firebase.storage {
         && request.auth.token.email is string
         && firestore.exists(/databases/(default)/documents/accessi_azienda/$(request.auth.token.email.lower()));
     }
+    // Manutentore = email presente nella raccolta manutentori di Firestore.
+    function isManutentore() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && firestore.exists(/databases/(default)/documents/manutentori/$(request.auth.token.email.lower()));
+    }
+
     function eLaMiaAzienda(aziendaId) {
       return isAzienda()
         && firestore.get(/databases/(default)/documents/accessi_azienda/$(request.auth.token.email.lower())).data.attivo == true
@@ -22,12 +29,12 @@ service firebase.storage {
 
     // File alla radice del bucket.
     match /{file} {
-      allow read, write: if request.auth != null && !isAzienda();
+      allow read, write: if request.auth != null && !isAzienda() && !isManutentore();
     }
 
     // Tutto il resto: basta essere personale interno autenticato, esclusi gli allegati della contabilità.
     match /{cartella}/{rest=**} {
-      allow read, write: if request.auth != null && !isAzienda() && !cartella.matches('crm_.*');
+      allow read, write: if request.auth != null && !isAzienda() && !isManutentore() && !cartella.matches('crm_.*');
     }
 
     // Allegati della contabilità (crm_<azienda>/allegati/...): solo amministratori.
@@ -38,6 +45,14 @@ service firebase.storage {
     // Account azienda: in sola lettura i file di controlli, documenti e pagamenti della propria azienda.
     match /{cartella}/{aziendaId}/{rest=**} {
       allow read: if cartella in ['controlli', 'documenti', 'pagamenti'] && eLaMiaAzienda(aziendaId);
+    }
+
+    // Manutentore: solo i rapporti delle manutenzioni (lettura e caricamento di PDF fino a 10MB).
+    match /manutenzioni/{aziendaId}/{file} {
+      allow read: if isManutentore();
+      allow create: if isManutentore()
+        && request.resource.contentType == 'application/pdf'
+        && request.resource.size < 10 * 1024 * 1024;
     }
   }
 }

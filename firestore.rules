@@ -23,12 +23,25 @@ service cloud.firestore {
         && get(accessoAzienda()).data.aziendaId == aziendaId;
     }
 
+    // Account manutentore = email presente nella raccolta manutentori (tenuta allineata da Gestione utenti).
+    // Non legge aziende né preventivi: solo vista_manutenzioni, senza importi.
+    function isManutentore() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && exists(/databases/$(database)/documents/manutentori/$(request.auth.token.email.lower()));
+    }
+    function isManutentoreAttivo() {
+      return isManutentore()
+        && get(/databases/$(database)/documents/manutentori/$(request.auth.token.email.lower())).data.attivo == true;
+    }
+
     // Tutto il resto: basta essere autenticati come personale interno.
     // Il controllo dei ruoli (admin/consulente/operatore) avviene nel codice React.
     // Esclusi la contabilità (crm_*), admins e accessi_azienda, che hanno regole proprie qui sotto.
     match /{coll}/{rest=**} {
-      allow read, write: if request.auth != null && !isAzienda()
-        && !coll.matches('crm_.*') && coll != 'admins' && coll != 'accessi_azienda';
+      allow read, write: if request.auth != null && !isAzienda() && !isManutentore()
+        && !coll.matches('crm_.*') && coll != 'admins' && coll != 'accessi_azienda'
+        && coll != 'manutentori' && coll != 'vista_manutenzioni';
     }
 
     // Contabilità (CRM): solo amministratori.
@@ -50,12 +63,24 @@ service cloud.firestore {
       allow write: if request.auth != null && !isAzienda();
     }
 
+    // Elenco manutentori: ognuno vede la propria voce, solo il personale interno lo modifica.
+    match /manutentori/{email} {
+      allow read: if request.auth != null
+        && (request.auth.token.email.lower() == email || (!isAzienda() && !isManutentore()));
+      allow write: if request.auth != null && !isAzienda() && !isManutentore();
+    }
+
+    // Vista ridotta delle aziende per i manutentori: la scrivono solo le Cloud Functions.
+    match /vista_manutenzioni/{aziendaId} {
+      allow read: if isManutentoreAttivo() || (request.auth != null && !isAzienda() && !isManutentore());
+    }
+
     // Account azienda: in sola lettura la propria scheda e il proprio utente.
     match /aziende/{aziendaId} {
       allow read: if eLaMiaAzienda(aziendaId);
     }
     match /users/{userId} {
-      allow read: if isAzienda() && resource.data.email == request.auth.token.email;
+      allow read: if (isAzienda() || isManutentore()) && resource.data.email == request.auth.token.email;
     }
   }
 }

@@ -40,6 +40,8 @@ import PaginaListino from './components/PaginaListino';
 import ContabilitaGruppo from './components/crm/ContabilitaGruppo';
 import ModaleContratto from './components/contratto/ModaleContratto';
 import Icona from './components/Icona';
+import PaginaManutenzioni from './components/PaginaManutenzioni';
+import { useVistaManutenzioni } from './hooks/useVistaManutenzioni';
 
 // Portale esterno mostrato all'account azienda (link provvisorio, da sostituire con quello vero)
 const PORTALE_ESTERNO = { url: 'https://www.esempio.it', label: 'Vai al portale' };
@@ -59,6 +61,7 @@ function App({ session }) {
   const { user, userData, loading, login, logout } = session;
   const { aziende } = useAziende(userData);
   const { appuntamenti } = useAppuntamenti(userData);
+  const aziendeManutentore = useVistaManutenzioni(userData?.ruolo === 'manutentore');
 
   const [aziendaSelezionataId, setAziendaSelezionataId] = useState(null);
   const [navKey, setNavKey] = useState(0);
@@ -119,6 +122,11 @@ function App({ session }) {
       setTipiControlloPersonalizzati([]);
       setAziendaSelezionataId(null);
       setVistaCorrente('dashboard');
+      return;
+    }
+    // Il manutentore vede solo le manutenzioni: nessun'altra raccolta da caricare
+    if (userData.ruolo === 'manutentore') {
+      setVistaCorrente('manutenzioni');
       return;
     }
     if (userData.ruolo === 'consulente') {
@@ -831,6 +839,7 @@ function App({ session }) {
     { id: 'dashboard', label: 'Home', icona: 'home' },
     { id: 'agenda', label: 'Agenda', icona: 'agenda' },
     { id: 'planning', label: 'Planning', icona: 'planning' },
+    { id: 'manutenzioni', label: 'Manutenzioni', icona: 'manutenzioni' },
     { id: 'utenti', label: 'Utenti', icona: 'utenti' },
     { id: 'preventivi', label: 'Preventivi', icona: 'preventivi' },
     ...(userData.ruolo === 'admin' ? [{ id: 'contabilita', label: 'Contabilità', icona: 'contabilita' }] : []),
@@ -840,6 +849,8 @@ function App({ session }) {
     { id: 'agenda', label: 'Agenda', icona: 'agenda' },
     { id: 'aziende', label: 'Aziende', icona: 'aziende' },
     { id: 'preventivi', label: 'Preventivi', icona: 'preventivi' },
+  ] : userData.ruolo === 'manutentore' ? [
+    { id: 'manutenzioni', label: 'Manutenzioni', icona: 'manutenzioni' },
   ] : userData.ruolo === 'azienda' ? [
     { id: 'portale', label: PORTALE_ESTERNO.label, icona: 'portale', href: PORTALE_ESTERNO.url },
   ] : [];
@@ -947,6 +958,10 @@ function App({ session }) {
 
             {vistaCorrente === 'planning' && (
               <PaginaPlanning operatori={operatoriList} userData={userData} />
+            )}
+
+            {vistaCorrente === 'manutenzioni' && (
+              <PaginaManutenzioni aziende={aziendAttive} utente={userData.nome} onApriAzienda={id => handleNavigaAzienda(id, 'manutenzioni')} />
             )}
 
             {vistaCorrente === 'utenti' && (
@@ -1122,6 +1137,11 @@ function App({ session }) {
             userData={userData}
           />
         )}
+        {/* MANUTENTORE - Solo manutenzioni, con la morosità dell'azienda ma senza importi */}
+        {userData.ruolo === 'manutentore' && (
+          <PaginaManutenzioni aziende={aziendeManutentore} utente={userData.nome} manutentore />
+        )}
+
         {userData.ruolo === 'azienda' && !aziendaSelezionata && (
           <p style={{ textAlign: 'center', color: 'var(--ink-muted)', padding: 40 }}>
             Nessun dato disponibile per la tua azienda. Contatta NS Consulting.

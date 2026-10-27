@@ -71,6 +71,13 @@ function Dashboard({ aziende, ricerca, onRicerca, appuntamenti, preventivi, gior
           scadenze.push({ azienda: az.nome, tipo: 'Documento', nome: doc.nome, scadenza: d });
       }
     });
+    (az.manutenzioni || []).forEach(m => {
+      if (m.scadenza) {
+        const d = new Date(m.scadenza);
+        if (d >= inizioMese && d <= fineMese)
+          scadenze.push({ azienda: az.nome, tipo: 'Manutenzione', nome: [m.tipo, m.ubicazione].filter(Boolean).join(' — '), scadenza: d });
+      }
+    });
     (az.dipendenti || []).forEach(dip => {
       (dip.attestati || []).forEach(att => {
         if (att.dataScadenza) {
@@ -82,6 +89,13 @@ function Dashboard({ aziende, ricerca, onRicerca, appuntamenti, preventivi, gior
     });
   });
   scadenze.sort((a, b) => a.scadenza - b.scadenza);
+
+  // Interventi di manutenzione eseguiti nel mese
+  const interventiMese = aziende.flatMap(az => (az.manutenzioni || []).flatMap(m =>
+    (m.interventi || [])
+      .filter(i => i.data?.startsWith(meseSelezionato))
+      .map(i => ({ ...i, azienda: az.nome, manutenzione: m.tipo }))
+  )).sort((a, b) => b.data.localeCompare(a.data));
 
   // Appuntamenti nel mese
   const appMese = [...(appuntamenti || [])]
@@ -218,6 +232,23 @@ function Dashboard({ aziende, ricerca, onRicerca, appuntamenti, preventivi, gior
               </div>
               <div className="dash-row__side">
                 <span className="dash-row__date">{fmt(a.data)}{a.ora ? ` · ${a.ora}` : ''}</span>
+              </div>
+            </div>
+          ))}
+        </Collapsible>
+
+        <Collapsible titolo="Interventi di manutenzione" conteggio={interventiMese.length}>
+          {interventiMese.length === 0 ? (
+            <p className="dash-empty">Nessun intervento di manutenzione in questo mese.</p>
+          ) : interventiMese.map(i => (
+            <div key={i.id} className="dash-row">
+              <div className="dash-row__main">
+                <span className="dash-row__name">{i.azienda}</span>
+                <span className="dash-row__sub">{[i.manutenzione, i.tecnico, i.note].filter(Boolean).join(' · ')}</span>
+              </div>
+              <div className="dash-row__side">
+                <span className="dash-row__date">{fmt(i.data)}</span>
+                <span className="ns-badge ns-badge--ok"><Icona nome="check" />Eseguito</span>
               </div>
             </div>
           ))}

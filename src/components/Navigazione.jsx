@@ -1,7 +1,7 @@
 import './Navigazione.css';
 import Icona from './Icona';
 
-const NOMI_RUOLO = { admin: 'Amministratore', operatore: 'Operatore', consulente: 'Consulente', azienda: 'Azienda' };
+const NOMI_RUOLO = { admin: 'Amministratore', operatore: 'Operatore', consulente: 'Consulente', manutentore: 'Manutentore', azienda: 'Azienda' };
 
 function VoceNav({ voce, attiva, onSeleziona }) {
   if (voce.href) {

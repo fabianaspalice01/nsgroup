@@ -6,7 +6,7 @@ export function useAppuntamenti(userData) {
   const [appuntamenti, setAppuntamenti] = useState([]);
 
   useEffect(() => {
-    if (!userData || userData.ruolo === 'azienda') {
+    if (!userData || userData.ruolo === 'azienda' || userData.ruolo === 'manutentore') {
       setAppuntamenti([]);
       return;
     }

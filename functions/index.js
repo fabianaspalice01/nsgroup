@@ -302,3 +302,6 @@ Object.assign(exports, require('./contabilita'));
 
 // ── AGENDA ↔ GOOGLE CALENDAR ────────────────────────────────────────────────
 Object.assign(exports, require('./googleCalendar'));
+
+// ── ACCOUNT MANUTENTORE: vista ridotta delle aziende e interventi ───────────
+Object.assign(exports, require('./manutenzioni'));

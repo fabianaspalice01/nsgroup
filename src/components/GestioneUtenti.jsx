@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, setDoc, getDocs, query, where } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp, deleteApp } from 'firebase/app';
-import { db, firebaseConfig } from '../firebase';
+import { httpsCallable } from 'firebase/functions';
+import { db, firebaseConfig, functions } from '../firebase';
 import toast from "react-hot-toast";
 import Icona from './Icona';
 
@@ -25,7 +26,20 @@ async function allineaAccessoAzienda(email, aziendaId, attivo = true) {
   else await deleteDoc(rif);
 }
 
-const RUOLI_VALIDI = ['admin', 'operatore', 'consulente', 'azienda'];
+// Raccolta manutentori (una voce per email): per le regole il manutentore non vede aziende né importi,
+// solo vista_manutenzioni. Come accessi_azienda va scritta prima di creare l'utente o dargli il ruolo.
+async function allineaManutentore(email, nome, manutentore, attivo = true) {
+  if (!email) return;
+  const rif = doc(db, 'manutentori', email.trim().toLowerCase());
+  if (manutentore) await setDoc(rif, { email: email.trim().toLowerCase(), nome: nome || '', attivo });
+  else await deleteDoc(rif);
+}
+
+// Prepara le viste delle aziende per i manutentori (servono quando nasce il primo manutentore)
+const ricostruisciVisteManutentori = () => httpsCallable(functions, 'ricostruisciVistaManutenzioni', { timeout: 300000 })()
+  .catch(err => console.error('Errore preparazione vista manutentori:', err));
+
+const RUOLI_VALIDI =['admin', 'operatore', 'consulente', 'azienda', 'manutentore'];
 
 function GestioneUtenti({ aziende, utenteCorrente }) {
   const [utenti, setUtenti] = useState([]);
@@ -77,6 +91,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     try {
       const u = utenti.find(x => x.id === userId);
       if (u?.ruolo === 'azienda') await allineaAccessoAzienda(u.email, u.aziendaId, !attivoCorrente);
+      if (u?.ruolo === 'manutentore') await allineaManutentore(u.email, u.nome, true, !attivoCorrente);
       const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, { attivo: !attivoCorrente });
       if (u?.ruolo === 'admin') await allineaAdmin(u.email, u.nome, !attivoCorrente);
@@ -105,12 +120,16 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
       return;
     }
     try {
+      const diventaManutentore = nuovoRuolo === 'manutentore';
       await allineaAccessoAzienda(utentePerRuolo.email, nuovoRuolo === 'azienda' ? nuovoAziendaId : '', utentePerRuolo.attivo !== false);
+      if (diventaManutentore) await allineaManutentore(utentePerRuolo.email, utentePerRuolo.nome, true, utentePerRuolo.attivo !== false);
       await updateDoc(doc(db, 'users', utentePerRuolo.id), {
         ruolo: nuovoRuolo,
         aziendaId: nuovoRuolo === 'azienda' ? nuovoAziendaId : '',
       });
       await allineaAdmin(utentePerRuolo.email, utentePerRuolo.nome, nuovoRuolo === 'admin' && utentePerRuolo.attivo !== false);
+      if (!diventaManutentore && utentePerRuolo.ruolo === 'manutentore') await allineaManutentore(utentePerRuolo.email, '', false);
+      if (diventaManutentore) ricostruisciVisteManutentori();
       toast.success('Ruolo aggiornato');
       setUtentePerRuolo(null);
     } catch (err) {
@@ -207,6 +226,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
     try {
       await deleteDoc(doc(db, 'users', utentePerElimina.id));
       if (utentePerElimina.ruolo === 'admin') await allineaAdmin(utentePerElimina.email, utentePerElimina.nome, false);
+      if (utentePerElimina.ruolo === 'manutentore') await allineaManutentore(utentePerElimina.email, '', false);
       toast.success(`Utente "${utentePerElimina.nome}" eliminato`);
       setUtentePerElimina(null);
     } catch (err) {
@@ -268,7 +288,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                       color: utente.ruolo === 'admin' ? 'var(--primary)' : utente.ruolo === 'operatore' ? 'var(--primary-ink)' : utente.ruolo === 'consulente' ? 'var(--success)' : 'var(--warning)',
                       padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 600
                     }}>
-                      {utente.ruolo === 'admin' ? 'Admin' : utente.ruolo === 'operatore' ? 'Operatore' : utente.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
+                      {utente.ruolo === 'admin' ? 'Admin' : utente.ruolo === 'operatore' ? 'Operatore' : utente.ruolo === 'consulente' ? 'Consulente' : utente.ruolo === 'manutentore' ? 'Manutentore' : 'Azienda'}
                     </span>
                     <span style={{
                       background: utente.attivo ? 'var(--success-soft)' : 'var(--danger-soft)',
@@ -305,7 +325,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                         <Icona nome="modifica" testo />Ruolo
                       </button>
                     )}
-                    {utente.ruolo !== 'azienda' && (
+                    {!['azienda', 'manutentore'].includes(utente.ruolo) && (
                       <button
                         onClick={() => apriAssegnazioneAziende(utente)}
                         style={{ background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #bbf7d0', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
@@ -364,7 +384,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                       color: utente.ruolo === 'admin' ? 'var(--primary)' : utente.ruolo === 'operatore' ? 'var(--primary-ink)' : utente.ruolo === 'consulente' ? 'var(--success)' : 'var(--warning)',
                       padding: '4px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600
                     }}>
-                      {utente.ruolo === 'admin' ? 'Admin' : utente.ruolo === 'operatore' ? 'Operatore' : utente.ruolo === 'consulente' ? 'Consulente' : 'Azienda'}
+                      {utente.ruolo === 'admin' ? 'Admin' : utente.ruolo === 'operatore' ? 'Operatore' : utente.ruolo === 'consulente' ? 'Consulente' : utente.ruolo === 'manutentore' ? 'Manutentore' : 'Azienda'}
                     </span>
                   </td>
                   <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--ink-muted)' }}>
@@ -406,7 +426,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                     ) : <span style={{ color: '#c9d1e0', fontSize: 12 }}>—</span>}
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                    {utente.ruolo !== 'azienda' ? (
+                    {!['azienda', 'manutentore'].includes(utente.ruolo) ? (
                       <button
                         onClick={() => apriAssegnazioneAziende(utente)}
                         style={{ background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid #bbf7d0', padding: '6px 12px', borderRadius: 6, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
@@ -486,6 +506,7 @@ function GestioneUtenti({ aziende, utenteCorrente }) {
                 {utenteCorrente?.ruolo === 'admin' && <option value="admin">Admin</option>}
                 <option value="consulente">Consulente</option>
                 <option value="operatore">Operatore</option>
+                <option value="manutentore">Manutentore</option>
                 <option value="azienda">Azienda</option>
               </select>
             </div>
@@ -683,6 +704,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
     const secondaryApp = initializeApp(firebaseConfig, `user-${Date.now()}`);
     const secondaryAuth = getAuth(secondaryApp);
     let accessoScritto = false;
+    let manutentoreScritto = false;
     try {
       const esistente = await getDocs(query(collection(db, 'users'), where('email', '==', form.email.trim())));
       if (!esistente.empty) {
@@ -691,6 +713,10 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
       }
       await allineaAccessoAzienda(form.email, form.ruolo === 'azienda' ? form.aziendaId : '');
       accessoScritto = form.ruolo === 'azienda';
+      if (form.ruolo === 'manutentore') {
+        await allineaManutentore(form.email, form.nome, true);
+        manutentoreScritto = true;
+      }
       await createUserWithEmailAndPassword(secondaryAuth, form.email, form.password);
 
       await addDoc(collection(db, 'users'), {
@@ -701,12 +727,14 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
         attivo: true
       });
       if (form.ruolo === 'admin') await allineaAdmin(form.email, form.nome, true);
+      if (form.ruolo === 'manutentore') ricostruisciVisteManutentori();
 
       toast.success('Utente creato con successo!');
       onSave();
     } catch (error) {
       console.error('Errore nella creazione utente:', error);
       if (accessoScritto) await allineaAccessoAzienda(form.email, '').catch(() => {});
+      if (manutentoreScritto) await allineaManutentore(form.email, '', false).catch(() => {});
       if (error.code === 'auth/email-already-in-use') {
         setError('Questa email è già registrata');
       } else if (error.code === 'auth/invalid-email') {
@@ -762,6 +790,7 @@ function ModaleNuovoUtente({ onClose, onSave, aziende, puoCreareAdmin }) {
             {puoCreareAdmin && <option value="admin">Admin</option>}
             <option value="consulente">Consulente</option>
             <option value="operatore">Operatore</option>
+            <option value="manutentore">Manutentore</option>
             <option value="azienda">Azienda</option>
           </select>
         </div>

@@ -20,7 +20,7 @@ export function useAuth() {
             const userDoc = snap.docs[0];
             const data = { id: userDoc.id, ...userDoc.data() };
 
-            const ruoloValido = ['admin', 'operatore', 'consulente'].includes(data.ruolo)
+            const ruoloValido = ['admin', 'operatore', 'consulente', 'manutentore'].includes(data.ruolo)
               || (data.ruolo === 'azienda' && !!data.aziendaId);
             if (!ruoloValido) {
               setUser(null);
